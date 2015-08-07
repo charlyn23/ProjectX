@@ -1,5 +1,7 @@
 # ProjectX
 
+Group Members: Charlyn, Yulia, Anthony, Suefei
+
 Map-based user-fed data base.
 
 Elements Involved:
