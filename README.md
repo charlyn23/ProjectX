@@ -10,4 +10,5 @@ Elements Involved:
 - User log-in management
 - Remote database management (parse?)
 
-- More to be added during final group ideation.
+
+More to be added during/after group ideation.
