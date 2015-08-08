@@ -12,7 +12,11 @@ Elements Involved:
 - Push notification to update the data
 - Send an alert about dangerous ares based on user's location
 - Graphcharts
+- Geofencing
  
 
 
 More to be added during/after group ideation.
+
+BONUS:
+-Photo feature?
