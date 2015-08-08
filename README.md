@@ -11,7 +11,7 @@ Elements Involved:
 - Remote database management (parse?)
 - Push notification to update the data
 - Send an alert about dangerous ares based on user's location
-- visualtion charts
+- Graphcharts
  
 
 
