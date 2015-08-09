@@ -23,16 +23,32 @@ Please provide a detailed description of the app here. Map out how the app solve
     -view self-reported instances + other users'
   *  Bonus features you plan to implement if baseline features are completed in time (what + why).
     -location services: alerts when entering high-frequency areas
+    -graph data
+    -sorting data on the map by date, shame type, time of occurrence, etc.
   *  A wireframe of the app. 
 
 ## Execution
 Please describe how you will build this app. Include: 
   *  A detailed timeline for building the product, broken out by weekly sprints. Implement the training from the [Project Management workshop](https://github.com/accesscode-2-1/unit-3/blob/master/lessons/16_ProjectManagement.md) to plan your sprints and outline which features you want to build out over the next 4 weeks. Think about the user stories you would frame your sprints around. *Projects should be planned to complete the build by Demo 1 on September 1, 2015.*  
-  -Week 1: 
-  -Week 2:
-  -Week 3:
+  -Week 1: Log-in sequence, creation of new users, crude saving of data to parse database, working framework, map pin drop
+  -Week 2: Save user profile data, UX for reprorting shames, fetching parse data to populate map, filter feature(?), graph data
+  -Week 3: Make it pretty, debugging, location alerts, demo prep
   
   *  A breakdown of team member responsibilities. Team members should take ownership over a specific feature or aspect of the app.   
 
+-Anthony: 
+*Sending an alert about dangerous ares based on user's location
+*Show info based on tap&hold vs double tap
+*Map flow (pin drop sequence and map info management)
 
+-Charlyn
+*Database creation and management (shames)
+*UI/UX
+*Map
 
+-Yuliya
+*Facebook Authorization
+*Graphical Data
+
+-Sufei
+* UI/UX Lead
