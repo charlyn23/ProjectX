@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class SignUpActivity extends ActionBarActivity {
+public class SignUpActivity extends AppCompatActivity {
+    List<String> permissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,53 +30,52 @@ public class SignUpActivity extends ActionBarActivity {
 
         ParseFacebookUtils.initialize(getApplicationContext());
 
-        final List<String> permissions = Arrays.asList("public_profile", "email");
+        permissions = Arrays.asList("public_profile", "email");
 
         Button fb = (Button) findViewById(R.id.fb_button);
-        fb.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
+        Button twitter = (Button) findViewById(R.id.twitter_button);
 
-                ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpActivity.this, permissions, new LogInCallback() {
+        fb.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                logInViaFB(permissions);
+            }
+        });
+
+        twitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseTwitterUtils.logIn(SignUpActivity.this, new LogInCallback() {
                     @Override
-                    public void done(final com.parse.ParseUser user, ParseException err) {
-                        if (user == null) {
-                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
-
-                            Toast.makeText(getApplicationContext(), "Log-out from Facebook and try again please!", Toast.LENGTH_SHORT).show();
-
+                    public void done(final com.parse.ParseUser parseUser, ParseException e) {
+                        if (parseUser == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Twitter login.");
                             com.parse.ParseUser.logOut();
-                        }
 
-                        else if (user.isNew()) {
-                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+                        } else if (parseUser.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Twitter!");
 
-                            if (!ParseFacebookUtils.isLinked(user)) {
-                                ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
+                            if (!ParseTwitterUtils.isLinked(parseUser)) {
+                                ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
                                     @Override
                                     public void done(ParseException ex) {
-                                        if (ParseFacebookUtils.isLinked(user)) {
-                                            Log.d("MyApp", "Woohoo, user logged in with Facebook!");
-
+                                        if (ParseTwitterUtils.isLinked(parseUser)) {
+                                            Log.d("MyApp", "Woohoo, user logged in with Twitter!");
                                         }
                                     }
                                 });
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), "You can change your personal data in Settings tab!", Toast.LENGTH_SHORT).show();
                             }
                             sendIntentToMainActivity();
-                        } else {
-                            Log.d("MyApp", "User " + user);
-                            Log.d("MyApp", "User logged in through Facebook!");
 
-                            if (!ParseFacebookUtils.isLinked(user)) {
-                                ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
+                        } else {
+                            Log.d("MyApp", "User logged in through Twitter!");
+                            if (!ParseTwitterUtils.isLinked(parseUser)) {
+                                ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
                                     @Override
                                     public void done(ParseException ex) {
-                                        if (ParseFacebookUtils.isLinked(user)) {
-                                            Log.d("MyApp", "Woohoo, user logged in with Facebook!");
+                                        if (ParseTwitterUtils.isLinked(parseUser)) {
+                                            Log.d("MyApp", "Woohoo, user logged in with Twitter!");
                                         }
                                     }
                                 });
@@ -96,5 +97,51 @@ public class SignUpActivity extends ActionBarActivity {
     private void sendIntentToMainActivity() {
         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void logInViaFB(final List<String> permissions) {
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpActivity.this, permissions, new LogInCallback() {
+            @Override
+            public void done(final com.parse.ParseUser user, ParseException err) {
+                if (user == null) {
+                    Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+
+                    Toast.makeText(getApplicationContext(), "Log-out from Facebook and try again please!", Toast.LENGTH_SHORT).show();
+
+                    com.parse.ParseUser.logOut();
+                } else if (user.isNew()) {
+                    Log.d("MyApp", "User signed up and logged in through Facebook!");
+
+                    if (!ParseFacebookUtils.isLinked(user)) {
+                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
+                            @Override
+                            public void done(ParseException ex) {
+                                if (ParseFacebookUtils.isLinked(user)) {
+                                    Log.d("MyApp", "Woohoo, user logged in with Facebook!");
+
+                                }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getApplicationContext(), "You can change your personal data in Settings tab!", Toast.LENGTH_SHORT).show();
+                    }
+                    sendIntentToMainActivity();
+                } else {
+                    Log.d("MyApp", "User logged in through Facebook!");
+
+                    if (!ParseFacebookUtils.isLinked(user)) {
+                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
+                            @Override
+                            public void done(ParseException ex) {
+                                if (ParseFacebookUtils.isLinked(user)) {
+                                    Log.d("MyApp", "Woohoo, user logged in with Facebook!");
+                                }
+                            }
+                        });
+                    }
+                    sendIntentToMainActivity();
+                }
+            }
+        });
     }
 }

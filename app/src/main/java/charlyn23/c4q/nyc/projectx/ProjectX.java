@@ -20,6 +20,7 @@ public class ProjectX extends Application {
 
         // Add your initialization code here
         Parse.initialize(this, "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O", "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq");
+        ParseTwitterUtils.initialize("gMnIhP578AvJaJ3cXeW06NGcl", "nH06AhHHX8qZ5jsgcgMk5ZpkmKn3ZqnHvCHZl5tZjHs57suAhT");
 
         com.parse.ParseUser.enableAutomaticUser();
         ParseACL defaultACL = new ParseACL();
