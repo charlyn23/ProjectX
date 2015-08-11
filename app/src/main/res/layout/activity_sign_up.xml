@@ -5,8 +5,18 @@
     android:orientation="vertical"
     tools:context="charlyn23.c4q.nyc.projectx.SignUpActivity">
 
+    <CheckBox
+        android:id="@+id/sex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:id="@+id/harassment_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
-        android:id="@+id/fb_button"
+        android:id="@+id/facebook_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="FB" />
@@ -16,5 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Twitter"/>
+
+    <Button
+        android:id="@+id/log_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log out"/>
 
 </LinearLayout>
