@@ -12,10 +12,18 @@ public class MainActivity extends AppCompatActivity {
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 89c073ced9a7d2328de094150011678bc0c8d514
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 89c073ced9a7d2328de094150011678bc0c8d514
         setUpActionBar();
     }
 
