@@ -1,9 +1,6 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,25 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-<<<<<<< HEAD
-import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-=======
-import charlyn23.c4q.nyc.projectx.model.*;
->>>>>>> 89c073ced9a7d2328de094150011678bc0c8d514
+import charlyn23.c4q.nyc.projectx.model.Shame;
 
 /**
  * Created by sufeizhao on 8/9/15.
  */
 public class MapFragment extends Fragment {
     private View view;
-    
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,13 +30,6 @@ public class MapFragment extends Fragment {
                 startActivity(intent);
             }
         });
-<<<<<<< HEAD
-
-       // MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-
-        return view;
-    }
-=======
         reportNewShame();
         // MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
@@ -72,5 +52,4 @@ public class MapFragment extends Fragment {
 
 
     }
->>>>>>> 89c073ced9a7d2328de094150011678bc0c8d514
 }
