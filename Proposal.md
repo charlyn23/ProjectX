@@ -42,27 +42,27 @@ Bonus features we plan to implement if baseline features are completed in time:
 ##### Week 1: 
 | Week 1 | Task                                    | Members         |
 |--------|-----------------------------------------|-----------------|
-|        | Log-in sequence & Creation of new users | Yuliya          |
 |        | Crude saving of data to parse database  | Charlyn, Sufei  |
-|        | Working framework                       | Sufei           |
 |        | Map pin drop                            | Anthony, Yuliya |
+|        | Log-in sequence & Creation of new users | Yuliya          |
+|        | Working framework                       | Sufei           |
 
 ##### Week 2: 
 | Week 2 | Task                                | Members        |
 |--------|-------------------------------------|----------------|
-|        | Save user profile data              | Yuliya         |
-|        | UX for reporting shames             | Sufei          |
 |        | Fetching parse data to populate map | Charlyn        |
-|        | Filter feature(?)                   | Charlyn, Sufei |
 |        | Graph data                          | Anthony        |
+|        | UX for reporting shames             | Sufei          |
+|        | Filter feature                      | Charlyn, Sufei |
+|        | Save user profile data              | Yuliya         |
 
 ##### Week 3: 
 | Week 3 | Task            | Members        |
 |--------|-----------------|----------------|
-|        | Make it pretty  | Sufei          |
-|        | Debugging       | Yuliya         |
 |        | Location alerts | Sufei, Anthony |
+|        | Debugging       | Yuliya         |
 |        | Demo prep       | Charlyn        |
+|        | Make it pretty  | Sufei          |
   
 ##### General Roles: 
 ###### Anthony: 
