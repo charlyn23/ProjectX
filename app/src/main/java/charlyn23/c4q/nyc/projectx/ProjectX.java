@@ -13,13 +13,13 @@ public class ProjectX extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Initialize Crash Reporting.
+        // Initialization of  Crash Reporting.
         ParseCrashReporting.enable(this);
 
-        // Enable Local Datastore.
+        //Local DataStore.
         Parse.enableLocalDatastore(this);
 
-        // Add your initialization code here
+        // initialization Parse, Twitter and Facebook keys
         Parse.initialize(this, "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O", "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq");
         ParseTwitterUtils.initialize("ouo6bc7Pw4aScPNRnsKJlvm2K", "qRY7V1WbBMXogze0wC0m05cIgMpzl3bn8Kt9NpOpHkW7S5kKLk");
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -27,7 +27,8 @@ public class ProjectX extends Application {
 
         com.parse.ParseUser.enableAutomaticUser();
         ParseACL defaultACL = new ParseACL();
-        // Optionally enable public read access.
+
+        // Optionally to enable public read access.
         // defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
     }

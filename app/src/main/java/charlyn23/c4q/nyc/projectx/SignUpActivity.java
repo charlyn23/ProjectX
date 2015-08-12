@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -14,7 +13,8 @@ import java.util.List;
 
 
 public class SignUpActivity extends AppCompatActivity {
-    List<String> permissions;
+    private static final String TAG = "c4q.nyc.projectx";
+    private List<String> permissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,21 +59,17 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void done(final com.parse.ParseUser user, ParseException err) {
                 if (user == null) {
-                    Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
-
-                    Toast.makeText(getApplicationContext(), "Log-out from Facebook and try again please!", Toast.LENGTH_SHORT).show();
-
+                    Log.i(TAG, "The user cancelled the Facebook login");
+                    Toast.makeText(getApplicationContext(), "Log out from Facebook and try again please!", Toast.LENGTH_SHORT).show();
                     com.parse.ParseUser.logOut();
                 } else if (user.isNew()) {
-                    Log.d("MyApp", "User signed up and logged in through Facebook!");
-
+                    Log.i(TAG, "User signed up and logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
                         ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(user)) {
-                                    Log.d("MyApp", "Woohoo, user logged in with Facebook!");
-
+                                    Log.i(TAG, "User logged in with Facebook!");
                                 }
                             }
                         });
@@ -82,14 +78,13 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     sendIntentToMainActivity();
                 } else {
-                    Log.d("MyApp", "User logged in through Facebook!");
-
+                    Log.i(TAG, "User logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
                         ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(user)) {
-                                    Log.d("MyApp", "Woohoo, user logged in with Facebook!");
+                                    Log.i(TAG, "User logged in with Facebook!");
                                 }
                             }
                         });
@@ -105,18 +100,18 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void done(final com.parse.ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
-                    Log.d("MyApp", "Uh oh. The user cancelled the Twitter login.");
+                    Log.i(TAG, "Uh oh. The user cancelled the Twitter login.");
                     com.parse.ParseUser.logOut();
 
                 } else if (parseUser.isNew()) {
-                    Log.d("MyApp", "User signed up and logged in through Twitter!");
+                    Log.i(TAG, "User signed up and logged in through Twitter!");
 
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
                         ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseTwitterUtils.isLinked(parseUser)) {
-                                    Log.d("MyApp", "Woohoo, user logged in with Twitter!");
+                                    Log.i(TAG, "Woohoo, user logged in with Twitter!");
                                 }
                             }
                         });
@@ -126,15 +121,15 @@ public class SignUpActivity extends AppCompatActivity {
                     sendIntentToMainActivity();
 
                 } else {
-                    Log.d("MyApp", "User logged in through Twitter!");
-                    Log.d("MyApp", "after log in with twitter user info = " + com.parse.ParseUser.getCurrentUser());
+                    Log.i(TAG, "User logged in through Twitter!");
+                    Log.i(TAG, "user info after logging in with Twitter is " + com.parse.ParseUser.getCurrentUser());
 
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
                         ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseTwitterUtils.isLinked(parseUser)) {
-                                    Log.d("MyApp", "Woohoo, user logged in with Twitter!");
+                                    Log.i(TAG, "Woohoo, user logged in with Twitter!");
                                 }
                             }
                         });
@@ -147,7 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void logOut() {
         com.parse.ParseUser.logOut();
-        Log.d("MyApp", "log out user info = " + com.parse.ParseUser.getCurrentUser());
+        Log.i(TAG, "user id when logged out is " + com.parse.ParseUser.getCurrentUser());
     }
 
     private void sendIntentToMainActivity() {
