@@ -5,7 +5,9 @@
 
 **Team Members**  Charlyn, Yuliya, Anthony, Sufei
 
+
 ---
+
 
 ## The Problem 
 
@@ -19,26 +21,46 @@ place of public accommodation and 8% reported having been physically assaulted.
   - We were unable to cite statistics regarding the harassment/stalking of children, but have reason to beleive there is a connection between such behavior and child abuductions/molestation/assault. Addtionally, child harassment can extend to bullying. One in four kids in the US have been bullied, which can lead to deeper developmental issues (decreased confidence, acting out, increased risk of suiced,etc).
   - Harrassment againt POC are well-documented in the workplace, however, stats on these incidents in public spaces are hard to find. This lack of information can serve as a problem the app can solve.
 
+---
+
 ## The Solution 
-Please provide a detailed description of the app here. Map out how the app solves the problem described in section I. You should also include:
-  *  Baseline features you plan to implement by Demo 1 (what + why).
-    -map population of recorded instances
-    -user log in
-    -view self-reported instances + other users'
-  *  Bonus features you plan to implement if baseline features are completed in time (what + why).
-    -location services: alerts when entering high-frequency areas
-    -graph data
-    -sorting data on the map by date, shame type, time of occurrence, etc.
-  *  A wireframe of the app. 
+
+Baseline Features for Demo 1:
+  * map population of recorded instances
+  * user log in
+  * view self-reported instances + other users'
+
+Bonus features we plan to implement if baseline features are completed in time:
+  * location services: alerts when entering high-frequency areas
+  * graph data
+  * sorting data on the map by date, shame type, time of occurrence, etc.
+
+Wireframe of app (TBA)
+
+---
 
 ## Execution
-Please describe how you will build this app. Include: 
-  *  A detailed timeline for building the product, broken out by weekly sprints. Implement the training from the [Project Management workshop](https://github.com/accesscode-2-1/unit-3/blob/master/lessons/16_ProjectManagement.md) to plan your sprints and outline which features you want to build out over the next 4 weeks. Think about the user stories you would frame your sprints around. *Projects should be planned to complete the build by Demo 1 on September 1, 2015.*  
-  -Week 1: Log-in sequence, creation of new users, crude saving of data to parse database, working framework, map pin drop
-  -Week 2: Save user profile data, UX for reprorting shames, fetching parse data to populate map, filter feature(?), graph data
-  -Week 3: Make it pretty, debugging, location alerts, demo prep
+
+##### Week 1: 
+| Week 1 | Task                                   | Members |
+|--------|----------------------------------------|---------|
+|        | Log-in sequence                        | Yuliya  |
+|        | Creation of new users                  | Yuliya  |
+|        | Crude saving of data to parse database | Charlyn |
+|        | Working framework                      | Sufei   |
+|        | Map pin drop                           | Anthony |
+##### Week 2: 
+| Week 2 | Task                                | Members        |
+|--------|-------------------------------------|----------------|
+|        | Save user profile data              | Yuliya         |
+|        | UX for reporting shames             | Sufei          |
+|        | Fetching parse data to populate map | Charlyn        |
+|        | Filter feature(?)                   | Charlyn, Sufei |
+|        | Graph data                          | Anthony        |
+##### Week 3: 
+Make it pretty, debugging, location alerts, demo prep
   
-  *  A breakdown of team member responsibilities. Team members should take ownership over a specific feature or aspect of the app.   
+  
 
 -Anthony: 
 *Sending an alert about dangerous ares based on user's location
