@@ -1,5 +1,7 @@
 package charlyn23.c4q.nyc.projectx.model;
 
+import android.text.format.DateFormat;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
@@ -19,7 +21,7 @@ public class Shame extends ParseObject {
 
     private int shameFeel;
     private int shameDoing;
-    private long shameTime;
+    private String shameTime;
     private int shameReason;
 
     public Shame(){
@@ -28,7 +30,7 @@ public class Shame extends ParseObject {
 
     public Shame(float latitude, float longitude, int shameType, int verbalShame,
                  int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                 long shameTime, int shameReason) {
+                 int shameTime, int shameReason) {
         super();
         setLatitude(latitude);
         setLongitude(longitude);
@@ -38,13 +40,13 @@ public class Shame extends ParseObject {
         setOtherShame(otherShame);
         setShameFeel(shameFeel);
         setShameDoing(shameDoing);
-        setShameTime(shameTime);
+        setShameTime();
         setShameReason(shameReason);
     }
 
     public void reportShame(float latitude, float longitude, int shameType, int verbalShame,
                          int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                         long shameTime, int shameReason){
+                         String shameTime, int shameReason){
         this.latitude = latitude;           //shame latitude
         this.longitude = longitude;         //shame longitude
         this.otherShame = otherShame;       //shameType = other(three options)
@@ -85,11 +87,14 @@ public class Shame extends ParseObject {
         return shameReason;
     }
 
-    public long getShameTime() {
+    public String getShameTime() {
+        shameTime = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+
         return shameTime;
     }
 
     public int getShameType() {
+
         return shameType;
     }
 
@@ -125,7 +130,9 @@ public class Shame extends ParseObject {
         this.shameReason = shameReason;
     }
 
-    public void setShameTime(long shameTime) {
+    public void setShameTime() {
+        shameTime = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+
         this.shameTime = shameTime;
     }
 
@@ -136,4 +143,5 @@ public class Shame extends ParseObject {
     public void setVerbalShame(int verbalShame) {
         this.verbalShame = verbalShame;
     }
+
 }

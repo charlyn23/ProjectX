@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import charlyn23.c4q.nyc.projectx.model.Shame;
+
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         TextView verbalShame = (TextView)findViewById(R.id.verbalShame);
         TextView physicalShame = (TextView)findViewById(R.id.physicalShame);
         TextView otherShame = (TextView)findViewById(R.id.otherShame);
+
+
 
     }
 

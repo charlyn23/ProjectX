@@ -20,14 +20,20 @@ public class ShameHandler extends Application {
         Parse.initialize(this, "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O", "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq");
 
         Shame newShame = new Shame();
-        newShame.reportShame(100, -100, 1, 2, 0, 0, 2, 3, 900, 1);
+//        newShame.reportShame(100, -100, 1, 2, 0, 0, 2, 3, 900, 1);
 
-//        newShame.setLatitude(100);
-//        newShame.setLongitude(-100);
-//        newShame.setShameType(3);
-//        newShame.setVerbalShame(2);
-//        newShame.setShameFeel(1);
-//        newShame.setShameReason(3);
+
+        newShame.put("latitude", 100);
+        newShame.put("longitude", -100);
+        newShame.put("shameType", 3);
+        newShame.put("verbalShame", 2);
+        newShame.put("shameFeel", 2);
+        newShame.put("shameDoing", 3);
+        newShame.put("shameTime", 900);
+        newShame.put("shameReason", 3);
         newShame.saveInBackground();
+
+
+
     }
 }
