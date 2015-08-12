@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What type of shame?"
+        android:id="@+id/shameType"
+        android:textSize="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verbal"
+        android:id="@+id/verbalShame"
+        android:textSize="20dp"
+        android:layout_above="@+id/physicalShame"
+        android:layout_alignLeft="@+id/physicalShame"
+        android:layout_alignStart="@+id/physicalShame" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Physical"
+        android:id="@+id/physicalShame"
+        android:textSize="20dp"
+        android:layout_alignTop="@+id/radioTwo"
+        android:layout_toRightOf="@+id/radioTwo"
+        android:layout_toEndOf="@+id/radioTwo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Other"
+        android:id="@+id/otherShame"
+        android:textSize="20dp"
+        android:layout_below="@+id/radioTwo"
+        android:layout_alignLeft="@+id/physicalShame"
+        android:layout_alignStart="@+id/physicalShame" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioOne"
+        android:layout_below="@+id/shameType"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioTwo"
+        android:layout_below="@+id/radioOne"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioThree"
+        android:layout_below="@+id/radioTwo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</LinearLayout>

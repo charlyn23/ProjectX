@@ -26,6 +26,9 @@ public class ParseUser {
         this.username = username;
     }
 
+    public ParseUser(){
+    }
+
     public String getEmail() {
         return email;
     }
