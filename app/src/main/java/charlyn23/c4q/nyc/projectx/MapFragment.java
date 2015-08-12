@@ -27,7 +27,7 @@ public class MapFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        
+
         return view;
     }
 }
