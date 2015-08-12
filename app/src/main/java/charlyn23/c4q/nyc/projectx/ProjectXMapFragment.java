@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback{
     private View view;
     private GoogleMap map;
+    private Marker marker;
 
     @Nullable
     @Override
@@ -41,6 +42,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback{
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
         map.setOnMyLocationChangeListener(locationChangeListener);
+        map.setOnMapClickListener(mapClickListener);
         return view;
     }
 
@@ -49,10 +51,23 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback{
         @Override
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            Marker mMarker = map.addMarker(new MarkerOptions().position(loc));
+            marker = map.addMarker(new MarkerOptions().position(loc));
             if(map != null){
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
             }
+        }
+    };
+
+    //drops a marker in any place on the map
+    private GoogleMap.OnMapClickListener mapClickListener = new GoogleMap.OnMapClickListener() {
+        @Override
+        public void onMapClick(LatLng point) {
+            map.setOnMyLocationChangeListener(null);
+            map.clear();
+            marker = map.addMarker(new MarkerOptions()
+                    .title(point.latitude + " : " + point.longitude)
+                    .position(point));
+            map.animateCamera(CameraUpdateFactory.newLatLng(point));
         }
     };
 
