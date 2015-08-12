@@ -11,14 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
+import charlyn23.c4q.nyc.projectx.model.*;
 
 /**
  * Created by sufeizhao on 8/9/15.
@@ -39,9 +32,26 @@ public class MapFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        reportNewShame();
+        // MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
-       // MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
         return view;
+    }
+
+    public void reportNewShame() {
+        Shame newShame = new Shame();
+
+        newShame.setLatitude(70);
+        newShame.setLongitude(-100);
+        newShame.setShameType(3);
+        newShame.setVerbalShame(2);
+        newShame.setShameFeel(1);
+        newShame.setShameReason(3);
+        newShame.saveInBackground();
+//
+//        newShame.reportShame(70, -100, 1, 2, 0, 0, 2, 3, 900, 1);
+
+
     }
 }

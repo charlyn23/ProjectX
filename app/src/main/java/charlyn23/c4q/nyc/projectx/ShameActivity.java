@@ -16,9 +16,6 @@ public class ShameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState, persistentState);
         setContentView(R.layout.new_shame_layout);
 
-        ShameHandler shameHandler = new ShameHandler();
-
-
         TextView shameType = (TextView)findViewById(R.id.shameType);
         RadioButton radioOne = (RadioButton)findViewById(R.id.radioOne);
         RadioButton radioTwo = (RadioButton)findViewById(R.id.radioTwo);
