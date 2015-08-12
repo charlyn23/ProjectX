@@ -42,17 +42,18 @@ Bonus features we plan to implement if baseline features are completed in time:
 ##### Week 1: 
 | Week 1 | Task                                    | Members         |
 |--------|-----------------------------------------|-----------------|
-|        | Crude saving of data to parse database  | Charlyn, Sufei  |
-|        | Map pin drop                            | Anthony, Yuliya |
-|        | Log-in sequence & Creation of new users | Yuliya          |
+|        | Crude saving of data to parse database  | Charlyn         |
+|        | Map + location API                      | Anthony, Yuliya |
+|        | UX for reporting shames                 | Sufei, Charlyn  |
+|        | Create new users + FB authentication    | Yuliya          |
 |        | Working framework                       | Sufei           |
 
 ##### Week 2: 
 | Week 2 | Task                                | Members        |
 |--------|-------------------------------------|----------------|
 |        | Fetching parse data to populate map | Charlyn        |
-|        | Graph data                          | Anthony        |
-|        | UX for reporting shames             | Sufei          |
+|        | Label map markers by category       | Sufei          |
+|        | Graph data statistics               | Anthony        |
 |        | Filter feature                      | Charlyn, Sufei |
 |        | Save user profile data              | Yuliya         |
 
