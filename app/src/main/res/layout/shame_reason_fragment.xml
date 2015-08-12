@@ -6,8 +6,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What type of shame?"
-        android:id="@+id/shameType"
+        android:text="Why do you think you were targeted?"
+        android:id="@+id/shameReasonInquiry"
         android:textSize="30dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -16,62 +16,69 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/verbalView"
+        android:id="@+id/shameReasonViewOne"
         android:orientation="horizontal">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/verbalRadio"
-            android:layout_below="@+id/shameType"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:id="@+id/shameReasonRadioOne" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Verbal"
-            android:id="@+id/verbalShame"
+            android:text="Because I'm a woman"
+            android:id="@+id/shameReasonOne"
             android:textSize="20dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/physicalView"
+        android:id="@+id/shameReasonViewTwo"
         android:orientation="horizontal">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/physicalRadio" />
+            android:id="@+id/shameReasonRadioTwo" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Physical"
-            android:id="@+id/physicalShame"
+            android:text="Because I'm a Person of Color"
+            android:id="@+id/shameReasonTwo"
             android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/otherView"
+        android:id="@+id/shameReasonViewThree"
         android:orientation="horizontal">
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/otherRadio"
-        android:layout_below="@+id/radioTwo"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <TextView
+        <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Other"
-            android:id="@+id/otherShame"
+            android:id="@+id/shameReasonRadioThree" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Because I'm LGBTQ"
+            android:id="@+id/shameReasonThree"
             android:textSize="20sp"
- /></LinearLayout>
+            /></LinearLayout>
 
-
-
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shameReasonViewFour"
+        android:orientation="horizontal">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/shameReasonRadioFour" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Because I'm a minor"
+            android:id="@+id/shameReasonFour"
+            android:textSize="20sp"
+            /></LinearLayout>
 </LinearLayout>

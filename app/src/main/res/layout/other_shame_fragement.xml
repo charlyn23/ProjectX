@@ -6,72 +6,78 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What type of shame?"
-        android:id="@+id/shameType"
-        android:textSize="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="What did they do?"
+        android:id="@+id/otherInquiry"
+        android:textSize="30sp"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/verbalView"
+        android:id="@+id/otherViewOne"
         android:orientation="horizontal">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/verbalRadio"
-            android:layout_below="@+id/shameType"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
+            android:id="@+id/otherRadioOne" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Verbal"
-            android:id="@+id/verbalShame"
-            android:textSize="20dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/physicalView"
-        android:orientation="horizontal">
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/physicalRadio" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Physical"
-            android:id="@+id/physicalShame"
+            android:text="Followed me"
+            android:id="@+id/otherShameOne"
             android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/otherView"
+        android:id="@+id/otherViewTwo"
         android:orientation="horizontal">
-    <RadioButton
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/otherRadioTwo" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exposed themself"
+            android:id="@+id/otherShameTwo"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/otherRadio"
-        android:layout_below="@+id/radioTwo"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <TextView
+        android:id="@+id/otherViewThree"
+        android:orientation="horizontal">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/otherRadioThree" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Masturbated"
+            android:id="@+id/otherShameThree"
+            android:textSize="20sp"
+            /></LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/otherViewFour"
+        android:orientation="horizontal">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/otherRadioFour" />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Other"
-            android:id="@+id/otherShame"
+            android:id="@+id/otherShameFour"
             android:textSize="20sp"
- /></LinearLayout>
-
-
+            /></LinearLayout>
 
 
 </LinearLayout>
