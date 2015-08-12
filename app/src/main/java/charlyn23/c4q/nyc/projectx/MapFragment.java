@@ -25,8 +25,7 @@ import com.google.android.gms.maps.model.Marker;
  */
 public class MapFragment extends Fragment {
     private View view;
-
-
+    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
