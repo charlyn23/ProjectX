@@ -20,8 +20,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                MapFragment mapFragment = new MapFragment();
-                return mapFragment;
+                ProjectXMapFragment mapFragm = new ProjectXMapFragment();
+                return mapFragm;
             case 1:
                 ProfileFragment profileFragment = new ProfileFragment();
                 return profileFragment;
