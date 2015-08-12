@@ -27,4 +27,6 @@ dependencies {
     compile fileTree(include: 'ParseFacebookUtilsV4-*.jar', dir: 'libs')
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.android.support:design:22.2.0'
+    compile 'com.google.android.gms:play-services-maps:7.5.0'
+    compile 'com.google.android.gms:play-services-location:7.5.0'
 }
