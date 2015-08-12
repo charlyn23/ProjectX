@@ -35,20 +35,20 @@ Bonus features we plan to implement if baseline features are completed in time:
   * graph data
   * sorting data on the map by date, shame type, time of occurrence, etc.
 
-Wireframe of app (TBA)
+[Wireframe of app](https://marvelapp.com/67cd77)
 
 ---
 
 ## Execution
 
 ##### Week 1: 
-| Week 1 | Task                                   | Members |
-|--------|----------------------------------------|---------|
-|        | Log-in sequence                        | Yuliya  |
-|        | Creation of new users                  | Yuliya  |
-|        | Crude saving of data to parse database | Charlyn |
-|        | Working framework                      | Sufei   |
-|        | Map pin drop                           | Anthony |
+| Week 1 | Task                                    | Members         |
+|--------|-----------------------------------------|-----------------|
+|        | Log-in sequence & Creation of new users | Yuliya          |
+|        | Crude saving of data to parse database  | Charlyn, Sufei  |
+|        | Working framework                       | Sufei           |
+|        | Map pin drop                            | Anthony, Yuliya |
+
 ##### Week 2: 
 | Week 2 | Task                                | Members        |
 |--------|-------------------------------------|----------------|
@@ -57,15 +57,20 @@ Wireframe of app (TBA)
 |        | Fetching parse data to populate map | Charlyn        |
 |        | Filter feature(?)                   | Charlyn, Sufei |
 |        | Graph data                          | Anthony        |
-##### Week 3: 
-Make it pretty, debugging, location alerts, demo prep
-  
-  
 
--Anthony: 
-*Sending an alert about dangerous ares based on user's location
-*Show info based on tap&hold vs double tap
-*Map flow (pin drop sequence and map info management)
+##### Week 3: 
+| Week 3 | Task            | Members        |
+|--------|-----------------|----------------|
+|        | Make it pretty  | Sufei          |
+|        | Debugging       | Yuliya         |
+|        | Location alerts | Sufei, Anthony |
+|        | Demo prep       | Charlyn        |
+  
+##### General Roles: 
+Anthony: 
+* Sending an alert about dangerous ares based on user's location
+* Show info based on tap&hold vs double tap
+* Map flow (pin drop sequence and map info management)
 
 -Charlyn
 *Database creation and management (shames)
@@ -79,7 +84,6 @@ Make it pretty, debugging, location alerts, demo prep
 -Sufei
 * UI/UX Lead
 * Notifications
+* Geo-fence
 
 **All team members will assist in ad-hoc elemtents/issues as needed which may not be detailed here**
-
-Link to wireframe: https://marvelapp.com/67cd77
