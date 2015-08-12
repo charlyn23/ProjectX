@@ -26,7 +26,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 ProfileFragment profileFragment = new ProfileFragment();
                 return profileFragment;
             case 2:
-                StatsFragment statsFragment  = new StatsFragment();
+                StatsFragment statsFragment = new StatsFragment();
                 return statsFragment;
             default:
                 return null;
