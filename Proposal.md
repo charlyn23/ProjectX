@@ -71,13 +71,13 @@ Bonus features we plan to implement if baseline features are completed in time:
 * Map flow (pin drop sequence and map info management)
 
 ###### Charlyn
-*Database creation and management (shames)
-*UI/UX
-*Map
+* Database creation and management (shames)
+* UI/UX
+* Map
 
 ###### Yuliya
-*Facebook & twitter Authorization
-*Graphical Data
+* Facebook & twitter Authorization
+* Graphical Data
 
 ###### Sufei
 * UI/UX Lead
