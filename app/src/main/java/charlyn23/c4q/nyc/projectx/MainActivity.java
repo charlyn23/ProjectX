@@ -1,18 +1,11 @@
 package charlyn23.c4q.nyc.projectx;
 
-
-import android.content.Intent;
-
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.support.v7.widget.Toolbar;
-
-import com.parse.Parse;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setTabGravity(TabLayout.FOCUS_LEFT);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.map));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.profile));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.stats));
