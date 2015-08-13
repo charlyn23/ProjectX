@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback{
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
+    private static final String TAG = "c4q.nyc.projectx";
     private View view;
     private GoogleMap map;
+    private MapFragment mapFragment;
     private Marker currentLocationMarker;
     private Marker marker;
 
@@ -39,12 +42,26 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback{
         });
 
         // adds Google MapFragment to the existing xml
-        MapFragment mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
         map.setOnMyLocationChangeListener(locationChangeListener);
         map.setOnMapClickListener(mapClickListener);
+        map.setOnInfoWindowClickListener(deleteMarkerListener);
         return view;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map.getUiSettings().setMapToolbarEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
+        map.getUiSettings().setMapToolbarEnabled(true);
+        map.getUiSettings().setTiltGesturesEnabled(true);
+        map.getUiSettings().setScrollGesturesEnabled(true);
+        map.getUiSettings().setRotateGesturesEnabled(true);
+        map.setMyLocationEnabled(true);
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
     //sets a marker to the user's current location
@@ -66,21 +83,34 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback{
             map.setOnMyLocationChangeListener(null);
             marker = map.addMarker(new MarkerOptions()
                     .title(point.latitude + " : " + point.longitude)
-                    .position(point));
-            map.animateCamera(CameraUpdateFactory.newLatLng(point));
+                    .position(point)
+                    .draggable(true));
+            map.setOnMapClickListener(null);
+            if(map != null) {
+                map.animateCamera(CameraUpdateFactory.newLatLng(point));
+            }
+        }
+    };
+
+    //removes a marker from the map if the user places it in the wrong location
+    private GoogleMap.OnInfoWindowClickListener deleteMarkerListener = new GoogleMap.OnInfoWindowClickListener() {
+        //TODO: add a trash bin icon on the info window. When the user taps it, marker gets deleted
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            marker.remove();
+            map.setOnMapClickListener(mapClickListener);
         }
     };
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map.getUiSettings().setMapToolbarEnabled(true);
-        map.getUiSettings().setZoomControlsEnabled(true);
-        map.getUiSettings().setCompassEnabled(true);
-        map.getUiSettings().setMapToolbarEnabled(true);
-        map.getUiSettings().setTiltGesturesEnabled(true);
-        map.getUiSettings().setScrollGesturesEnabled(true);
-        map.getUiSettings().setRotateGesturesEnabled(true);
-        map.setMyLocationEnabled(true);
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (map != null) {
+            try{
+                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.map)).commitAllowingStateLoss();
+            }catch(Exception e){
+                Log.d(TAG, "MapFragment is destroyed." + e);
+            }
+        }
     }
 }
