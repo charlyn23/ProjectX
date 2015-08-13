@@ -98,6 +98,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         @Override
         public void onInfoWindowClick(Marker marker) {
             marker.remove();
+            map.setOnMapClickListener(mapClickListener);
         }
     };
 
