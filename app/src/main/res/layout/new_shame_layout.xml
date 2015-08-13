@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What type of shame?"
+        android:text="@string/new_shame_type"
         android:id="@+id/shameType"
         android:textSize="30dp"
         android:layout_alignParentTop="true"

@@ -1,29 +1,36 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
+import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
 
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "c4q.nyc.projectx";
     private View view;
     private GoogleMap map;
-    private MapFragment mapFragment;
     private Marker currentLocationMarker;
     private Marker marker;
 
@@ -32,17 +39,17 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
 
-        Button submitBtn = (Button) view.findViewById(R.id.submit_button);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
+        //TODO make button visible only when marker is placed
+        FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        addShame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
-                startActivity(intent);
+                MaterialDialogs.initialDialog(view.getContext());
             }
         });
 
         // adds Google MapFragment to the existing xml
-        mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
         map.setOnMyLocationChangeListener(locationChangeListener);
@@ -102,15 +109,4 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         }
     };
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (map != null) {
-            try{
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.map)).commitAllowingStateLoss();
-            }catch(Exception e){
-                Log.d(TAG, "MapFragment is destroyed." + e);
-            }
-        }
-    }
 }

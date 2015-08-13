@@ -2,8 +2,46 @@
     <string name="app_name">ProjectX</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="shame_activity">ShameActivity</string>
 
     <!--<string name="YOUR_APPLICATION_ID">wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O</string>-->
     <!--<string name="YOUR_CLIENT_KEY">kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq</string>-->
     <string name="facebook_app_id">893481480722861</string>
+    <string name="new_shame_type">What type of shame?</string>
+    <string name="next">Next</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+    <string name="verbal_shame">What did they say?</string>
+    <string name="physical_shame">What did they do?</string>
+    <string name="other_shame">What did they do?</string>
+
+
+    <array name="shame_types">
+        <item>Verbal</item>
+        <item>Physical</item>
+        <item>Other</item>
+    </array>
+
+    <array name="verbal_types">
+        <item>Unwelcome comment about my body</item>
+        <item>Vulgar/Profanity/Slur</item>
+        <item>Something Creepy then Aggressive</item>
+        <item>I was threatened</item>
+    </array>
+
+    <array name="physical_types">
+        <item>Touched/Grabbed/Groped me</item>
+        <item>Hit me</item>
+        <item>Threw something at me</item>
+        <item>Spit at/on me</item>
+        <item>Pulled at my clothing</item>
+        <item>Sexually assaulted me</item>
+    </array>
+
+    <array name="other_types">
+        <item>Followed me</item>
+        <item>Exposed themself</item>
+        <item>Masturbated</item>
+        <item>Other</item>
+    </array>
 </resources>
