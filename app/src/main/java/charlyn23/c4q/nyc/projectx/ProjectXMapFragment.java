@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
+
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "c4q.nyc.projectx";
@@ -32,11 +35,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
 
-        Button submitBtn = (Button) view.findViewById(R.id.submit_button);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        addShame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
+                Intent intent = new Intent(view.getContext(), ShameActivity.class);
                 startActivity(intent);
             }
         });

@@ -2,6 +2,7 @@
     <string name="app_name">ProjectX</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="shame_activity">ShameActivity</string>
 
     <!--<string name="YOUR_APPLICATION_ID">wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O</string>-->
     <!--<string name="YOUR_CLIENT_KEY">kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq</string>-->
