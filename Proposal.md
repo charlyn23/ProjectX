@@ -53,7 +53,7 @@ Bonus features we plan to implement if baseline features are completed in time:
 |--------|-------------------------------------|----------------|
 |        | Fetching parse data to populate map | Charlyn        |
 |        | Label map markers by category       | Sufei          |
-|        | Graph data statistics               | Anthony        |
+|        | Graph data statistics               | Yuliya, Anthony|
 |        | Filter feature                      | Charlyn, Sufei |
 |        | Save user profile data              | Yuliya         |
 
