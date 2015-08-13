@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -23,7 +24,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private static final String TAG = "c4q.nyc.projectx";
     private View view;
     private GoogleMap map;
-    private MapFragment mapFragment;
     private Marker currentLocationMarker;
     private Marker marker;
 
@@ -42,7 +42,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         });
 
         // adds Google MapFragment to the existing xml
-        mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
         map.setOnMyLocationChangeListener(locationChangeListener);
@@ -102,15 +102,4 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         }
     };
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (map != null) {
-            try{
-                getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentById(R.id.map)).commitAllowingStateLoss();
-            }catch(Exception e){
-                Log.d(TAG, "MapFragment is destroyed." + e);
-            }
-        }
-    }
 }
