@@ -1,6 +1,8 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,16 +12,22 @@ import android.widget.Toast;
 import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
+import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
 
 
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "c4q.nyc.projectx";
+    private static final String SHARED_PREFERENCE = "sharedPreference";
+    private static final String LOGGED_IN = "isLoggedIn";
+    private SharedPreferences.Editor editor;
     private List<String> permissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        editor = preferences.edit();
 
         permissions = Arrays.asList("public_profile", "email");
 
@@ -76,6 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "You can change your personal data in Settings tab!", Toast.LENGTH_SHORT).show();
                     }
+                    editor.putBoolean(LOGGED_IN, true).apply();
                     sendIntentToMainActivity();
                 } else {
                     Log.i(TAG, "User logged in through Facebook!");
@@ -89,6 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    editor.putBoolean(LOGGED_IN, true).apply();
                     sendIntentToMainActivity();
                 }
             }
@@ -143,10 +153,11 @@ public class SignUpActivity extends AppCompatActivity {
     private void logOut() {
         com.parse.ParseUser.logOut();
         Log.i(TAG, "user id when logged out is " + com.parse.ParseUser.getCurrentUser());
+        editor.putBoolean(LOGGED_IN, false).apply();
     }
 
     private void sendIntentToMainActivity() {
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, ShameActivity.class);
         startActivity(intent);
     }
 }
