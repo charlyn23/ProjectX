@@ -19,9 +19,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
-
-
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
@@ -76,8 +73,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                Intent intent = new Intent(view.getContext(), ShameActivity.class);
-                startActivity(intent);
+                //
             }
             else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);

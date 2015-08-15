@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="style_color_primary">#2d5d82</color>
-    <color name="style_color_primary_dark">#21425d</color>
-    <color name="style_color_accent">#01bcd5</color>
     <color name="window_background">#FFF5F5F5</color>
 
-    full palette
     <color name="primary">#F44336</color>
     <color name="primary_dark">#D32F2F</color>
     <color name="primary_light">#FFCDD2</color>
