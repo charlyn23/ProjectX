@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
@@ -41,6 +42,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         view = inflater.inflate(R.layout.map_fragment, container, false);
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
+        //TODO make button visible only when marker is placed
 
         addMapFragment();
 
@@ -79,7 +81,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                //SHOW DIALOG
+                MaterialDialogs.initialDialog(view.getContext());
             } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
                 startActivity(intent);
@@ -127,8 +129,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
-            //TODO differenciate shame markers with location markers
-            Snackbar.make(view, "SHAME + Date", 8000)
+            //TODO differentiate shame markers with location markers
+            Snackbar.make(view, "SHAME + Date", 7000)
                     .setAction(R.string.snackbar_action, snackbarClick)
                     .show();
             return true;

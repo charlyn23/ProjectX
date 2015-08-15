@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:spinnersShown="false"
+        android:layout_gravity="center"
+        android:yearListSelectorColor="@color/primary"
+        android:calendarTextColor="@color/primary"
+        android:datePickerMode="spinner"/>
+
+    <TimePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:amPmBackgroundColor="@color/text_white"
+        android:numbersTextColor="@color/primary"
+        android:amPmTextColor="@color/primary"
+        android:numbersSelectorColor="@color/accent"
+        android:timePickerMode="spinner"/>
+
+</LinearLayout>
