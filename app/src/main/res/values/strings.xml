@@ -14,6 +14,11 @@
     <string name="verbal_shame">What did they say?</string>
     <string name="physical_shame">What did they do?</string>
     <string name="other_shame">What did they do?</string>
+    <string name="shame_feel">How did you feel?</string>
+    <string name="submit">Submit Shame</string>
+    <string name="shame_doing">What were you doing when it happened?</string>
+    <string name="shame_why">Why do you think you were targeted?</string>
+    <string name="shame_when">When did this happen?</string>
 
 
     <array name="shame_types">
@@ -43,5 +48,29 @@
         <item>Exposed themself</item>
         <item>Masturbated</item>
         <item>Other</item>
+    </array>
+
+    <array name="feel_types">
+        <item>Barely noticed</item>
+        <item>Angry</item>
+        <item>Annoyed</item>
+        <item>Uneasy</item>
+        <item>Scared for my safety</item>
+    </array>
+
+    <array name="doing_types">
+        <item>Walking</item>
+        <item>Jogging</item>
+        <item>Riding my bike</item>
+        <item>Waiting for something/someone</item>
+        <item>Driving</item>
+        <item>Other</item>
+    </array>
+
+    <array name="why_types">
+        <item>Because I\'m a woman</item>
+        <item>Because I\'m a person of color</item>
+        <item>Because I\'m LGBTQ</item>
+        <item>Because I\'m a minor</item>
     </array>
 </resources>
