@@ -35,6 +35,17 @@ public class MaterialDialogs {
                 .positiveText(R.string.next)
                 .negativeText(R.string.cancel)
                 .autoDismiss(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+                })
                 .show();
     }
 
@@ -76,8 +87,14 @@ public class MaterialDialogs {
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+
+                    @Override
                     public void onNegative(MaterialDialog dialog) {
                         initialDialog(context);
+                        dialog.cancel();
                     }
                 })
                 .show();
@@ -100,8 +117,14 @@ public class MaterialDialogs {
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+
+                    @Override
                     public void onNegative(MaterialDialog dialog) {
                         shameTypeDialog(context, type);
+                        dialog.cancel();
                     }
                 })
                 .show();
@@ -124,8 +147,14 @@ public class MaterialDialogs {
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.cancel();
+                    }
+
+                    @Override
                     public void onNegative(MaterialDialog dialog) {
                         feelDialog(context, type, type_choice);
+                        dialog.cancel();
                     }
                 })
                 .show();
@@ -143,11 +172,13 @@ public class MaterialDialogs {
                     public void onPositive(MaterialDialog dialog) {
                         //TODO save time?
                         whyDialog(context, type, type_choice, feel, doing);
+                        dialog.cancel();
                     }
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         doingDialog(context, type, type_choice, feel);
+                        dialog.cancel();
                     }
                 })
                 .show();
@@ -162,7 +193,7 @@ public class MaterialDialogs {
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence why) {
-                        //TODO submit shame & toast success msg?
+                        //TODO submit shame to parse
 
                         return true;
                     }
@@ -172,8 +203,15 @@ public class MaterialDialogs {
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.cancel();
+                        //TODO toast success message
+                    }
+
+                    @Override
                     public void onNegative(MaterialDialog dialog) {
                         whenDialog(context, type, type_choice, feel, doing);
+                        dialog.cancel();
                     }
                 })
                 .show();
