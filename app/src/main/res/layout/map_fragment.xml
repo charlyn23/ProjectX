@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         app:elevation="6dp"
         app:pressedTranslationZ="6dp"
+        android:visibility="invisible"
         app:backgroundTint="@color/primary"
         app:rippleColor="@color/primary_dark"/>
 

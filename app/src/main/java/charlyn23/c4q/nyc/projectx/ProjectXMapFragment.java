@@ -33,12 +33,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private GoogleMap map;
     private Marker currentLocationMarker;
     private Marker marker;
+    private FloatingActionButton addShame;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
-        FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
 
         addMapFragment();
@@ -78,7 +79,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                //
+                //SHOW DIALOG
             } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
                 startActivity(intent);
@@ -108,6 +109,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
                         .title(point.latitude + " : " + point.longitude)
                         .position(point)
                         .draggable(true));
+                addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
             } else {
                 marker.remove();
@@ -148,6 +150,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         @Override
         public void onInfoWindowClick(Marker marker) {
             marker.remove();
+            addShame.setVisibility(View.INVISIBLE);
             map.setOnMapClickListener(mapClickListener);
         }
     };
