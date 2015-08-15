@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 
@@ -15,7 +16,6 @@ public class MaterialDialogs {
 
 
     public static void initialDialog(final Context context) {
-        final String[] type = new String[1];
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .content(R.string.new_shame_type)
@@ -23,29 +23,24 @@ public class MaterialDialogs {
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        type[0] = text.toString();
+                        if (text.equals("Verbal"))
+                            shameTypeDialog(context, "verbal");
+                        else if (text.equals("Physical"))
+                            shameTypeDialog(context, "physical");
+                        else
+                            shameTypeDialog(context, "other");
                         return true;
                     }
                 })
                 .positiveText(R.string.next)
                 .negativeText(R.string.cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        if (type[0].equals("Verbal"))
-                            shameTypeDialog(context, "verbal");
-                        else if (type[0].equals("Physical"))
-                            shameTypeDialog(context, "physical");
-                        else
-                            shameTypeDialog(context, "other");
-                    }
-                })
+                .autoDismiss(false)
                 .show();
     }
 
     public static void shameTypeDialog(final Context context, final String type) {
         int content, items;
-        final String[] type_choice = new String[1];
+
         switch (type) {
             case "verbal":
                 content = R.string.verbal_shame;
@@ -71,19 +66,15 @@ public class MaterialDialogs {
                 .items(items)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        type_choice[0] = text.toString();
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence type_choice) {
+                        feelDialog(context, type, type_choice.toString());
                         return true;
                     }
                 })
+                .autoDismiss(false)
                 .positiveText(R.string.next)
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        feelDialog(context, type, type_choice[0]);
-                    }
-
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         initialDialog(context);
@@ -93,26 +84,21 @@ public class MaterialDialogs {
     }
 
     public static void feelDialog(final Context context, final String type, final String type_choice) {
-        final String[] feel = new String[1];
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .content(R.string.shame_feel)
                 .items(R.array.feel_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        feel[0] = text.toString();
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence feel) {
+                        doingDialog(context, type, type_choice, feel.toString());
                         return true;
                     }
                 })
+                .autoDismiss(false)
                 .positiveText(R.string.next)
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        doingDialog(context, type, type_choice, feel[0]);
-                    }
-
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         shameTypeDialog(context, type);
@@ -122,26 +108,21 @@ public class MaterialDialogs {
     }
 
     public static void doingDialog(final Context context, final String type, final String type_choice, final String feel) {
-        final String[] doing = new String[1];
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .content(R.string.shame_doing)
                 .items(R.array.doing_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int when, CharSequence text) {
-                        doing[0] = text.toString();
+                    public boolean onSelection(MaterialDialog dialog, View view, int when, CharSequence doing) {
+                        whenDialog(context, type, type_choice, feel, doing.toString());
                         return true;
                     }
                 })
+                .autoDismiss(false)
                 .positiveText(R.string.next)
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        whenDialog(context, type, type_choice, feel, doing[0]);
-                    }
-
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         feelDialog(context, type, type_choice);
@@ -154,6 +135,7 @@ public class MaterialDialogs {
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .customView(R.layout.time_picker, true)
+                .autoDismiss(false)
                 .positiveText(R.string.next)
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
@@ -173,26 +155,22 @@ public class MaterialDialogs {
 
 
     public static void whyDialog(final Context context, final String type, final String type_choice, final String feel, final String doing) {
-        final String[] why = new String[1];
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .content(R.string.shame_why)
                 .items(R.array.why_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        why[0] = text.toString();
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence why) {
+                        //TODO submit shame
+
                         return true;
                     }
                 })
+                .autoDismiss(false)
                 .positiveText(R.string.submit)
                 .negativeText(R.string.back)
                 .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        //TODO submit shame
-                    }
-
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         whenDialog(context, type, type_choice, feel, doing);
