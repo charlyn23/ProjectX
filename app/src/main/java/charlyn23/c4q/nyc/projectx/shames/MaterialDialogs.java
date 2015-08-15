@@ -15,7 +15,7 @@ public class MaterialDialogs {
 
 
     public static void initialDialog(final Context context) {
-        final CharSequence[] type = new CharSequence[1];
+        final String[] type = new String[1];
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .content(R.string.new_shame_type)
@@ -23,7 +23,7 @@ public class MaterialDialogs {
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        type[0] = text;
+                        type[0] = text.toString();
                         return true;
                     }
                 })
