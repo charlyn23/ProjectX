@@ -162,7 +162,7 @@ public class MaterialDialogs {
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence why) {
-                        //TODO submit shame
+                        //TODO submit shame & toast success msg?
 
                         return true;
                     }
