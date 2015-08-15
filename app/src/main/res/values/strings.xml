@@ -7,4 +7,5 @@
     <!--<string name="YOUR_APPLICATION_ID">wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O</string>-->
     <!--<string name="YOUR_CLIENT_KEY">kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq</string>-->
     <string name="facebook_app_id">893481480722861</string>
+    <string name="snackbar_action">View</string>
 </resources>

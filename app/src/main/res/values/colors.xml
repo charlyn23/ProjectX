@@ -11,10 +11,5 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
 
-    <color name="fab_color_pressed">#007787</color>
-    <color name="fab_color_shadow">#44000000</color>
-
-    <color name="btn_default_light_normal">#00000000</color>
-    <color name="btn_default_light_pressed">#40ffffff</color>
 
 </resources>
