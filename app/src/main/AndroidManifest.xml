@@ -41,7 +41,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name" />
 
-        <activity android:name=".shames.ShameActivity"
+        <activity android:name=".shames.ShameDetailActivity"
             android:label="@string/shame_activity"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"

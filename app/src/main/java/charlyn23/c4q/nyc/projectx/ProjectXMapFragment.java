@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
+import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "c4q.nyc.projectx";
@@ -139,7 +139,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         @Override
         public void onClick(View v) {
             //TODO bring to shame detail
-            Intent intent = new Intent(getActivity(), ShameActivity.class);
+            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
             startActivity(intent);
         }
     };

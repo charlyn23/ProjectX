@@ -9,7 +9,7 @@ import charlyn23.c4q.nyc.projectx.R;
 /**
  * Created by sufeizhao on 8/15/15.
  */
-public class ShameActivity extends AppCompatActivity {
+public class ShameDetailActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
