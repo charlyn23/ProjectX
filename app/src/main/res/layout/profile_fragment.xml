@@ -51,7 +51,6 @@
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
                 android:text="I Identify as" />
 
             <RadioGroup
@@ -91,7 +90,6 @@
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
                 android:text="Age" />
 
             <android.support.design.widget.TextInputLayout
@@ -124,14 +122,12 @@
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
                 android:text="When I am harassed," />
 
             <TextView
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
                 android:text="I believe it is because I am " />
 
             <LinearLayout
