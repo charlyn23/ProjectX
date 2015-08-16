@@ -56,6 +56,11 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAM4LyvG8UVr1gqd8xqed6AbQFNHpCBJvo" />
 
+        <service
+            android:enabled="true"
+            android:name=".ProfileFragment$PictureService"
+            />
+
     </application>
 
 </manifest>
