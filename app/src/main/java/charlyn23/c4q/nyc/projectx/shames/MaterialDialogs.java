@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx.shames;
 import android.app.Application;
 import android.content.Context;
 import android.view.View;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.Parse;
@@ -406,7 +407,7 @@ public class MaterialDialogs extends Application {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.cancel();
-                        //TODO toast success message
+                        Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
