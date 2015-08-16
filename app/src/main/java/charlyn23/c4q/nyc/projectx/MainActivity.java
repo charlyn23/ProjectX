@@ -1,20 +1,26 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.Toast;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.parse.ParseException;
+import com.parse.ParseTwitterUtils;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "c4q.nyc.projectx";
+    private static final String SHARED_PREFERENCE = "sharedPreference";
+    private static final String LOGGED_IN = "isLoggedIn";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
 
@@ -65,8 +71,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.log_out) {
+
+            ParseUser user = ParseUser.getCurrentUser();
+
+            try {
+                ParseTwitterUtils.unlink(user);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            user.logOut();
+            ParseTwitterUtils.unlinkInBackground(user);
+
+            user.unpinInBackground();
+
+            editor.putBoolean(LOGGED_IN, false).commit();
+            Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
