@@ -12,11 +12,16 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -49,8 +54,7 @@ public class ProfileFragment extends Fragment {
             Uri uri = Uri.parse(path);
             profileImage.setImageURI(null);
             profileImage.setImageURI(uri);
-        }
-        else {
+        } else {
             profileImage.setImageResource(R.drawable.map);
         }
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +63,23 @@ public class ProfileFragment extends Fragment {
                 changeProfileImage();
             }
         });
+
+        RadioGroup sex = (RadioGroup) view.findViewById(R.id.sex);
+        sex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // find which radio button is selected
+                if (checkedId == R.id.male) {
+                    //TODO save sex
+                } else {
+                    //TODO save sex
+                }
+            }
+
+        });
+
+
         return view;
     }
 

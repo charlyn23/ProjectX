@@ -20,6 +20,7 @@
     <string name="shame_doing">What were you doing when it happened?</string>
     <string name="shame_why">Why do you think you were targeted?</string>
     <string name="shame_when">When did this happen?</string>
+    <string name="birth_year">Year of Birth</string>
 
 
     <array name="shame_types">

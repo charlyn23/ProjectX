@@ -1,179 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-<<<<<<< HEAD
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-=======
-    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background">
->>>>>>> 1b5eab71c48e77b0f4ebef85e2dcc0a1f1c81eee
+    android:background="@drawable/background_tiles">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:text="Profile"
-            android:id="@+id/profile_text"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/logo"
+                app:border_color="#FF000000"
+                app:border_width="2dp" />
+
+            <TextView
+                android:id="@+id/profile_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="bottom|right"
+                android:text="Hello Username!"
+                android:textSize="40sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/profile_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="I Identify as" />
+
+            <RadioGroup
+                android:id="@+id/sex"
+                android:layout_marginTop="7dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:drawableRight="@drawable/male" />
+
+                <RadioButton
+                    android:id="@+id/female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:drawableRight="@drawable/female" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="13dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/profile_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Age" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/birth_year"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textColor="@color/accent"
+                    android:textColorHint="#363636" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="13dp"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/profile_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="When I am harassed," />
+
+            <TextView
+                style="@style/profile_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="I believe it is because I am " />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="7dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:textOff="Woman"
+                    android:textOn="Woman" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:textOff="Lesbian"
+                    android:textOn="Lesbian" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
+                    android:textOff="Gay"
+                    android:textOn="Gay" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:textOff="Bisexual"
+                    android:textOn="Bisexual" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:textOff="Transgender"
+                    android:textOn="Transgender" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
+                    android:textOff="Queer"
+                    android:textOn="Queer" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:textOff="Person of Color"
+                    android:textOn="Person of Color" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
+                    android:textOff="Minor"
+                    android:textOn="Minor" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:paddingRight="40dp"
-            android:textSize="40sp" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:src="@drawable/profile"
-            app:border_width="2dp"
-            app:border_color="#FF000000"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/profile_text"
-            android:layout_toEndOf="@+id/profile_text"/>
-
-    </RelativeLayout>
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="Identify as"
-        android:layout_weight="0.5"
-        style="@style/profile_text"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="0.5">
-
-    <CheckBox
-        android:id="@+id/male"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_weight="0.3"/>
-
-    <CheckBox
-        android:id="@+id/female"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.3"/>
-
+            android:text="Log Out"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"/>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="1">
-
-        <TextView
-            android:id="@+id/male_tv"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Male"/>
-
-        <TextView
-            android:id="@+id/female_tv"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Female"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:text="Year of birth"
-            style="@style/profile_text" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:inputType="number"/>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="When I am harassed, I believe it is because I am "
-        style="@style/profile_text"
-        android:layout_weight="0.5"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
-
-        <CheckBox
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
-
-        <CheckBox
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
-
-        <CheckBox
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="Woman"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Under 18"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="POC"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="LGBTQ"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
