@@ -21,6 +21,8 @@ public class SignUpActivity extends AppCompatActivity {
     private static final String LOGGED_IN = "isLoggedIn";
     private SharedPreferences.Editor editor;
     private List<String> permissions;
+    SharedPreferences preferences = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

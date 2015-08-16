@@ -298,6 +298,8 @@ public class MaterialDialogs extends Application {
                         }
 
                         Shame newShame = new Shame();
+                        newShame.put("latitude", 40.743013);
+                        newShame.put("longitude", -73.935570);
                         if (shameType == 1){
                             newShame.put("shameType", 1);
                             newShame.saveInBackground();

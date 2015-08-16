@@ -1,5 +1,6 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,9 +9,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,8 +21,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
+import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
 
 
@@ -34,11 +43,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private Marker currentLocationMarker;
     private Marker marker;
     private LatLng point;
+    Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
+
 
         //TODO make button visible only when marker is placed
         FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
@@ -46,8 +57,24 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             @Override
             public void onClick(View v) {
                 MaterialDialogs.initialDialog(view.getContext());
+                //Grabs lat and long of marker when FAB button is pressed
+                marker.getPosition();
+                Log.i("position", String.valueOf(marker.getPosition()));
+
+                ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
+                query.whereExists("latitude");
+                query.findInBackground(new FindCallback<Shame>() {
+                    @Override
+                    public void done(List<Shame> list, ParseException e) {
+                        Log.i("list = ", list.toString());
+                    }
+                });
             }
         });
+
+        //TODO populate map with parse data
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
+
 
         addMapFragment();
 
@@ -108,6 +135,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     };
 
     //drops a marker in any place on the map
+
     private GoogleMap.OnMapClickListener mapClickListener = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng point) {
@@ -141,8 +169,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         }
     };
 
-//    public LatLng getLatLng() {
+//    public long getLat() {
 //        mapClickListener.onMapClick(point);
-//        return point;
+//        long latitude = (long) point.latitude;
+//        Log.i("latitude = ", String.valueOf(latitude));
+//        return latitude;
+//
+//    }    public long getLong() {
+//        mapClickListener.onMapClick(point);
+//        long longitude = (long) point.longitude;
+//        Log.i("longitude = ", String.valueOf(longitude));
+//        return longitude;
 //    }
+
+
+
 }

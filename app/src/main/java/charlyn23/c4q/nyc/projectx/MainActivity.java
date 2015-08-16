@@ -1,5 +1,6 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,18 +12,36 @@ public class MainActivity extends AppCompatActivity {
 
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
+    private ProjectXMapFragment projectXMapFragment;
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String position = intent.getStringExtra("position");
+
+//        Bundle bundle = new Bundle();
+//        bundle.putString("position", null);
+//        ProjectXMapFragment projectXMapFragment = new ProjectXMapFragment();
+//        projectXMapFragment.setArguments(bundle);
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        ProjectXMapFragment projectXMapFragment = new ProjectXMapFragment();
-//        projectXMapFragment.getLatLng();
-//        Log.i("point = ", String.valueOf(projectXMapFragment.getLatLng()));
+        projectXMapFragment = new ProjectXMapFragment();
+
+
         setUpActionBar();
 
     }
+
+
+
 
     public void setUpActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -69,6 +88,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }
