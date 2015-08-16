@@ -33,6 +33,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private GoogleMap map;
     private Marker currentLocationMarker;
     private Marker marker;
+    private LatLng point;
 
     @Nullable
     @Override
@@ -140,4 +141,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         }
     };
 
+//    public LatLng getLatLng() {
+//        mapClickListener.onMapClick(point);
+//        return point;
+//    }
 }

@@ -3,9 +3,9 @@ package charlyn23.c4q.nyc.projectx;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +17,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        ProjectXMapFragment projectXMapFragment = new ProjectXMapFragment();
+//        projectXMapFragment.getLatLng();
+//        Log.i("point = ", String.valueOf(projectXMapFragment.getLatLng()));
         setUpActionBar();
+
     }
 
     public void setUpActionBar() {
@@ -65,5 +69,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }
