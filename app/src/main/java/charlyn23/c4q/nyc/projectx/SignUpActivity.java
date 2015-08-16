@@ -21,12 +21,13 @@ public class SignUpActivity extends AppCompatActivity {
     private static final String LOGGED_IN = "isLoggedIn";
     private SharedPreferences.Editor editor;
     private List<String> permissions;
+    SharedPreferences preferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         editor = preferences.edit();
 
         permissions = Arrays.asList("public_profile", "email");
@@ -65,11 +66,11 @@ public class SignUpActivity extends AppCompatActivity {
     private void logInViaFB(final List<String> permissions) {
         ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpActivity.this, permissions, new LogInCallback() {
             @Override
-            public void done(final com.parse.ParseUser user, ParseException err) {
+            public void done(final ParseUser user, ParseException err) {
                 if (user == null) {
                     Log.i(TAG, "The user cancelled the Facebook login");
                     Toast.makeText(getApplicationContext(), "Log out from Facebook and try again please!", Toast.LENGTH_SHORT).show();
-                    com.parse.ParseUser.logOut();
+                    ParseUser.logOut();
                 } else if (user.isNew()) {
                     Log.i(TAG, "User signed up and logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
@@ -84,7 +85,8 @@ public class SignUpActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "You can change your personal data in Settings tab!", Toast.LENGTH_SHORT).show();
                     }
-                    editor.putBoolean(LOGGED_IN, true).apply();
+                    editor = preferences.edit();
+                    editor.putBoolean(LOGGED_IN, true).commit();
                     sendIntentToMainActivity();
                 } else {
                     Log.i(TAG, "User logged in through Facebook!");
@@ -98,7 +100,8 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    editor.putBoolean(LOGGED_IN, true).apply();
+                    editor = preferences.edit();
+                    editor.putBoolean(LOGGED_IN, true).commit();
                     sendIntentToMainActivity();
                 }
             }
@@ -108,10 +111,10 @@ public class SignUpActivity extends AppCompatActivity {
     private void logInViaTwitter() {
         ParseTwitterUtils.logIn(SignUpActivity.this, new LogInCallback() {
             @Override
-            public void done(final com.parse.ParseUser parseUser, ParseException e) {
+            public void done(final ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
                     Log.i(TAG, "Uh oh. The user cancelled the Twitter login.");
-                    com.parse.ParseUser.logOut();
+                    ParseUser.logOut();
 
                 } else if (parseUser.isNew()) {
                     Log.i(TAG, "User signed up and logged in through Twitter!");
@@ -132,7 +135,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 } else {
                     Log.i(TAG, "User logged in through Twitter!");
-                    Log.i(TAG, "user info after logging in with Twitter is " + com.parse.ParseUser.getCurrentUser());
+                    Log.i(TAG, "user info after logging in with Twitter is " + ParseUser.getCurrentUser());
 
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
                         ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
@@ -151,9 +154,17 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void logOut() {
-        com.parse.ParseUser.logOut();
-        Log.i(TAG, "user id when logged out is " + com.parse.ParseUser.getCurrentUser());
-        editor.putBoolean(LOGGED_IN, false).apply();
+        ParseUser user = ParseUser.getCurrentUser();
+        if (ParseTwitterUtils.isLinked(user)) {
+            try {
+                ParseTwitterUtils.unlink(user);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        ParseUser.logOut();
+        Log.i(TAG, "user id when logged out is " + ParseUser.getCurrentUser());
+        editor.putBoolean(LOGGED_IN, false).commit();
     }
 
     private void sendIntentToMainActivity() {

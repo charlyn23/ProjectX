@@ -3,7 +3,7 @@ package charlyn23.c4q.nyc.projectx;
 /**
  * Created by charlynbuchanan on 8/8/15.
  */
-public class ParseUser {
+public class ProjectXUser {
     private String username;
     private String password;
     private String email;
@@ -20,13 +20,13 @@ public class ParseUser {
         this.username = username;
     }
 
-    public ParseUser(String username,  String password, String email) {
+    public ProjectXUser(String username, String password, String email) {
         this.email = email;
         this.password = password;
         this.username = username;
     }
 
-    public ParseUser(){
+    public ProjectXUser(){
     }
 
     public String getEmail() {

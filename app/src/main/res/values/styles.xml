@@ -17,4 +17,9 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="profile_text" parent="@android:style/Widget.Holo.Light.ActionBar.TabText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
 </resources>
