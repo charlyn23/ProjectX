@@ -73,7 +73,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:drawableRight="@drawable/female" />
+
+                <RadioButton
+                    android:id="@+id/other"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:drawableRight="@drawable/profile" />
 
             </RadioGroup>
 
@@ -142,6 +150,15 @@
                     android:layout_height="wrap_content"
                     style="@style/toggle_button"
                     android:layout_marginRight="3dp"
+                    android:textOff="Man"
+                    android:textOn="Man" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
                     android:textOff="Woman"
                     android:textOn="Woman" />
 
@@ -149,20 +166,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/toggle_button"
-                    android:layout_marginRight="3dp"
                     android:layout_marginLeft="3dp"
                     android:textOff="Lesbian"
                     android:textOn="Lesbian" />
 
-                <ToggleButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/toggle_button"
-                    android:layout_marginLeft="3dp"
-                    android:textOff="Gay"
-                    android:textOn="Gay" />
-
-            </LinearLayout>
+                </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -175,6 +183,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:textOff="Gay"
+                    android:textOn="Gay" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
                     android:textOff="Bisexual"
                     android:textOn="Bisexual" />
@@ -183,18 +200,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/toggle_button"
-                    android:layout_marginRight="3dp"
                     android:layout_marginLeft="3dp"
                     android:textOff="Transgender"
                     android:textOn="Transgender" />
-
-                <ToggleButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/toggle_button"
-                    android:layout_marginLeft="3dp"
-                    android:textOff="Queer"
-                    android:textOn="Queer" />
 
             </LinearLayout>
 
@@ -209,6 +217,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/toggle_button"
+                    android:layout_marginRight="3dp"
+                    android:textOff="Queer"
+                    android:textOn="Queer" />
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
                     android:textOff="Person of Color"
                     android:textOn="Person of Color" />
