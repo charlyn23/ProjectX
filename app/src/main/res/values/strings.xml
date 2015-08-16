@@ -22,7 +22,6 @@
     <string name="shame_when">When did this happen?</string>
     <string name="birth_year">Year of Birth</string>
 
-
     <array name="shame_types">
         <item>Verbal</item>
         <item>Physical</item>

@@ -1,6 +1,5 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,12 +13,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
@@ -33,11 +41,15 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
+    private static final LatLngBounds BOUNDS = new LatLngBounds(
+            new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
 
+    private PlaceAutocompleteAdapter mAdapter;
+    private GoogleApiClient client;
     private boolean isDropped;
     private View view;
     private GoogleMap map;
@@ -45,7 +57,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private Marker marker;
     private FloatingActionButton addShame;
     private LatLng point;
-    Activity activity;
+
 
     @Nullable
     @Override
@@ -54,11 +66,17 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
 
-        FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        client = new GoogleApiClient.Builder(view.getContext())
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+        AutoCompleteTextView search = (AutoCompleteTextView) view.findViewById(R.id.search);
+        mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
+                client, BOUNDS, null);
+        search.setAdapter(mAdapter);
 
         //TODO populate map with parse data
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
-
 
         addMapFragment();
 
@@ -201,6 +219,58 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     };
 
 
+    // Listener that handles selections from suggestions from the AutoCompleteTextView that
+    // displays Place suggestions. Gets the place id of the selected item and issues a request to
+    // the Places Geo Data API to retrieve more details about the place.
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
+            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            Log.i(TAG, "Autocomplete item selected: " + item.description);
+
+
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(client, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            Log.i(TAG, "Called getPlaceById to get Place details for " + item.placeId);
+        }
+    };
+
+    // Callback for results from a Places Geo Data API query that shows the first place result in
+    // the details view on screen.
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            places.release();
+        }
+    };
+
+    // Called when the Activity could not connect to Google Play services and the auto manager
+    // could resolve the error automatically.
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        client.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        client.disconnect();
+    }
 }
