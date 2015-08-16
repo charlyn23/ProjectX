@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:src="@drawable/logo"
                 app:border_color="#FF000000"
                 app:border_width="2dp" />
@@ -35,7 +35,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="bottom|right"
-                android:text="Hello Username!"
+                android:text="Hello Charlyn!"
                 android:textSize="40sp" />
 
         </LinearLayout>
@@ -82,7 +82,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -114,7 +114,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="20dp"
             android:layout_weight="2"
             android:orientation="vertical">
 
@@ -133,7 +133,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="7dp"
+                android:layout_marginTop="13dp"
                 android:layout_gravity="center"
                 android:orientation="horizontal">
 
