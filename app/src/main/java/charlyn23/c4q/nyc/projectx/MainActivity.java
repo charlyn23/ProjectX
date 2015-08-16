@@ -6,25 +6,44 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
+    private ProjectXMapFragment projectXMapFragment;
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String position = intent.getStringExtra("position");
+
+//        Bundle bundle = new Bundle();
+//        bundle.putString("position", null);
+//        ProjectXMapFragment projectXMapFragment = new ProjectXMapFragment();
+//        projectXMapFragment.setArguments(bundle);
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        projectXMapFragment = new ProjectXMapFragment();
+
+
         setUpActionBar();
+
     }
+
+
+
 
     public void setUpActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.tool_bar);
