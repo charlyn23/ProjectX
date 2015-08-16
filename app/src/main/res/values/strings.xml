@@ -7,4 +7,71 @@
     <!--<string name="YOUR_APPLICATION_ID">wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O</string>-->
     <!--<string name="YOUR_CLIENT_KEY">kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq</string>-->
     <string name="facebook_app_id">893481480722861</string>
+    <string name="snackbar_action">View</string>
+    <string name="new_shame_type">What type of shame?</string>
+    <string name="next">Next</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+    <string name="verbal_shame">What did they say?</string>
+    <string name="physical_shame">What did they do?</string>
+    <string name="other_shame">What did they do?</string>
+    <string name="shame_feel">How did you feel?</string>
+    <string name="submit">Submit Shame</string>
+    <string name="shame_doing">What were you doing when it happened?</string>
+    <string name="shame_why">Why do you think you were targeted?</string>
+    <string name="shame_when">When did this happen?</string>
+
+
+    <array name="shame_types">
+        <item>Verbal</item>
+        <item>Physical</item>
+        <item>Other</item>
+    </array>
+
+    <array name="verbal_types">
+        <item>Unwelcome comment about my body</item>
+        <item>Vulgar/Profanity/Slur</item>
+        <item>Something Creepy then Aggressive</item>
+        <item>I was threatened</item>
+    </array>
+
+    <array name="physical_types">
+        <item>Touched/Grabbed/Groped me</item>
+        <item>Hit me</item>
+        <item>Threw something at me</item>
+        <item>Spit at/on me</item>
+        <item>Pulled at my clothing</item>
+        <item>Sexually assaulted me</item>
+    </array>
+
+    <array name="other_types">
+        <item>Followed me</item>
+        <item>Exposed themself</item>
+        <item>Masturbated</item>
+        <item>Other</item>
+    </array>
+
+    <array name="feel_types">
+        <item>Barely noticed</item>
+        <item>Angry</item>
+        <item>Annoyed</item>
+        <item>Uneasy</item>
+        <item>Scared for my safety</item>
+    </array>
+
+    <array name="doing_types">
+        <item>Walking</item>
+        <item>Jogging</item>
+        <item>Riding my bike</item>
+        <item>Waiting for something/someone</item>
+        <item>Driving</item>
+        <item>Other</item>
+    </array>
+
+    <array name="why_types">
+        <item>Because I\'m a woman</item>
+        <item>Because I\'m a person of color</item>
+        <item>Because I\'m LGBTQ</item>
+        <item>Because I\'m a minor</item>
+    </array>
 </resources>

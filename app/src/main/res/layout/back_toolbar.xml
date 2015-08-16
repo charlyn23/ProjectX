@@ -9,12 +9,4 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/Base.Theme.ProjectX">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primary_dark"
-        android:elevation="2dp"
-        app:layout_scrollFlags="scroll|enterAlways" />
-
 </android.support.v7.widget.Toolbar>

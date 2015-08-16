@@ -2,7 +2,42 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+
+        <item name="md_icon">@drawable/profile</item>
+        <item name="md_background_color">@color/text_white</item>
+        <item name="md_title_color">@color/primary_dark</item>
+        <item name="md_content_color">@color/secondary_text</item>
+        <item name="md_positive_color">@color/primary_dark</item>
+        <item name="md_neutral_color">@color/primary_dark</item>
+        <item name="md_negative_color">@color/primary_dark</item>
+        <item name="md_widget_color">@color/primary</item>
+        <item name="md_item_color">@color/secondary_text</item>
+
+        <!--
+            This overrides the selector used on list items.
+        -->
+        <!--<item name="md_list_selector">@drawable/selector</item>-->
+
+        <!--&lt;!&ndash;-->
+            <!--This overrides the selector used on stacked action buttons.-->
+        <!--&ndash;&gt;-->
+        <!--<item name="md_btn_stacked_selector">@drawable/selector</item>-->
+
+
+
+        <!--&lt;!&ndash;-->
+            <!--The name of font in assets/fonts used on titles and action buttons-->
+            <!--(null uses device default). E.g. [your-project]/app/main/assets/fonts/[medium]-->
+        <!--&ndash;&gt;-->
+        <!--<item name="md_medium_font">Roboto-Medium.ttf</item>-->
+
+        <!--&lt;!&ndash;-->
+            <!--The name of font in assets/fonts used everywhere else, like content and list items-->
+            <!--(null uses device default). E.g. [your-project]/app/main/assets/fonts/[regular]-->
+        <!--&ndash;&gt;-->
+        <!--<item name="md_regular_font">Roboto-Medium.ttf</item>-->
+
+
     </style>
 
     <style name="Base.Theme.ProjectX" parent="Theme.AppCompat.Light.NoActionBar">

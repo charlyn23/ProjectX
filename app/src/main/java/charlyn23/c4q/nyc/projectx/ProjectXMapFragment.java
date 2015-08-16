@@ -7,10 +7,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,8 +21,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
-
+import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
+import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "c4q.nyc.projectx";
@@ -32,13 +34,15 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private GoogleMap map;
     private Marker currentLocationMarker;
     private Marker marker;
+    private FloatingActionButton addShame;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
-        FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
+        //TODO make button visible only when marker is placed
 
         addMapFragment();
 
@@ -52,6 +56,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         map = mapFragment.getMap();
         map.setOnMyLocationChangeListener(locationChangeListener);
         map.setOnMapClickListener(mapClickListener);
+        map.setOnMarkerClickListener(markerClickListener);
         map.setOnInfoWindowClickListener(deleteMarkerListener);
     }
 
@@ -76,10 +81,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                Intent intent = new Intent(view.getContext(), ShameActivity.class);
-                startActivity(intent);
-            }
-            else {
+                MaterialDialogs.initialDialog(view.getContext());
+            } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
                 startActivity(intent);
             }
@@ -92,7 +95,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         public void onMyLocationChange(Location location) {
             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
             currentLocationMarker = map.addMarker(new MarkerOptions().position(loc));
-            if(map != null){
+            if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
             }
         }
@@ -108,6 +111,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
                         .title(point.latitude + " : " + point.longitude)
                         .position(point)
                         .draggable(true));
+                addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
             } else {
                 marker.remove();
@@ -116,9 +120,29 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
                         .position(point)
                         .draggable(true));
             }
-            if(map != null) {
+            if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
             }
+        }
+    };
+
+    private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            //TODO differentiate shame markers with location markers
+            Snackbar.make(view, "SHAME + Date", 7000)
+                    .setAction(R.string.snackbar_action, snackbarClick)
+                    .show();
+            return true;
+        }
+    };
+
+    private View.OnClickListener snackbarClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            //TODO bring to shame detail
+            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
+            startActivity(intent);
         }
     };
 
@@ -128,6 +152,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         @Override
         public void onInfoWindowClick(Marker marker) {
             marker.remove();
+            addShame.setVisibility(View.INVISIBLE);
             map.setOnMapClickListener(mapClickListener);
         }
     };

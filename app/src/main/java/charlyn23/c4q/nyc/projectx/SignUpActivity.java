@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
-import charlyn23.c4q.nyc.projectx.shames.ShameActivity;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -168,7 +167,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void sendIntentToMainActivity() {
-        Intent intent = new Intent(SignUpActivity.this, ShameActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, ProjectXMapFragment.class);
         startActivity(intent);
     }
 }
