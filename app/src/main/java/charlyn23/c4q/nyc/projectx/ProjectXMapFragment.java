@@ -54,7 +54,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
 
-        FloatingActionButton addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+
+
 
         //TODO populate map with parse data
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
