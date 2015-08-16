@@ -102,6 +102,20 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         map.getUiSettings().setRotateGesturesEnabled(true);
         map.setMyLocationEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(40.7449386285115534, -73.9359836652875)));
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(40.741885070719945, -73.933373875916))
+                .title("Hello world"));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(40.73994785206857, -73.93543615937233))
+                .title("Hello world"));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(40.74341224816964, -73.93776163458824))
+                .title("Hello world"));
     }
 
     //directs the user to SignUp Activity if not logged in yet or to Shame Activity if logged in when FAB is clicked
@@ -169,18 +183,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         }
     };
 
-//    public long getLat() {
-//        mapClickListener.onMapClick(point);
-//        long latitude = (long) point.latitude;
-//        Log.i("latitude = ", String.valueOf(latitude));
-//        return latitude;
-//
-//    }    public long getLong() {
-//        mapClickListener.onMapClick(point);
-//        long longitude = (long) point.longitude;
-//        Log.i("longitude = ", String.valueOf(longitude));
-//        return longitude;
-//    }
 
 
 
