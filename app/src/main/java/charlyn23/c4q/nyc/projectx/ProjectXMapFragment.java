@@ -112,7 +112,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                MaterialDialogs.initialDialog(view.getContext());
+                MaterialDialogs dialogs = new MaterialDialogs();
+                dialogs.initialDialog(view.getContext());
                 //Grabs lat and long of marker when FAB button is pressed
                 marker.getPosition();
                 Log.i("position", String.valueOf(marker.getPosition()));

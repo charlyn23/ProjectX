@@ -405,7 +405,7 @@ public class MaterialDialogs extends Application {
                                 newShame.saveInBackground();
                                 break;
                         }
-                        
+
                         switch (shameReason) {
                             case 1:
                                 newShame.put("shameReason", 1);
