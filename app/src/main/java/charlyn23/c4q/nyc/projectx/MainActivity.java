@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String position = intent.getStringExtra("position");
 
-
-
     }
 
     @Override
@@ -39,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         projectXMapFragment = new ProjectXMapFragment();
-
 
         setUpActionBar();
 

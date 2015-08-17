@@ -1,16 +1,14 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
-import android.app.Application;
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseObject;
-
 import charlyn23.c4q.nyc.projectx.R;
 
 
-public class MaterialDialogs extends Application {
+public class  MaterialDialogs {
 
     private int shameType;
     private int verbalShame;
@@ -19,15 +17,15 @@ public class MaterialDialogs extends Application {
     private int shameFeel;
     private int shameDoing;
     private int shameReason;
+    private double latitude;
+    private double longitude;
+    private Shame newShame;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
+    public void initialDialog(final Context context, double latitude, double longitude) {
         ParseObject.registerSubclass(Shame.class);
-    }
+        this.latitude = latitude;
+        this.longitude = longitude;
 
-    public void initialDialog(final Context context) {
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
                 .content(R.string.new_shame_type)
@@ -157,7 +155,7 @@ public class MaterialDialogs extends Application {
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        initialDialog(context);
+                        initialDialog(context, latitude, longitude);
                         dialog.cancel();
                     }
                 })
@@ -295,9 +293,9 @@ public class MaterialDialogs extends Application {
                             shameReason = 4;
                         }
 
-                        Shame newShame = new Shame();
-                        newShame.put("latitude", 40.743013);
-                        newShame.put("longitude", -73.935570);
+                        newShame = new Shame();
+                        newShame.put("latitude", latitude);
+                        newShame.put("longitude", longitude);
                         switch(shameType) {
                             case 1:
                                 newShame.put("shameType", 1);

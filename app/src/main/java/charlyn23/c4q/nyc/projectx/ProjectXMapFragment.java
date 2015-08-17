@@ -44,8 +44,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     private Marker currentLocationMarker;
     private Marker marker;
     private FloatingActionButton addShame;
-    private LatLng point;
-    Activity activity;
+
 
     @Nullable
     @Override
@@ -53,8 +52,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         view = inflater.inflate(R.layout.map_fragment, container, false);
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
-
-
 
 
         //TODO populate map with parse data
@@ -113,19 +110,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
 
             if (isLoggedIn) {
                 MaterialDialogs dialogs = new MaterialDialogs();
-                dialogs.initialDialog(view.getContext());
-                //Grabs lat and long of marker when FAB button is pressed
-                marker.getPosition();
-                Log.i("position", String.valueOf(marker.getPosition()));
-
-                ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-                query.whereExists("latitude");
-                query.findInBackground(new FindCallback<Shame>() {
-                    @Override
-                    public void done(List<Shame> list, ParseException e) {
-                        Log.i("list = ", list.toString());
-                    }
-                });
+                //gets location coordinates of the last dropped pin
+                Log.i(TAG, marker.getPosition().latitude + " " + marker.getPosition().longitude);
+                dialogs.initialDialog(view.getContext(), marker.getPosition().latitude, marker.getPosition().longitude);
             } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
                 startActivity(intent);
@@ -146,7 +133,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
     };
 
     //drops a marker in any place on the map
-
     private GoogleMap.OnMapClickListener mapClickListener = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng point) {
@@ -168,6 +154,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
             }
+            //dataPasser.onDataPass(point.latitude, point.longitude);
+
         }
     };
 
@@ -201,6 +189,4 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             map.setOnMapClickListener(mapClickListener);
         }
     };
-
-
 }
