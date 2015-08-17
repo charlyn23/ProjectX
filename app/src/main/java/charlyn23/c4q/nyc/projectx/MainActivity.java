@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,11 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
-
-import com.parse.ParseException;
-import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -23,14 +21,32 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOGGED_IN = "isLoggedIn";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
+    private ProjectXMapFragment projectXMapFragment;
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String position = intent.getStringExtra("position");
+
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        projectXMapFragment = new ProjectXMapFragment();
+
+
         setUpActionBar();
+
     }
+
+
+
 
     public void setUpActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -79,16 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             ParseUser user = ParseUser.getCurrentUser();
 
-            try {
-                ParseTwitterUtils.unlink(user);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
             user.logOut();
-            ParseTwitterUtils.unlinkInBackground(user);
-
-            user.unpinInBackground();
-
             editor.putBoolean(LOGGED_IN, false).commit();
             Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
 

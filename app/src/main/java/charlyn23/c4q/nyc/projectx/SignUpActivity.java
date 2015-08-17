@@ -28,6 +28,8 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        ParseFacebookUtils.initialize(getApplicationContext());
+
         preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         permissions = Arrays.asList("public_profile", "email");
 
