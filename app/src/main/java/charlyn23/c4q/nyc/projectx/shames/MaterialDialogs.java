@@ -9,14 +9,14 @@ import charlyn23.c4q.nyc.projectx.R;
 
 
 public class  MaterialDialogs {
-
+    private static final String GROUP_COLUMN = "Group";
     private int shameType;
     private int verbalShame;
     private int physicalShame;
     private int otherShame;
     private int shameFeel;
     private int shameDoing;
-    private int shameReason;
+    private String group;
     private double latitude;
     private double longitude;
     private Shame newShame;
@@ -279,18 +279,17 @@ public class  MaterialDialogs {
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence why) {
-                        //TODO submit shame to parse
                         if (which == 0) {
-                            shameReason = 1;
+                            group = "woman";
                         }
                         if (which == 1) {
-                            shameReason = 2;
+                            group = "POC";
                         }
                         if (which == 2) {
-                            shameReason = 3;
+                            group = "LGBTQ";
                         }
                         if (which == 3) {
-                            shameReason = 4;
+                            group = "minor";
                         }
 
                         newShame = new Shame();
@@ -404,21 +403,21 @@ public class  MaterialDialogs {
                                 break;
                         }
 
-                        switch (shameReason) {
-                            case 1:
-                                newShame.put("shameReason", 1);
+                        switch (group) {
+                            case "woman":
+                                newShame.put(GROUP_COLUMN, "woman");
                                 newShame.saveInBackground();
                                 break;
-                            case 2:
-                                newShame.put("shameReason", 2);
+                            case "POC":
+                                newShame.put(GROUP_COLUMN, "POC");
                                 newShame.saveInBackground();
                                 break;
-                            case 3:
-                                newShame.put("shameReason", 3);
+                            case "LGBTQ":
+                                newShame.put(GROUP_COLUMN, "LGBTQ");
                                 newShame.saveInBackground();
                                 break;
-                            case 4:
-                                newShame.put("shameReason", 4);
+                            case "minor":
+                                newShame.put(GROUP_COLUMN, "minor");
                                 newShame.saveInBackground();
                                 break;
                         }
