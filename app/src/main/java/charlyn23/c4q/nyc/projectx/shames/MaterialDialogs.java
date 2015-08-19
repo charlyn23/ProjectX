@@ -10,12 +10,16 @@ import charlyn23.c4q.nyc.projectx.R;
 
 public class  MaterialDialogs {
     private static final String GROUP_COLUMN = "Group";
-    private int shameType;
-    private int verbalShame;
-    private int physicalShame;
-    private int otherShame;
-    private int shameFeel;
-    private int shameDoing;
+    private static final String SHAME_TYPE_COLUMN = "shameType";
+    private static final String SHAME_FEEL_COLUMN = "shameFeel";
+    private static final String SHAME_DOING_COLUMN = "shameDoing";
+
+    private String shameType;
+    private String verbalShame;
+    private String physicalShame;
+    private String otherShame;
+    private String shameFeel;
+    private String shameDoing;
     private String group;
     private double latitude;
     private double longitude;
@@ -36,16 +40,16 @@ public class  MaterialDialogs {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         if (text.equals("Verbal")) {
                             shameTypeDialog(context, "verbal");
-                            shameType = 1;
+                            shameType = "verbal";
                         }
                         else if (text.equals("Physical")) {
                             shameTypeDialog(context, "physical");
-                            shameType = 2;
+                            shameType = "physical";
 
                         }
                         else {
                             shameTypeDialog(context, "other");
-                            shameType = 3;
+                            shameType = "other";
 
                         }
                         return true;
@@ -99,46 +103,46 @@ public class  MaterialDialogs {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence type_choice) {
                         feelDialog(context, type, type_choice.toString());
                         if (type.equals("verbal") && which == 0){
-                            verbalShame = 1;
+                            verbalShame = "body comment";
                         }
                         else if (type.equals("verbal") && which == 1) {
-                            verbalShame = 2;
+                            verbalShame = "vulgar";
                         }
                         else if (type.equals("verbal") && which == 2) {
-                            verbalShame = 3;
+                            verbalShame = "creepy";
                         }
                         else if (type.equals("verbal") && which == 3) {
-                            verbalShame = 4;
+                            verbalShame = "threatened";
                         }
                         else if (type.equals("physical") && which == 0) {
-                            physicalShame = 1;
+                            physicalShame = "touch";
                         }
                         else if (type.equals("physical") && which == 1) {
-                            physicalShame = 2;
+                            physicalShame = "hit";
                         }
                         else if (type.equals("physical") && which == 2) {
-                            physicalShame = 3;
+                            physicalShame = "throw something";
                         }
                         else if (type.equals("physical") && which == 3) {
-                            physicalShame = 4;
+                            physicalShame = "spit";
                         }
                         else if (type.equals("physical") && which == 4) {
-                            physicalShame = 5;
+                            physicalShame = "pull at clothing";
                         }
                         else if (type.equals("physical") && which == 5) {
-                            physicalShame = 6;
+                            physicalShame = "sexual assaulted";
                         }
                         else if (type.equals("other") && which == 0){
-                            otherShame = 1;
+                            otherShame = "follow";
                         }
                         else if (type.equals("other") && which == 1){
-                            otherShame = 2;
+                            otherShame = "expose themselves";
                         }
                         else if (type.equals("other") && which == 2){
-                            otherShame = 3;
+                            otherShame = "masturbate";
                         }
                         else if (type.equals("other") && which == 3){
-                            otherShame = 4;
+                            otherShame = "other";
                         }
 
                         return true;
@@ -172,15 +176,15 @@ public class  MaterialDialogs {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence feel) {
                         doingDialog(context, type, type_choice, feel.toString());
                         if (which == 0) {
-                            shameFeel = 1;
+                            shameFeel = "barely noticed";
                         } else if (which == 1){
-                            shameFeel = 2;
+                            shameFeel = "angry";
                         } else if (which == 2) {
-                            shameFeel = 3;
+                            shameFeel = "annoyed";
                         }else if (which == 3) {
-                            shameFeel = 4;
+                            shameFeel = "uneasy";
                         }else if (which == 4) {
-                            shameFeel = 5;
+                            shameFeel = "scared";
                         }
                         return true;
                     }
@@ -212,17 +216,17 @@ public class  MaterialDialogs {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence doing) {
                         whenDialog(context, type, type_choice, feel, doing.toString());
                         if (which == 0) {
-                            shameDoing = 1;
+                            shameDoing = "walking";
                         }if (which == 1) {
-                            shameDoing = 2;
+                            shameDoing = "jogging";
                         }if (which == 2) {
-                            shameDoing = 3;
+                            shameDoing = "biking";
                         }if (which == 3) {
-                            shameDoing = 4;
+                            shameDoing = "waiting";
                         }if (which == 4) {
-                            shameDoing = 5;
+                            shameDoing = "driving";
                         }if (which == 5) {
-                            shameDoing = 6;
+                            shameDoing = "other";
                         }
                         return true;
                     }
@@ -296,109 +300,109 @@ public class  MaterialDialogs {
                         newShame.put("latitude", latitude);
                         newShame.put("longitude", longitude);
                         switch(shameType) {
-                            case 1:
-                                newShame.put("shameType", 1);
+                            case "verbal":
+                                newShame.put(SHAME_TYPE_COLUMN, "verbal");
                                 newShame.saveInBackground();
-                                if (verbalShame == 1) {
-                                    newShame.put("verbalShame", 1);
+                                if (verbalShame.equals("body comment")) {
+                                    newShame.put("verbalShame", "body comment");
                                     newShame.saveInBackground();
-                                } else if (verbalShame == 2) {
-                                    newShame.put("verbalShame", 2);
+                                } else if (verbalShame.equals("vulgar")) {
+                                    newShame.put("verbalShame", "vulgar");
                                     newShame.saveInBackground();
-                                } else if (verbalShame == 3) {
-                                    newShame.put("verbalShame", 3);
+                                } else if (verbalShame.equals("creepy")) {
+                                    newShame.put("verbalShame", "creepy");
                                     newShame.saveInBackground();
                                 } else {
-                                    newShame.put("verbalShame", 4);
+                                    newShame.put("verbalShame", "threatened");
                                     newShame.saveInBackground();
                                 }
                                 break;
-                            case 2:
-                                newShame.put("shameType", 2);
+                            case "physical":
+                                newShame.put(SHAME_TYPE_COLUMN, "physical");
                                 newShame.saveInBackground();
-                                if (physicalShame == 1) {
-                                    newShame.put("physicalShame", 1);
-                                } else if (physicalShame == 2) {
-                                    newShame.put("physicalShame", 2);
+                                if (physicalShame.equals("touch")) {
+                                    newShame.put("physicalShame", "touch");
+                                } else if (physicalShame.equals("hit")) {
+                                    newShame.put("physicalShame", "hit");
                                     newShame.saveInBackground();
-                                } else if (physicalShame == 3) {
-                                    newShame.put("physicalShame", 3);
+                                } else if (physicalShame.equals("throw something")) {
+                                    newShame.put("physicalShame", "throw something");
                                     newShame.saveInBackground();
-                                } else if (physicalShame == 4) {
-                                    newShame.put("physicalShame", 4);
+                                } else if (physicalShame.equals("spit")) {
+                                    newShame.put("physicalShame", "spit");
                                     newShame.saveInBackground();
-                                } else if (physicalShame == 5) {
-                                    newShame.put("physicalShame", 5);
+                                } else if (physicalShame.equals("pull at clothing")) {
+                                    newShame.put("physicalShame", "pull at clothing");
                                     newShame.saveInBackground();
                                 } else {
-                                    newShame.put("physicalShame", 6);
+                                    newShame.put("physicalShame", "sexual assaulted");
                                     newShame.saveInBackground();
                                 }
                                 break;
-                            case 3:
-                                newShame.put("shameType", 3);
+                            case "other":
+                                newShame.put(SHAME_TYPE_COLUMN, "other");
                                 newShame.saveInBackground();
-                                if (otherShame == 1) {
-                                    newShame.put("otherShame", 1);
+                                if (otherShame.equals("follow")) {
+                                    newShame.put("otherShame", "follow");
                                     newShame.saveInBackground();
-                                } else if (otherShame == 2) {
-                                    newShame.put("otherShame", 2);
+                                } else if (otherShame.equals("expose themselves")) {
+                                    newShame.put("otherShame", "expose themselves");
                                     newShame.saveInBackground();
-                                } else if (otherShame == 3) {
-                                    newShame.put("otherShame", 3);
+                                } else if (otherShame.equals("masturbate")) {
+                                    newShame.put("otherShame", "masturbate");
                                     newShame.saveInBackground();
                                 } else {
-                                    newShame.put("otherShame", 4);
+                                    newShame.put("otherShame", "other");
                                     newShame.saveInBackground();
                                 }
                                 break;
                             }
                         switch (shameFeel) {
-                            case 1:
-                                newShame.put("shameFeel", 1);
+                            case "barely noticed":
+                                newShame.put(SHAME_FEEL_COLUMN, "barely noticed");
                                 newShame.saveInBackground();
                                 break;
-                            case 2:
-                                newShame.put("shameFeel", 2);
+                            case "angry":
+                                newShame.put(SHAME_FEEL_COLUMN, "angry");
                                 newShame.saveInBackground();
                                 break;
-                            case 3:
-                                newShame.put("shameFeel", 3);
+                            case "annoyed":
+                                newShame.put(SHAME_FEEL_COLUMN, "annoyed");
                                 newShame.saveInBackground();
                                 break;
-                            case 4:
-                                newShame.put("shameFeel", 4);
+                            case "uneasy":
+                                newShame.put(SHAME_FEEL_COLUMN, "uneasy");
                                 newShame.saveInBackground();
                                 break;
-                            case 5:
-                                newShame.put("shameFeel", 5);
+                            case "scared":
+                                newShame.put(SHAME_FEEL_COLUMN, "scared");
                                 newShame.saveInBackground();
                                 break;
                         }
 
                         switch (shameDoing) {
-                            case 1:
-                                newShame.put("shameDoing", 1);
+                            case "walking":
+                                newShame.put(SHAME_DOING_COLUMN, "walking");
                                 newShame.saveInBackground();
                                 break;
-                            case 2:
-                                newShame.put("shameDoing", 2);
+                            case "jogging":
+                                newShame.put(SHAME_DOING_COLUMN, "jogging");
                                 newShame.saveInBackground();
                                 break;
-                            case 3:
-                                newShame.put("shameDoing", 3);
+                            case "biking":
+                                newShame.put(SHAME_DOING_COLUMN, "biking");
                                 newShame.saveInBackground();
                                 break;
-                            case 4:
-                                newShame.put("shameDoing", 4);
+                            case "waiting":
+                                newShame.put(SHAME_DOING_COLUMN, "waiting");
                                 newShame.saveInBackground();
                                 break;
-                            case 5:
-                                newShame.put("shameDoing", 5);
+                            case "driving":
+                                newShame.put(SHAME_DOING_COLUMN, "driving");
                                 newShame.saveInBackground();
                                 break;
-                            case 6:
-                                newShame.put("shameDoing", 1);
+                            case "other":
+                                newShame.put(SHAME_DOING_COLUMN, 1);
                                 newShame.saveInBackground();
                                 break;
                         }
