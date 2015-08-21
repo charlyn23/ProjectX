@@ -38,11 +38,11 @@ public class  MaterialDialogs {
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        if (text.equals("Verbal")) {
+                        if (text.equals("verbal")) {
                             shameTypeDialog(context, "verbal");
                             shameType = "verbal";
                         }
-                        else if (text.equals("Physical")) {
+                        else if (text.equals("physical")) {
                             shameTypeDialog(context, "physical");
                             shameType = "physical";
 
@@ -402,7 +402,7 @@ public class  MaterialDialogs {
                                 newShame.saveInBackground();
                                 break;
                             case "other":
-                                newShame.put(SHAME_DOING_COLUMN, 1);
+                                newShame.put(SHAME_DOING_COLUMN, "other");
                                 newShame.saveInBackground();
                                 break;
                         }
