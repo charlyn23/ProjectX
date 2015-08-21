@@ -1,6 +1,5 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -45,9 +44,12 @@ public class StatsFragment extends Fragment {
     private int numLGBTQ;
     private int numMinor;
     private ArrayList<Integer> colors;
+    PieData data;
     ArrayList<String> xVals;
     PieDataSet pieChartSet;
+    boolean changeColorIndex = false;
     protected HorizontalBarChart barChart;
+    private Typeface tf;
 
 
     @Nullable
@@ -58,18 +60,77 @@ public class StatsFragment extends Fragment {
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         barChart = (HorizontalBarChart) view.findViewById(R.id.bar_chart);
         detailView = (TextView) view.findViewById(R.id.detail_view);
+
         configPieChart(pieChart);
         configBarChart(barChart);
         getCountShameTypes();
+
+//            pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+//                @Override
+//                public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+//                    colors.clear();
+//                    if (!changeColorIndex) {
+//                        if (h.getXIndex() == 0) {
+//                            colors.add(getResources().getColor(android.R.color.holo_blue_dark));
+//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                            detailView.setText(numVerbalShame + " instances of verbal harassment");
+//                            changeColorIndex = true;
+//
+//                        } else if (h.getXIndex() == 1) {
+//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                            colors.add(getResources().getColor(android.R.color.holo_green_dark));
+//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                            detailView.setText(numPhysicalShame + " instances of physical harassment");
+//                            changeColorIndex = true;
+//                        } else {
+//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                            colors.add(getResources().getColor(android.R.color.holo_orange_dark));
+//                            detailView.setText(numOtherShame + " instances of other harassment");
+//                            changeColorIndex = true;
+//                        }
+//                    } else {
+//                        colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                        colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                        colors.add(getResources().getColor(android.R.color.holo_red_dark));
+//                        changeColorIndex = false;
+//                    }
+//                    pieChartSet.setColors(colors);
+//                    PieData data = new PieData(xVals, pieChartSet);
+//                    pieChart.setData(data);
+//                }
+
+//                @Override
+//                public void onNothingSelected() {
+//
+//                }
+//            });
+
+//        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+//            @Override
+//            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+//                if (e == null)
+//                    return;
+//
+//                RectF bounds = barChart.getBarBounds((BarEntry) e);
+//                PointF position = barChart.getPosition(e, barChart.getData().getDataSetByIndex(dataSetIndex)
+//                        .getAxisDependency());
+//
+//                Log.i("bounds", bounds.toString());
+//                Log.i("position", position.toString());
+//            }
+//
+//            @Override
+//            public void onNothingSelected() {
+//
+//            }
+//        });
         getCountGroups();
 
         return view;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
 
     public void getCountShameTypes() {
         numVerbalShame = 0;
@@ -140,9 +201,11 @@ public class StatsFragment extends Fragment {
         chart.setDrawHoleEnabled(true);
         chart.setDescription("");
         chart.setTransparentCircleRadius(5f);
+        //pieChart.setDrawYValues(true);
         chart.setDrawCenterText(true);
         chart.setDrawHoleEnabled(true);
         chart.setRotationAngle(0);
+        //pieChart.setDrawXValues(false);
         chart.setRotationEnabled(true);
         chart.setUsePercentValues(true);
         chart.setCenterText(getString(R.string.types_of_harassment));
@@ -153,30 +216,57 @@ public class StatsFragment extends Fragment {
         barChart.setHighlightEnabled(true);
 
         barChart.setDrawValueAboveBar(true);
+
+//        barChart.setDescription("Groups of people");
+
+        // if more than 60 entries are displayed in the pieChart, no values will be
+        // drawn
+        //barChart.setMaxVisibleValueCount(60);
+
+        // scaling can now only be done on x- and y-axis separately
         barChart.setPinchZoom(false);
+
+        // draw shadows for each bar that show the maximum value
         barChart.setDrawBarShadow(true);
 
+        // barChart.setDrawXLabels(false);
+
         barChart.setDrawGridBackground(false);
+
+        // barChart.setDrawYLabels(false);
+
+        //tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+
         XAxis xl = barChart.getXAxis();
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xl.setTypeface(tf);
         xl.setDrawAxisLine(true);
         xl.setDrawGridLines(false);
         xl.setGridLineWidth(0.3f);
 
         YAxis yl = barChart.getAxisLeft();
+        yl.setTypeface(tf);
         yl.setDrawAxisLine(true);
         yl.setDrawGridLines(false);
         yl.setGridLineWidth(0.3f);
+//        yl.setInverted(true);
 
         YAxis yr = barChart.getAxisRight();
+        yr.setTypeface(tf);
         yr.setDrawAxisLine(true);
         yr.setDrawGridLines(false);
+
+//        yr.setInverted(true);
+
+        //setData(4, 100);
         barChart.animateY(3000);
 
         Legend l = barChart.getLegend();
         l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
         l.setFormSize(20f);
         l.setXEntrySpace(4f);
+
+        // barChart.setDrawLegend(false);
         return barChart;
     }
 
@@ -195,10 +285,12 @@ public class StatsFragment extends Fragment {
         pieChartSet.setSliceSpace(3f);
         colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
+        //colors.add(getResources().getColor(android.R.color.holo_red_light));
         pieChartSet.setColors(colors);
         PieData data = new PieData(xVals, pieChartSet);
         data.setValueTextSize(15f);
         chart.setData(data);
+        //pieChart.highlightValues(null);
         chart.animateY(2000);
         Legend l = chart.getLegend();
         l.setEnabled(false);
@@ -223,13 +315,36 @@ public class StatsFragment extends Fragment {
         BarDataSet set = new BarDataSet(yVals1, "Groups of people");
         colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
+        //colors.add(getResources().getColor(android.R.color.holo_red_light));
         set.setColors(colors);
 
         ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
         dataSets.add(set);
+
+
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(15f);
+        data.setValueTypeface(tf);
 
         barChart.setData(data);
     }
+
+
+//    @SuppressLint("NewApi")
+
+//    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+//
+//        if (e == null)
+//            return;
+//
+//        RectF bounds = barChart.getBarBounds((BarEntry) e);
+//        PointF position = barChart.getPosition(e, barChart.getData().getDataSetByIndex(dataSetIndex)
+//                .getAxisDependency());
+//
+//        Log.i("bounds", bounds.toString());
+//        Log.i("position", position.toString());
+//    }
+//
+//    public void onNothingSelected() {
+//    };
 }

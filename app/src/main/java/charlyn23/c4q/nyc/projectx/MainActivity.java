@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
+
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 
@@ -96,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
             ParseUser user = ParseUser.getCurrentUser();
 
             user.logOut();
+            user.deleteInBackground();
+            user.remove("username");
+
             editor.putBoolean(LOGGED_IN, false).commit();
             Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
 
