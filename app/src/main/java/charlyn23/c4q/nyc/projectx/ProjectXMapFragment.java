@@ -38,15 +38,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
-import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -98,6 +94,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 client, BOUNDS, null);
         search.setAdapter(mAdapter);
 
+        //TODO populate map with parse data
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class); 
+
         return view;
     }
 
@@ -146,24 +145,15 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
-//            if (isLoggedIn) {
-                MaterialDialogs.initialDialog(view.getContext());
-                //Grabs lat and long of marker when FAB button is pressed
-                marker.getPosition();
-                Log.i("position", String.valueOf(marker.getPosition()));
-
-                ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-                query.whereExists("latitude");
-                query.findInBackground(new FindCallback<Shame>() {
-                    @Override
-                    public void done(List<Shame> list, ParseException e) {
-                        Log.i("list = ", list.toString());
-                    }
-                });
-//            } else {
-//                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
-//                startActivity(intent);
-//            }
+            if (isLoggedIn) {
+                MaterialDialogs dialogs = new MaterialDialogs();
+                //gets location coordinates of the last dropped pin
+                Log.i(TAG, marker.getPosition().latitude + " " + marker.getPosition().longitude);
+                dialogs.initialDialog(view.getContext(), marker.getPosition().latitude, marker.getPosition().longitude);
+            } else {
+                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
+                startActivity(intent);
+            }
         }
     };
 
@@ -189,6 +179,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
             }
+            //dataPasser.onDataPass(point.latitude, point.longitude);
+
         }
     };
 
@@ -262,12 +254,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-                    if (map != null) {
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-                    }
+                    setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
                 }
             });
+        else
+            setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
     }
 
     private LocationRequest createLocationRequest() {
@@ -294,8 +285,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private void setViewToLocation(LatLng latLng) {
         if (map != null) {
             // Set initial view to current location
-            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            map.animateCamera(CameraUpdateFactory.zoomTo(16));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
         }
     }
 

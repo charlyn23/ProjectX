@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">ProjectX</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Log out</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="shame_activity">ShameActivity</string>
 
     <!--<string name="YOUR_APPLICATION_ID">wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O</string>-->
     <!--<string name="YOUR_CLIENT_KEY">kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq</string>-->
+
     <string name="facebook_app_id">893481480722861</string>
     <string name="snackbar_action">View</string>
     <string name="new_shame_type">What type of shame?</string>
@@ -20,7 +21,9 @@
     <string name="shame_doing">What were you doing when it happened?</string>
     <string name="shame_why">Why do you think you were targeted?</string>
     <string name="shame_when">When did this happen?</string>
+    <string name="log_out_toast">Successful logging out from the account!</string>
     <string name="birth_year">Year of Birth</string>
+    <string name="types_of_harassment">Types of harassment(%)</string>
 
     <array name="shame_types">
         <item>Verbal</item>
@@ -74,4 +77,7 @@
         <item>Because I\'m LGBTQ</item>
         <item>Because I\'m a minor</item>
     </array>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

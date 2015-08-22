@@ -13,6 +13,8 @@ import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
 
+import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
+
 
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "c4q.nyc.projectx";
@@ -26,14 +28,13 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        editor = preferences.edit();
+        ParseFacebookUtils.initialize(getApplicationContext());
 
+        preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         permissions = Arrays.asList("public_profile", "email");
 
         Button fb = (Button) findViewById(R.id.facebook_button);
         Button twitter = (Button) findViewById(R.id.twitter_button);
-        Button logOut = (Button) findViewById(R.id.log_out);
 
         fb.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -45,13 +46,6 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 logInViaTwitter();
-            }
-        });
-
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logOut();
             }
         });
     }
@@ -86,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     editor = preferences.edit();
                     editor.putBoolean(LOGGED_IN, true).commit();
-                    sendIntentToMainActivity();
+                    reportShame();
                 } else {
                     Log.i(TAG, "User logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
@@ -101,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     editor = preferences.edit();
                     editor.putBoolean(LOGGED_IN, true).commit();
-                    sendIntentToMainActivity();
+                    reportShame();
                 }
             }
         });
@@ -130,7 +124,9 @@ public class SignUpActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "You can change your personal data in Settings tab!", Toast.LENGTH_SHORT).show();
                     }
-                    sendIntentToMainActivity();
+                    editor = preferences.edit();
+                    editor.putBoolean(LOGGED_IN, true).commit();
+                    reportShame();
 
                 } else {
                     Log.i(TAG, "User logged in through Twitter!");
@@ -146,28 +142,17 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    sendIntentToMainActivity();
+                    editor = preferences.edit();
+                    editor.putBoolean(LOGGED_IN, true).commit();
+                    reportShame();
                 }
             }
         });
     }
 
-    private void logOut() {
-        ParseUser user = ParseUser.getCurrentUser();
-        if (ParseTwitterUtils.isLinked(user)) {
-            try {
-                ParseTwitterUtils.unlink(user);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        ParseUser.logOut();
-        Log.i(TAG, "user id when logged out is " + ParseUser.getCurrentUser());
-        editor.putBoolean(LOGGED_IN, false).commit();
-    }
 
-    private void sendIntentToMainActivity() {
-        Intent intent = new Intent(SignUpActivity.this, ProjectXMapFragment.class);
+    private void reportShame() {
+        Intent intent = new Intent(SignUpActivity.this, ShameDetailActivity.class);
         startActivity(intent);
     }
 }

@@ -39,13 +39,12 @@ public class ProjectX extends Application {
         Parse.initialize(this, YOUR_APPLICATION_ID, YOUR_CLIENT_KEY);
         ParseTwitterUtils.initialize(TWITTER_ID, TWITTER_KEY);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        ParseFacebookUtils.initialize(getApplicationContext());
 
         com.parse.ParseUser.enableAutomaticUser();
         ParseACL defaultACL = new ParseACL();
 
         // Optionally to enable public read access.
-        // defaultACL.setPublicReadAccess(true);
+        defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
 
     }

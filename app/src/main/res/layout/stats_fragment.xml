@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/a"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background">
+    android:padding="20dp"
+    android:orientation="vertical">
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"/>
 
     <TextView
-        android:text="Coming Soon!"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pie_chart"
+        style="@style/profile_text"
+        android:text="Numbers: "/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/detail_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_black"
+        android:layout_below="@+id/header"/>
+
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+        android:id="@+id/bar_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@android:color/white"
+        android:layout_below="@+id/detail_view"/>
+
+</RelativeLayout>
+

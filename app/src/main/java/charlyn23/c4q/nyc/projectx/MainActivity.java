@@ -1,17 +1,27 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
+
+import com.parse.ParseException;
+import com.parse.ParseUser;
+
+
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "c4q.nyc.projectx";
+    private static final String SHARED_PREFERENCE = "sharedPreference";
+    private static final String LOGGED_IN = "isLoggedIn";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
     private ProjectXMapFragment projectXMapFragment;
@@ -22,12 +32,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String position = intent.getStringExtra("position");
 
-//        Bundle bundle = new Bundle();
-//        bundle.putString("position", null);
-//        ProjectXMapFragment projectXMapFragment = new ProjectXMapFragment();
-//        projectXMapFragment.setArguments(bundle);
-
-
     }
 
     @Override
@@ -36,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         projectXMapFragment = new ProjectXMapFragment();
-
 
         setUpActionBar();
 
@@ -68,10 +71,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
     }
 
@@ -84,10 +89,34 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.log_out) {
+
+            ParseUser user = ParseUser.getCurrentUser();
+
+            user.logOut();
+            user.deleteInBackground();
+            user.remove("username");
+
+            editor.putBoolean(LOGGED_IN, false).commit();
+            Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //displays the first page on the Back Button pressed
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            viewPager.setCurrentItem(0, true);
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 }
