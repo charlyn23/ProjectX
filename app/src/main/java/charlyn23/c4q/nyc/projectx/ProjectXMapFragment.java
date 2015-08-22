@@ -1,9 +1,10 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,39 +12,56 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
-import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback {
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
+    private static final LatLngBounds BOUNDS = new LatLngBounds(
+            new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
 
+    private PlaceAutocompleteAdapter mAdapter;
+    private GoogleApiClient client;
     private boolean isDropped;
     private View view;
     private GoogleMap map;
-    private Marker currentLocationMarker;
     private Marker marker;
     private FloatingActionButton addShame;
+    private Location location;
+    private AutoCompleteTextView search;
+    private LatLng search_location;
 
 
     @Nullable
@@ -53,12 +71,31 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
 
+        // Connect to Geolocation API to make current location request & load map
+        buildGoogleApiClient(view.getContext());
+        addMapFragment();
+
+        search = (AutoCompleteTextView) view.findViewById(R.id.search);
+        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    search_location = getLocationFromAddress(search.getText().toString());
+                    setViewToLocation(search_location);
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        search.setOnItemClickListener(mAutocompleteClickListener);
+        mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
+                client, BOUNDS, null);
+        search.setAdapter(mAdapter);
 
         //TODO populate map with parse data
-//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
-
-
-        addMapFragment();
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class); 
 
         return view;
     }
@@ -68,10 +105,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         map = mapFragment.getMap();
-        map.setOnMyLocationChangeListener(locationChangeListener);
-        map.setOnMapClickListener(mapClickListener);
-        map.setOnMarkerClickListener(markerClickListener);
-        map.setOnInfoWindowClickListener(deleteMarkerListener);
     }
 
     @Override
@@ -86,7 +119,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
         map.setMyLocationEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+        map.setOnMapClickListener(mapClickListener);
+        map.setOnMarkerClickListener(markerClickListener);
+        map.setOnInfoWindowClickListener(deleteMarkerListener);
 
+        // fake data TODO DELETE
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(40.7449386285115534, -73.9359836652875)));
 
@@ -116,18 +153,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
                 startActivity(intent);
-            }
-        }
-    };
-
-    //sets a marker to the user's current location
-    private GoogleMap.OnMyLocationChangeListener locationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
-        @Override
-        public void onMyLocationChange(Location location) {
-            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            currentLocationMarker = map.addMarker(new MarkerOptions().position(loc));
-            if (map != null) {
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
             }
         }
     };
@@ -189,4 +214,119 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback 
             map.setOnMapClickListener(mapClickListener);
         }
     };
+
+    // Listener that handles selections from suggestions from the AutoCompleteTextView
+    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            Log.i(TAG, "Autocomplete item selected: " + item.description);
+
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(client, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            Log.i(TAG, "Called getPlaceById to get Place details for " + item.placeId);
+
+            LatLng search_location = getLocationFromAddress(item.toString());
+            setViewToLocation(search_location);
+        }
+    };
+
+    // Callback for results from a Places Geo Data API query that shows the first place result in
+    // the details view on screen.
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            places.release();
+        }
+    };
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        location = LocationServices.FusedLocationApi.getLastLocation(client);
+        if (location == null)
+            LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                }
+            });
+        else
+            setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+    }
+
+    private LocationRequest createLocationRequest() {
+        return new LocationRequest()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setNumUpdates(1);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    protected synchronized void buildGoogleApiClient(Context context) {
+        client = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+        Log.d("Map", "Connected to Google API Client");
+    }
+
+    private void setViewToLocation(LatLng latLng) {
+        if (map != null) {
+            // Set initial view to current location
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
+        }
+    }
+
+    // Called when the Activity could not connect to Google Play services and the auto manager
+    // could resolve the error automatically.
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+    }
+
+    public LatLng getLocationFromAddress(String strAddress) {
+        Geocoder coder = new Geocoder(getActivity());
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return p1;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        client.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        client.disconnect();
+    }
 }
