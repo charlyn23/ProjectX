@@ -75,7 +75,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         buildGoogleApiClient(view.getContext());
         addMapFragment();
 
+        // Autocomplete Places setup
         search = (AutoCompleteTextView) view.findViewById(R.id.search);
+        search.setOnItemClickListener(mAutocompleteClickListener);
+        mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
+                client, BOUNDS, null);
+        search.setAdapter(mAdapter);
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -89,13 +94,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        search.setOnItemClickListener(mAutocompleteClickListener);
-        mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
-                client, BOUNDS, null);
-        search.setAdapter(mAdapter);
+        // Filter markers
+        
+
+
 
         //TODO populate map with parse data
-//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class); 
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
 
         return view;
     }
