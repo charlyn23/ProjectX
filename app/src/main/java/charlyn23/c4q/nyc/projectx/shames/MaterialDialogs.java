@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.maps.model.Marker;
 import com.parse.ParseObject;
 import charlyn23.c4q.nyc.projectx.R;
 
@@ -24,11 +25,13 @@ public class  MaterialDialogs {
     private double latitude;
     private double longitude;
     private Shame newShame;
+    private Marker new_marker;
 
-    public void initialDialog(final Context context, double latitude, double longitude) {
+    public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker) {
         ParseObject.registerSubclass(Shame.class);
         this.latitude = latitude;
         this.longitude = longitude;
+        this.new_marker = new_marker;
 
         new MaterialDialog.Builder(context)
                 .title("Report New Shame")
@@ -39,16 +42,16 @@ public class  MaterialDialogs {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         if (text.equals("verbal")) {
-                            shameTypeDialog(context, "verbal");
+                            shameTypeDialog(context, "verbal", new_marker);
                             shameType = "verbal";
                         }
                         else if (text.equals("physical")) {
-                            shameTypeDialog(context, "physical");
+                            shameTypeDialog(context, "physical", new_marker);
                             shameType = "physical";
 
                         }
                         else {
-                            shameTypeDialog(context, "other");
+                            shameTypeDialog(context, "other", new_marker);
                             shameType = "other";
 
                         }
@@ -67,12 +70,13 @@ public class  MaterialDialogs {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
+                        new_marker.remove();
                     }
                 })
                 .show();
     }
 
-    public void shameTypeDialog(final Context context, final String type) {
+    public void shameTypeDialog(final Context context, final String type, final Marker new_marker) {
         int content, items;
 
         switch (type) {
@@ -159,7 +163,7 @@ public class  MaterialDialogs {
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        initialDialog(context, latitude, longitude);
+                        initialDialog(context, latitude, longitude, new_marker);
                         dialog.cancel();
                     }
                 })
@@ -199,7 +203,7 @@ public class  MaterialDialogs {
                     }
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        shameTypeDialog(context, type);
+                        shameTypeDialog(context, type, new_marker);
                         dialog.cancel();
                     }
                 })

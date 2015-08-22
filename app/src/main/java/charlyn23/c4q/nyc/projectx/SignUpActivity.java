@@ -152,7 +152,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void reportShame() {
-        Intent intent = new Intent(SignUpActivity.this, ShameDetailActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }
