@@ -49,6 +49,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
+    private static final String LAT_LONG = "latLong";
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
 
@@ -61,7 +62,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private FloatingActionButton addShame;
     private Location location;
     private AutoCompleteTextView search;
-    private LatLng search_location;
+    private LatLng searchLocation;
 
 
     @Nullable
@@ -81,8 +82,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_GO) {
-                    search_location = getLocationFromAddress(search.getText().toString());
-                    setViewToLocation(search_location);
+                    searchLocation = getLocationFromAddress(search.getText().toString());
+                    setViewToLocation(searchLocation);
                     handled = true;
                 }
                 return handled;
@@ -152,6 +153,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 dialogs.initialDialog(view.getContext(), marker.getPosition().latitude, marker.getPosition().longitude);
             } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
+                intent.putExtra(LAT_LONG, marker.getPosition());
                 startActivity(intent);
             }
         }

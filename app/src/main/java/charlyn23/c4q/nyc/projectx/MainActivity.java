@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -26,10 +27,10 @@ import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHAME_REPORT = "shameReport";
+    private static final String LAT_LONG = "latLong";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
     private ProjectXMapFragment projectXMapFragment;
-    private boolean createDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +41,17 @@ public class MainActivity extends AppCompatActivity {
 
         setUpActionBar();
 
-        // brings up the dialog after the user logs in
+        // brings up the dialog after the user logs in with the latlong coordinates
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            createDialog = extras.getBoolean(SHAME_REPORT);
+            boolean createDialog = extras.getBoolean(SHAME_REPORT);
+            LatLng latLng = extras.getParcelable(LAT_LONG);
             if (createDialog) {
                 MaterialDialogs dialogs = new MaterialDialogs();
-                dialogs.initialDialog(this, 40, 50);
-                Log.d("yuliya", "" + createDialog);
+                dialogs.initialDialog(this, latLng.latitude, latLng.longitude);
             }
         }
     }
-
-
 
 
     public void setUpActionBar() {

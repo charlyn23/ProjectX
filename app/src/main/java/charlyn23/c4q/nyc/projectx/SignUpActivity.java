@@ -15,10 +15,13 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.plus.Plus;
 import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
+
+import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 
 
 public class SignUpActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -27,16 +30,23 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     private static final int RC_SIGN_IN = 0;
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
+    private static final String LAT_LONG = "latLong";
     private SharedPreferences.Editor editor;
     public static GoogleApiClient googleApiClient;
     private boolean mIsResolving = false;
     private boolean mShouldResolve = false;
     private SharedPreferences preferences = null;
+    private LatLng latLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            latLng = extras.getParcelable(LAT_LONG);
+        }
 
         //initializes views
         Button fb = (Button) findViewById(R.id.facebook_button);
@@ -173,6 +183,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     private void reportShame() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(SHAME_REPORT, true);
+        intent.putExtra(LAT_LONG, latLng);
         startActivity(intent);
 
     }
