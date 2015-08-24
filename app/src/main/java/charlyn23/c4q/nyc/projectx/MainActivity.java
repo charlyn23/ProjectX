@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         if (extras != null) {
             boolean createDialog = extras.getBoolean(SHAME_REPORT);
             LatLng latLng = extras.getParcelable(LAT_LONG);
-            if (createDialog) {
+            if (createDialog && latLng!=null) {
                 MaterialDialogs dialogs = new MaterialDialogs();
                 dialogs.initialDialog(this, latLng.latitude, latLng.longitude);
             }

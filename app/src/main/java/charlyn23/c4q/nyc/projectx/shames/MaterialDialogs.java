@@ -1,10 +1,18 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.view.View;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.parse.ParseObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 
 
@@ -13,6 +21,9 @@ public class  MaterialDialogs {
     private static final String SHAME_TYPE_COLUMN = "shameType";
     private static final String SHAME_FEEL_COLUMN = "shameFeel";
     private static final String SHAME_DOING_COLUMN = "shameDoing";
+    private static final String VERBAL_SHAME_COLUMN = "verbalShame";
+    private static final String PHYSICAL_SHAME_COLUMN = "physicalShame";
+    private static final String OTHER_SHAME_COLUMN = "otherShame";
 
     private String shameType;
     private String verbalShame;
@@ -38,18 +49,18 @@ public class  MaterialDialogs {
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        if (text.equals("verbal")) {
+                        if (text.equals("Verbal")) {
                             shameTypeDialog(context, "verbal");
                             shameType = "verbal";
                         }
-                        else if (text.equals("physical")) {
+                        else if (text.equals("Physical")) {
                             shameTypeDialog(context, "physical");
                             shameType = "physical";
 
                         }
-                        else {
+                        else if (text.equals("Other")){
                             shameTypeDialog(context, "other");
-                            shameType = "other";
+                             shameType = "other";
 
                         }
                         return true;
@@ -299,21 +310,29 @@ public class  MaterialDialogs {
                         newShame = new Shame();
                         newShame.put("latitude", latitude);
                         newShame.put("longitude", longitude);
-                        switch(shameType) {
+                        try {
+                            String zipcode = getZipcode(context, latitude, longitude);
+                            newShame.put("zipCode", zipcode);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        switch (shameType) {
                             case "verbal":
                                 newShame.put(SHAME_TYPE_COLUMN, "verbal");
                                 newShame.saveInBackground();
                                 if (verbalShame.equals("body comment")) {
-                                    newShame.put("verbalShame", "body comment");
+                                    newShame.put(VERBAL_SHAME_COLUMN, "body comment");
                                     newShame.saveInBackground();
                                 } else if (verbalShame.equals("vulgar")) {
-                                    newShame.put("verbalShame", "vulgar");
+                                    newShame.put(VERBAL_SHAME_COLUMN, "vulgar");
                                     newShame.saveInBackground();
                                 } else if (verbalShame.equals("creepy")) {
-                                    newShame.put("verbalShame", "creepy");
+                                    newShame.put(VERBAL_SHAME_COLUMN, "creepy");
                                     newShame.saveInBackground();
                                 } else {
-                                    newShame.put("verbalShame", "threatened");
+                                    newShame.put(VERBAL_SHAME_COLUMN, "threatened");
                                     newShame.saveInBackground();
                                 }
                                 break;
@@ -321,21 +340,21 @@ public class  MaterialDialogs {
                                 newShame.put(SHAME_TYPE_COLUMN, "physical");
                                 newShame.saveInBackground();
                                 if (physicalShame.equals("touch")) {
-                                    newShame.put("physicalShame", "touch");
+                                    newShame.put(PHYSICAL_SHAME_COLUMN, "touch");
                                 } else if (physicalShame.equals("hit")) {
-                                    newShame.put("physicalShame", "hit");
+                                    newShame.put(PHYSICAL_SHAME_COLUMN, "hit");
                                     newShame.saveInBackground();
                                 } else if (physicalShame.equals("throw something")) {
-                                    newShame.put("physicalShame", "throw something");
+                                    newShame.put(PHYSICAL_SHAME_COLUMN, "throw something");
                                     newShame.saveInBackground();
                                 } else if (physicalShame.equals("spit")) {
-                                    newShame.put("physicalShame", "spit");
+                                    newShame.put(PHYSICAL_SHAME_COLUMN, "spit");
                                     newShame.saveInBackground();
                                 } else if (physicalShame.equals("pull at clothing")) {
-                                    newShame.put("physicalShame", "pull at clothing");
+                                    newShame.put(PHYSICAL_SHAME_COLUMN, "pull at clothing");
                                     newShame.saveInBackground();
                                 } else {
-                                    newShame.put("physicalShame", "sexual assaulted");
+                                    newShame.put(PHYSICAL_SHAME_COLUMN, "sexual assaulted");
                                     newShame.saveInBackground();
                                 }
                                 break;
@@ -343,20 +362,20 @@ public class  MaterialDialogs {
                                 newShame.put(SHAME_TYPE_COLUMN, "other");
                                 newShame.saveInBackground();
                                 if (otherShame.equals("follow")) {
-                                    newShame.put("otherShame", "follow");
+                                    newShame.put(OTHER_SHAME_COLUMN, "follow");
                                     newShame.saveInBackground();
                                 } else if (otherShame.equals("expose themselves")) {
-                                    newShame.put("otherShame", "expose themselves");
+                                    newShame.put(OTHER_SHAME_COLUMN, "expose themselves");
                                     newShame.saveInBackground();
                                 } else if (otherShame.equals("masturbate")) {
-                                    newShame.put("otherShame", "masturbate");
+                                    newShame.put(OTHER_SHAME_COLUMN, "masturbate");
                                     newShame.saveInBackground();
                                 } else {
-                                    newShame.put("otherShame", "other");
+                                    newShame.put(OTHER_SHAME_COLUMN, "other");
                                     newShame.saveInBackground();
                                 }
                                 break;
-                            }
+                        }
                         switch (shameFeel) {
                             case "barely noticed":
                                 newShame.put(SHAME_FEEL_COLUMN, "barely noticed");
@@ -445,5 +464,14 @@ public class  MaterialDialogs {
                     }
                 })
                 .show();
+    }
+
+    private String getZipcode (Context context, double latitude, double longitude) throws IOException {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(context, Locale.getDefault());
+        addresses = geocoder.getFromLocation(latitude, longitude, 1); // 1 represents max location result to returned, by documents it recommended 1 to 5
+        String postalCode = addresses.get(0).getPostalCode();
+        return postalCode;
     }
 }

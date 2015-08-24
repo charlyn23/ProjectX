@@ -255,6 +255,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
             Plus.AccountApi.clearDefaultAccount(googleApiClient);
             googleApiClient.disconnect();
         }
+
+
         editor = preferences.edit();
         editor.putBoolean(LOGGED_IN, false).commit();
         Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
