@@ -13,26 +13,23 @@ import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "c4q.nyc.projectx";
-    private static final String SHARED_PREFERENCE = "sharedPreference";
-    private static final String LOGGED_IN = "isLoggedIn";
+    private static final String SHAME_REPORT = "shameReport";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
     private ProjectXMapFragment projectXMapFragment;
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        Intent intent = getIntent();
-        String position = intent.getStringExtra("position");
-
-    }
+    private boolean createDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +40,16 @@ public class MainActivity extends AppCompatActivity {
 
         setUpActionBar();
 
+        // brings up the dialog after the user logs in
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            createDialog = extras.getBoolean(SHAME_REPORT);
+            if (createDialog) {
+                MaterialDialogs dialogs = new MaterialDialogs();
+                dialogs.initialDialog(this, 40, 50);
+                Log.d("yuliya", "" + createDialog);
+            }
+        }
     }
 
 
@@ -89,24 +96,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
 
         int id = item.getItemId();
         if (id == R.id.log_out) {
-
-            ParseUser user = ParseUser.getCurrentUser();
-
-            user.logOut();
-            user.deleteInBackground();
-            user.remove("username");
-
-            editor.putBoolean(LOGGED_IN, false).commit();
-            Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-
-            return true;
+            Intent intent = new Intent (this, SignUpActivity.class);
+            startActivity(intent);
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     //displays the first page on the Back Button pressed
