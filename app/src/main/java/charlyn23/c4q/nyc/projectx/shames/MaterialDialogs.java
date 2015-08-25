@@ -1,11 +1,21 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
 import android.content.Context;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.ParseObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import charlyn23.c4q.nyc.projectx.R;
 
 
@@ -22,6 +32,7 @@ public class  MaterialDialogs {
     private String shameFeel;
     private String shameDoing;
     private String group;
+    private String timestamp;
     private double latitude;
     private double longitude;
     private Shame newShame;
@@ -34,8 +45,7 @@ public class  MaterialDialogs {
         this.new_marker = new_marker;
 
         new MaterialDialog.Builder(context)
-                .title("Report New Shame")
-                .content(R.string.new_shame_type)
+                .title(R.string.new_shame_type)
                 .items(R.array.shame_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
 
@@ -99,8 +109,7 @@ public class  MaterialDialogs {
         }
 
         new MaterialDialog.Builder(context)
-                .title("Report New Shame")
-                .content(content)
+                .title(content)
                 .items(items)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
@@ -108,44 +117,31 @@ public class  MaterialDialogs {
                         feelDialog(context, type, type_choice.toString());
                         if (type.equals("verbal") && which == 0){
                             verbalShame = "body comment";
-                        }
-                        else if (type.equals("verbal") && which == 1) {
+                        } else if (type.equals("verbal") && which == 1) {
                             verbalShame = "vulgar";
-                        }
-                        else if (type.equals("verbal") && which == 2) {
+                        } else if (type.equals("verbal") && which == 2) {
                             verbalShame = "creepy";
-                        }
-                        else if (type.equals("verbal") && which == 3) {
+                        } else if (type.equals("verbal") && which == 3) {
                             verbalShame = "threatened";
-                        }
-                        else if (type.equals("physical") && which == 0) {
+                        } else if (type.equals("physical") && which == 0) {
                             physicalShame = "touch";
-                        }
-                        else if (type.equals("physical") && which == 1) {
+                        } else if (type.equals("physical") && which == 1) {
                             physicalShame = "hit";
-                        }
-                        else if (type.equals("physical") && which == 2) {
+                        } else if (type.equals("physical") && which == 2) {
                             physicalShame = "throw something";
-                        }
-                        else if (type.equals("physical") && which == 3) {
+                        } else if (type.equals("physical") && which == 3) {
                             physicalShame = "spit";
-                        }
-                        else if (type.equals("physical") && which == 4) {
+                        } else if (type.equals("physical") && which == 4) {
                             physicalShame = "pull at clothing";
-                        }
-                        else if (type.equals("physical") && which == 5) {
+                        } else if (type.equals("physical") && which == 5) {
                             physicalShame = "sexual assaulted";
-                        }
-                        else if (type.equals("other") && which == 0){
+                        } else if (type.equals("other") && which == 0){
                             otherShame = "follow";
-                        }
-                        else if (type.equals("other") && which == 1){
+                        } else if (type.equals("other") && which == 1){
                             otherShame = "expose themselves";
-                        }
-                        else if (type.equals("other") && which == 2){
+                        } else if (type.equals("other") && which == 2){
                             otherShame = "masturbate";
-                        }
-                        else if (type.equals("other") && which == 3){
+                        } else if (type.equals("other") && which == 3){
                             otherShame = "other";
                         }
 
@@ -172,8 +168,7 @@ public class  MaterialDialogs {
 
     public void feelDialog(final Context context, final String type, final String type_choice) {
         new MaterialDialog.Builder(context)
-                .title("Report New Shame")
-                .content(R.string.shame_feel)
+                .title(R.string.shame_feel)
                 .items(R.array.feel_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
@@ -212,8 +207,7 @@ public class  MaterialDialogs {
 
     public void doingDialog(final Context context, final String type, final String type_choice, final String feel) {
         new MaterialDialog.Builder(context)
-                .title("Report New Shame")
-                .content(R.string.shame_doing)
+                .title(R.string.shame_doing)
                 .items(R.array.doing_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
@@ -255,7 +249,7 @@ public class  MaterialDialogs {
 
     public void whenDialog(final Context context, final String type, final String type_choice, final String feel, final String doing) {
         new MaterialDialog.Builder(context)
-                .title("Report New Shame")
+                .title(R.string.shame_when)
                 .customView(R.layout.time_picker, true)
                 .autoDismiss(false)
                 .positiveText(R.string.next)
@@ -263,7 +257,11 @@ public class  MaterialDialogs {
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        //TODO save time?
+                        DatePicker date_picker = (DatePicker) dialog.findViewById(R.id.date);
+                        TimePicker time_picker = (TimePicker) dialog.findViewById(R.id.time);
+                        timestamp = getDateFromDatePicker(date_picker, time_picker);
+                        Log.d("DATE__", timestamp);
+
                         whyDialog(context, type, type_choice, feel, doing);
                         dialog.cancel();
                     }
@@ -277,11 +275,23 @@ public class  MaterialDialogs {
                 .show();
     }
 
+    public static String getDateFromDatePicker(DatePicker datePicker, TimePicker timePicker) {
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year =  datePicker.getYear();
+        int hour = timePicker.getCurrentHour();
+        int min = timePicker.getCurrentMinute();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, hour, min);
+        Date date = calendar.getTime();
+
+        return new SimpleDateFormat("yyyyMMdd_HHmm").format(date);
+    }
 
     public void whyDialog(final Context context, final String type, final String type_choice, final String feel, final String doing) {
         new MaterialDialog.Builder(context)
-                .title("Report New Shame")
-                .content(R.string.shame_why)
+                .title(R.string.shame_why)
                 .items(R.array.why_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
 

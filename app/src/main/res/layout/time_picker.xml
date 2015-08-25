@@ -4,15 +4,22 @@
     android:layout_height="match_parent">
 
     <DatePicker
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:spinnersShown="false"
+        android:spinnersShown="true"
         android:layout_gravity="center"
-        android:yearListSelectorColor="@color/primary"
-        android:calendarTextColor="@color/primary"
+        android:calendarViewShown="false"
         android:datePickerMode="spinner"/>
 
+    <TextView
+        android:text="What time?"
+        android:textSize="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <TimePicker
+        android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

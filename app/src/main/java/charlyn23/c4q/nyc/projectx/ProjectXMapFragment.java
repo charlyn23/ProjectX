@@ -47,6 +47,7 @@ import com.parse.ParseQuery;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
@@ -134,33 +135,32 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
 //
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
-        DateFormat df = new SimpleDateFormat("YYYY-MM-DD_HHmm");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         query.whereGreaterThan("createdAt", cal.getTime());
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> shames, ParseException e) {
                 if (e == null) {
-                    for (ParseObject shame : shames) {
-                        LatLng position = new LatLng(shame.getLong("latitude"), shame.getLong("longitude"));
-                        String shame_type = shame.getString("Group");
-
-                        switch (shame_type) {
-                            case "woman":
-                                woman = map.addMarker(new MarkerOptions().position(position));
-                                break;
-                            case "minor":
-                                minor = map.addMarker(new MarkerOptions().position(position));
-                                break;
-                            case "POC":
-                                POC = map.addMarker(new MarkerOptions().position(position));
-                                break;
-                            case "LGBTQ":
-                                LGBTQ = map.addMarker(new MarkerOptions().position(position));
-                                break;
-                        }
-
-                    }
+//                    for (ParseObject shame : shames) {
+//                        LatLng position = new LatLng(shame.getLong("latitude"), shame.getLong("longitude"));
+//                        String shame_type = shame.getString("Group");
+//
+//                        switch (shame_type) {
+//                            case "woman":
+//                                woman = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                            case "minor":
+//                                minor = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                            case "POC":
+//                                POC = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                            case "LGBTQ":
+//                                LGBTQ = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                        }
+//                    }
                     Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
