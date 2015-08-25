@@ -153,10 +153,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
 //
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         Calendar cal = Calendar.getInstance();
+        //TODO month = 0-2?
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-        query.whereGreaterThan("createdAt", cal.getTime());
+        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+        query.whereGreaterThan("shameTime", last_two_months);
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> shames, ParseException e) {
                 if (e == null) {
