@@ -39,6 +39,7 @@
         </HorizontalScrollView>
 
         <Button
+            android:id="@+id/filter"
             android:layout_width="0dp"
             android:layout_gravity="center"
             android:layout_weight="2"

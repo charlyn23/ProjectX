@@ -185,7 +185,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         intent.putExtra(SHAME_REPORT, true);
         intent.putExtra(LAT_LONG, latLng);
         startActivity(intent);
-
     }
 
     @Override
@@ -260,7 +259,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         editor = preferences.edit();
         editor.putBoolean(LOGGED_IN, false).commit();
         Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }
