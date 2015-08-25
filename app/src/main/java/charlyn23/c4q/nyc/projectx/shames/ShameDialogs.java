@@ -22,7 +22,7 @@ import java.util.Date;
 import charlyn23.c4q.nyc.projectx.R;
 
 
-public class  MaterialDialogs {
+public class ShameDialogs {
     private static final String GROUP_COLUMN = "Group";
     private static final String SHAME_TYPE_COLUMN = "shameType";
     private static final String SHAME_FEEL_COLUMN = "shameFeel";

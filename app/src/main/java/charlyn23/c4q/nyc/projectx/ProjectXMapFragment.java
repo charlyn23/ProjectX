@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,6 +23,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -46,10 +48,9 @@ import com.parse.ParseQuery;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
+import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 
@@ -105,7 +106,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         filter = (Button) view.findViewById(R.id.filter);
-
+        filter.setOnClickListener(filterClick);
 
         // brings up the dialog after the user logs in with the latlong coordinates
         Bundle extras = getActivity().getIntent().getExtras();
@@ -113,7 +114,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             boolean createDialog = extras.getBoolean(SHAME_REPORT);
             LatLng latLng = extras.getParcelable(LAT_LONG);
             if (createDialog && latLng!=null) {
-                MaterialDialogs dialogs = new MaterialDialogs();
+                ShameDialogs dialogs = new ShameDialogs();
                 new_marker = map.addMarker(new MarkerOptions()
                         .title(latLng.latitude + " : " + latLng.longitude)
                         .position(latLng)
@@ -151,7 +152,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         //TODO populate map with parse data
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
-//
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
         Calendar cal = Calendar.getInstance();
         //TODO month = 0-2?
@@ -196,7 +197,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                MaterialDialogs dialogs = new MaterialDialogs();
+                ShameDialogs dialogs = new ShameDialogs();
                 //gets location coordinates of the last dropped pin
                 Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
                 dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
@@ -267,6 +268,38 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             new_marker.remove();
             isDropped = false;
             addShame.setVisibility(View.INVISIBLE);
+        }
+    };
+
+    View.OnClickListener filterClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new MaterialDialog.Builder(view.getContext())
+                    .title(R.string.filter)
+                    .content(R.string.filter_content)
+                    .items(R.array.filter_types)
+                    .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            // TODO filter markers
+                            return true;
+                        }
+                    })
+                    .positiveText(R.string.done)
+                    .negativeText(R.string.cancel)
+                    .autoDismiss(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            dialog.cancel();
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            dialog.cancel();
+                        }
+                    })
+                    .show();
         }
     };
 

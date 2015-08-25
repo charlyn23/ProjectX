@@ -78,8 +78,18 @@
         <item>Because I\'m a minor</item>
     </array>
 
+    <array name="filter_types">
+        <item>Women</item>
+        <item>People of color</item>
+        <item>LGBTQ</item>
+        <item>Minors</item>
+    </array>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="network_connection_problem">Check your network connection!</string>
     <string name="snackbar_delete">Delete</string>
+    <string name="filter">Filter Markers</string>
+    <string name="filter_content">Only show Shames effecting:</string>
+    <string name="done">Done</string>
 </resources>

@@ -12,39 +12,41 @@
         android:background="@color/text_white"
         android:orientation="horizontal">
 
-        <ImageView
+        <Button
+            android:id="@+id/filter"
+            style="@style/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
             android:layout_gravity="center"
-            android:src="@drawable/search"/>
+            android:layout_weight="3"
+            android:text="Filter"
+            android:textColor="@color/primary" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:padding="5dp"
+            android:src="@drawable/search" />
 
         <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_weight="9"
             android:requiresFadingEdge="horizontal"
-            android:scrollbars="none"
-            android:layout_weight="6">
+            android:scrollbars="none">
 
             <AutoCompleteTextView
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:hint="Search Location                                         "
                 android:imeOptions="actionGo"
-                android:textSize="18dp"
-                android:hint="Search                                                  " />
+                android:textSize="18dp" />
 
         </HorizontalScrollView>
-
-        <Button
-            android:id="@+id/filter"
-            android:layout_width="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:text="Filter"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

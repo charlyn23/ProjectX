@@ -21,8 +21,6 @@ import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
 
-import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
-
 
 public class SignUpActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "c4q.nyc.projectx";

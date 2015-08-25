@@ -1,28 +1,13 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
-
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.plus.Plus;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-
-import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 
 
 public class MainActivity extends AppCompatActivity {
