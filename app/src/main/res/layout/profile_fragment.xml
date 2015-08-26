@@ -2,20 +2,19 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_tiles">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="15dp"
+            android:background="@drawable/banner"
             android:layout_weight="2"
+            android:padding="20dp"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -25,72 +24,45 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:src="@drawable/logo"
-                app:border_color="#FF000000"
+                app:border_color="@color/accent"
                 app:border_width="2dp" />
 
             <TextView
                 android:id="@+id/profile_text"
                 android:layout_width="0dp"
+                android:textColor="@color/text_white"
                 android:layout_height="match_parent"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:gravity="bottom|right"
-                android:text="Hello Charlyn!"
+                android:text="Profile"
                 android:textSize="40sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
+            android:padding="20dp"
             android:layout_height="0dp"
-            android:layout_marginTop="40dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="2">
 
             <TextView
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="I Identify as" />
+                android:text="Submitted Shames" />
 
-            <RadioGroup
-                android:id="@+id/sex"
-                android:layout_marginTop="7dp"
+            <ListView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/male"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:drawableRight="@drawable/male" />
-
-                <RadioButton
-                    android:id="@+id/female"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:drawableRight="@drawable/female" />
-
-                <RadioButton
-                    android:id="@+id/other"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:drawableRight="@drawable/profile" />
-
-            </RadioGroup>
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
+            android:padding="20dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -104,7 +76,6 @@
                 android:id="@+id/year"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
@@ -122,21 +93,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
             android:layout_weight="2"
+            android:padding="20dp"
             android:orientation="vertical">
 
             <TextView
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="When I am harassed," />
-
-            <TextView
-                style="@style/profile_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="I believe it is because I am " />
+                android:text="I identify as" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -239,14 +204,6 @@
                     android:textOn="Minor" />
 
             </LinearLayout>
-
         </LinearLayout>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Log Out"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"/>
     </LinearLayout>
 </ScrollView>
