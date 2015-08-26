@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,53 +6,39 @@
     tools:context="charlyn23.c4q.nyc.projectx.SignUpActivity"
     android:padding="40dp">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@drawable/shamer"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"/>
-
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:text="SHAMR"
-        android:layout_centerInParent="true"
-        android:layout_below="@+id/logo"
         android:textSize="35sp"/>
 
-    <Button
+    <com.facebook.login.widget.LoginButton
         android:id="@+id/facebook_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="FB"
-        android:background="@drawable/facebook_icon"
-        android:layout_below="@+id/name"/>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:text="FB"/>
 
     <Button
         android:id="@+id/twitter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/facebook_button"
-        android:layout_below="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:text="Twitter"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/twitter_button"
-        android:layout_below="@+id/name"
-        android:layout_centerInParent="true"/>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
 
     <Button
         android:id="@+id/log_out"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="Log out"
-        android:layout_below="@+id/sign_in_button"
-        android:layout_centerInParent="true"/>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:text="Log out"/>
 
-</RelativeLayout>
+</LinearLayout>
