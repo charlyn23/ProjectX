@@ -150,11 +150,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
 
-        //TODO populate map with parse data
 
+
+        //populates map with shames that occured within the last two months
         ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
         Calendar cal = Calendar.getInstance();
-        //TODO month = 0-2? maybe get back a list of all shames in that period, then sort by type
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
         Log.i("last_two_months", last_two_months); //good
@@ -241,7 +241,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
-        public boolean onMarkerClick(Marker marker) {
+        public boolean onMarkerClick(final Marker marker) {
             //TODO differentiate shame markers
             if (marker.equals(new_marker)) {
                 Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
@@ -258,8 +258,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             Log.e("shame", "not found");
                         }
                         else {
-                            Log.d("shame : " , String.valueOf(shame));
-
+                            Log.d("shame : ", String.valueOf(shame));
+                            Double latitude = shame.getDouble("latitude");
+                            Double longitude = shame.getDouble("longitude");
+                            String when = shame.getString("shameTime");
+                            String who = shame.getString("Group");
+                            String type = shame.getString("shameType");
+                            
+                            Log.i("shame data" , latitude + " " +  longitude + " " +  String.valueOf(when) + " " +  who + " " +  type);
                         }
                     }
                 });

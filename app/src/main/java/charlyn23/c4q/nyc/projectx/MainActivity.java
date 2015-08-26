@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent intent = new Intent (this, AccountSetting.class);
-            startActivity(intent);
+//            Intent intent = new Intent (this, AccountSetting.class);
+//            startActivity(intent);
         } else if (id == R.id.log_out) {
             // TODO should say "log in" when user is not logged in
             Intent intent = new Intent (this, SignUpActivity.class);
