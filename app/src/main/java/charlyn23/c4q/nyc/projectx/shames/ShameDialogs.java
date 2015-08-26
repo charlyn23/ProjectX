@@ -30,6 +30,7 @@ public class ShameDialogs {
     private static final String VERBAL_SHAME_COLUMN = "verbalShame";
     private static final String PHYSICAL_SHAME_COLUMN = "physicalShame";
     private static final String OTHER_SHAME_COLUMN = "otherShame";
+    private static final String SHAME_TIME_COLUMN = "shameTime";
 
     private String shameType;
     private String verbalShame;
@@ -44,6 +45,7 @@ public class ShameDialogs {
     private Shame newShame;
     private Marker new_marker;
     private FloatingActionButton addShame;
+    private String shameTime;
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
         ParseObject.registerSubclass(Shame.class);
@@ -59,10 +61,10 @@ public class ShameDialogs {
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        if (text.equals("verbal")) {
+                        if (text.equals("Verbal")) {
                             shameTypeDialog(context, "verbal");
                             shameType = "verbal";
-                        } else if (text.equals("physical")) {
+                        } else if (text.equals("Physical")) {
                             shameTypeDialog(context, "physical");
                             shameType = "physical";
                         } else {
@@ -220,15 +222,20 @@ public class ShameDialogs {
                         whenDialog(context, type, type_choice, feel, doing.toString());
                         if (which == 0) {
                             shameDoing = "walking";
-                        }if (which == 1) {
+                        }
+                        if (which == 1) {
                             shameDoing = "jogging";
-                        }if (which == 2) {
+                        }
+                        if (which == 2) {
                             shameDoing = "biking";
-                        }if (which == 3) {
+                        }
+                        if (which == 3) {
                             shameDoing = "waiting";
-                        }if (which == 4) {
+                        }
+                        if (which == 4) {
                             shameDoing = "driving";
-                        }if (which == 5) {
+                        }
+                        if (which == 5) {
                             shameDoing = "other";
                         }
                         return true;
@@ -267,7 +274,7 @@ public class ShameDialogs {
                         timestamp = getDateFromDatePicker(date_picker, time_picker);
                         Log.d("DATE__", timestamp);
 
-                        whyDialog(context, type, type_choice, feel, doing);
+                        whyDialog(context, type, type_choice, feel, doing, timestamp);
                         dialog.cancel();
                     }
 
@@ -291,10 +298,11 @@ public class ShameDialogs {
         calendar.set(year, month, day, hour, min);
         Date date = calendar.getTime();
 
+
         return new SimpleDateFormat("yyyyMMdd_HHmm").format(date);
     }
 
-    public void whyDialog(final Context context, final String type, final String type_choice, final String feel, final String doing) {
+    public void whyDialog(final Context context, final String type, final String type_choice, final String feel, final String doing, final String timestamp) {
         new MaterialDialog.Builder(context)
                 .title(R.string.shame_why)
                 .items(R.array.why_types)
@@ -316,6 +324,7 @@ public class ShameDialogs {
                         }
 
                         newShame = new Shame();
+                        newShame.put("shameTime", timestamp);
                         newShame.put("latitude", latitude);
                         newShame.put("longitude", longitude);
                         try {
@@ -324,6 +333,7 @@ public class ShameDialogs {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
 
 
                         switch (shameType) {
