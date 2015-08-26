@@ -9,10 +9,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
+    boolean isLoggedIn;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+    public PagerAdapter(FragmentManager fm, int NumOfTabs, boolean isLoggedIn) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
+        this.isLoggedIn = isLoggedIn;
     }
 
     @Override
@@ -20,14 +22,14 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                ProjectXMapFragment mapFragm = new ProjectXMapFragment();
-                return mapFragm;
+                return new ProjectXMapFragment();
             case 1:
-                ProfileFragment profileFragment = new ProfileFragment();
-                return profileFragment;
+                if (isLoggedIn)
+                    return new ProfileFragment();
+                else
+                    return new SignUpFragment();
             case 2:
-                StatsFragment statsFragment = new StatsFragment();
-                return statsFragment;
+                return new StatsFragment();
             default:
                 return null;
         }

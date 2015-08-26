@@ -3,7 +3,6 @@ package charlyn23.c4q.nyc.projectx;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -46,8 +46,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
@@ -154,19 +152,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
-        Calendar cal = Calendar.getInstance();
-        //TODO month = 0-2?
-        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-        query.whereGreaterThan("shameTime", last_two_months);
+//        Calendar cal = Calendar.getInstance();
+//        //TODO month = 0-2?
+//        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+//        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+//        query.whereGreaterThan("shameTime", last_two_months);
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> shames, ParseException e) {
                 if (e == null) {
-//                    for (ParseObject shame : shames) {
-//                        LatLng position = new LatLng(shame.getLong("latitude"), shame.getLong("longitude"));
-//                        String shame_type = shame.getString("Group");
-//
-//                        switch (shame_type) {
+                    for (ParseObject shame : shames) {
+                        LatLng position = new LatLng(shame.getLong("latitude"), shame.getLong("longitude"));
+                        String group = shame.getString("Group");
+
+//                        switch (group) {
 //                            case "woman":
 //                                woman = map.addMarker(new MarkerOptions().position(position));
 //                                break;
@@ -180,7 +178,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 //                                LGBTQ = map.addMarker(new MarkerOptions().position(position));
 //                                break;
 //                        }
-//                    }
+                    }
                     Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
@@ -202,9 +200,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
                 dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
             } else {
-                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
-                intent.putExtra(LAT_LONG, new_marker.getPosition());
-                startActivity(intent);
+//                Intent intent = new Intent(view.getContext(), SignUpFragment.class);
+//                intent.putExtra(LAT_LONG, new_marker.getPosition());
+//                startActivity(intent);
             }
         }
     };
