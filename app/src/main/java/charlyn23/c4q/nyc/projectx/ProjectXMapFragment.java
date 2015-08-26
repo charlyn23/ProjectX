@@ -64,7 +64,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private AutoCompleteTextView search;
     private LatLng searchLocation;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

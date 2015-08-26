@@ -59,7 +59,7 @@ public class StatsFragment extends Fragment {
 
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         barChart = (HorizontalBarChart) view.findViewById(R.id.bar_chart);
-        detailView = (TextView) view.findViewById(R.id.detail_view);
+        //detailView = (TextView) view.findViewById(R.id.detail_view);
 
         configPieChart(pieChart);
         configBarChart(barChart);
