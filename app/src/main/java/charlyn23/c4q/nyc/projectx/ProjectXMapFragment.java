@@ -3,7 +3,6 @@ package charlyn23.c4q.nyc.projectx;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -42,16 +41,17 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
+import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
+import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -151,36 +151,39 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMarkerClickListener(markerClickListener);
 
         //TODO populate map with parse data
-//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
+        ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
         Calendar cal = Calendar.getInstance();
-        //TODO month = 0-2?
+        //TODO month = 0-2? maybe get back a list of all shames in that period, then sort by type
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-        query.whereGreaterThan("shameTime", last_two_months);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> shames, ParseException e) {
+        Log.i("last_two_months", last_two_months); //good
+        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
+        query.findInBackground(new FindCallback<Shame>() {
+            public void done(List<Shame> shames, ParseException e) {
                 if (e == null) {
-//                    for (ParseObject shame : shames) {
-//                        LatLng position = new LatLng(shame.getLong("latitude"), shame.getLong("longitude"));
-//                        String shame_type = shame.getString("Group");
-//
-//                        switch (shame_type) {
-//                            case "woman":
-//                                woman = map.addMarker(new MarkerOptions().position(position));
-//                                break;
-//                            case "minor":
-//                                minor = map.addMarker(new MarkerOptions().position(position));
-//                                break;
-//                            case "POC":
-//                                POC = map.addMarker(new MarkerOptions().position(position));
-//                                break;
-//                            case "LGBTQ":
-//                                LGBTQ = map.addMarker(new MarkerOptions().position(position));
-//                                break;
-//                        }
-//                    }
+
+                    for (Shame shame : shames) {
+                        double latitude = shame.getDouble("latitude");
+                        double longitude = shame.getDouble("longitude");
+                        LatLng location = new LatLng(latitude, longitude);
+                        String shame_group = shame.getString("Group");
+
+                        switch (shame_group) {
+                            case "woman":
+                                woman = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                            case "minor":
+                                minor = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                            case "POC":
+                                POC = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                            case "LGBTQ":
+                                LGBTQ = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                        }
+                    }
                     Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
@@ -241,13 +244,31 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         public boolean onMarkerClick(Marker marker) {
             //TODO differentiate shame markers
             if (marker.equals(new_marker)) {
-                Snackbar.make(view, "Click the \"+\" to report new shame", 7000)
+                Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
             } else {
-                Snackbar.make(view, "SHAME + Date", 7000)
+                ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
+                query.whereEqualTo("latitude", marker.getPosition().latitude);
+                query.whereEqualTo("longitude", marker.getPosition().longitude);
+                query.getFirstInBackground(new GetCallback<Shame>() {
+                    @Override
+                    public void done(Shame shame, ParseException e) {
+                        if (shame == null) {
+                            Log.e("shame", "not found");
+                        }
+                        else {
+                            Log.d("shame : " , String.valueOf(shame));
+
+                        }
+                    }
+                });
+                Snackbar.make(view, "SHAME + Date", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_action, snackbarDetail)
                         .show();
+                Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
+                Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
+
             }
             return true;
         }
@@ -282,6 +303,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                             // TODO filter markers
+
                             return true;
                         }
                     })
