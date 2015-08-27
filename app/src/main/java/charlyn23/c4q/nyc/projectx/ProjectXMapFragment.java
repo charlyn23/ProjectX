@@ -11,9 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
@@ -57,9 +60,8 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
-    private static final String SHAME_REPORT = "shameReport";
     private static final String LOGGED_IN = "isLoggedIn";
-    private static final String LAT_LONG = "latLong";
+    private static final int LOG_IN_VIEW = 2;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
 
@@ -72,13 +74,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private FloatingActionButton addShame;
     private AutoCompleteTextView search;
     private LatLng searchLocation;
-    private LatLng search_location;
     private Button filter;
+    private ViewPager viewPager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
+        viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
 
@@ -108,23 +111,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         filter = (Button) view.findViewById(R.id.filter);
         filter.setOnClickListener(filterClick);
 
-        // brings up the dialog after the user logs in with the latlong coordinates
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null) {
-            boolean createDialog = extras.getBoolean(SHAME_REPORT);
-            LatLng latLng = extras.getParcelable(LAT_LONG);
-            if (createDialog && latLng!=null) {
-                ShameDialogs dialogs = new ShameDialogs();
-                new_marker = map.addMarker(new MarkerOptions()
-                        .title(latLng.latitude + " : " + latLng.longitude)
-                        .position(latLng)
-                        .draggable(true));
-                addShame.setVisibility(View.VISIBLE);
-                isDropped = true;
-                dialogs.initialDialog(view.getContext(), latLng.latitude, latLng.longitude, new_marker, addShame);
-            }
-        }
-
         return view;
     }
 
@@ -151,7 +137,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMarkerClickListener(markerClickListener);
 
         //TODO populate map with parse data
-
         ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
         Calendar cal = Calendar.getInstance();
         //TODO month = 0-2? maybe get back a list of all shames in that period, then sort by type
@@ -205,9 +190,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
                 dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
             } else {
-                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
-                intent.putExtra(LAT_LONG, new_marker.getPosition());
-                startActivity(intent);
+                viewPager.setCurrentItem(LOG_IN_VIEW);
+                Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
             }
         }
     };
