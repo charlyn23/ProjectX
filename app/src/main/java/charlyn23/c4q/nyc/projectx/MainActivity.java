@@ -1,29 +1,31 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass {
     private static final String TAG = "c4q.nyc.projectx";
 
     private static final String LAT_LONG = "latLong";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
-    private ProjectXMapFragment projectXMapFragment;
+
+    ProjectXMapFragment.OnDataPass dataPasser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        projectXMapFragment = new ProjectXMapFragment();
 
         setUpActionBar();
     }
@@ -91,4 +93,21 @@ public class MainActivity extends AppCompatActivity {
             return super.onKeyDown(keyCode, event);
         }
     }
+
+    @Override
+    public void onDataPass(double latitude, double longitude, String date, String who, String type) {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            dataPasser = (ProjectXMapFragment.OnDataPass) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnDataPass");
+        }
+    }
+
+
+
 }

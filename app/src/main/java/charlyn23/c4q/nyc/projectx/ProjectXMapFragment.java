@@ -1,5 +1,6 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -74,6 +75,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private LatLng searchLocation;
     private LatLng search_location;
     private Button filter;
+    //latitude,  longitude,  date,  who,  type
+    private double latitude;
+    private double longitude;
+    private String date;
+    private String who;
+    private String type;
 
     @Nullable
     @Override
@@ -113,7 +120,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         if (extras != null) {
             boolean createDialog = extras.getBoolean(SHAME_REPORT);
             LatLng latLng = extras.getParcelable(LAT_LONG);
-            if (createDialog && latLng!=null) {
+            if (createDialog && latLng != null) {
                 ShameDialogs dialogs = new ShameDialogs();
                 new_marker = map.addMarker(new MarkerOptions()
                         .title(latLng.latitude + " : " + latLng.longitude)
@@ -149,7 +156,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
-
 
 
         //populates map with shames that occured within the last two months
@@ -256,16 +262,17 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     public void done(Shame shame, ParseException e) {
                         if (shame == null) {
                             Log.e("shame", "not found");
-                        }
-                        else {
+                        } else {
                             Log.d("shame : ", String.valueOf(shame));
                             Double latitude = shame.getDouble("latitude");
                             Double longitude = shame.getDouble("longitude");
                             String when = shame.getString("shameTime");
+                            String date = getDate(when);
+
                             String who = shame.getString("Group");
                             String type = shame.getString("shameType");
-                            
-                            Log.i("shame data" , latitude + " " +  longitude + " " +  String.valueOf(when) + " " +  who + " " +  type);
+
+                            Log.i("shame data", latitude + " " + longitude + " " + date + " " + who + " " + type);
                         }
                     }
                 });
@@ -426,7 +433,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             location.getLatitude();
             location.getLongitude();
 
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -444,5 +451,27 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void onStop() {
         super.onStop();
         client.disconnect();
+    }
+
+    private String getDate(String when) {
+
+        try {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
+            return sdf2.format(sdf1.parse(when));
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public interface OnDataPass {
+        public void onDataPass(double latitude, double longitude, String date, String who, String type);
+    }
+
+
+
+    public void passData(String data) {
+        dataPasser.onDataPass( latitude,  longitude,  date,  who,  type);
     }
 }
