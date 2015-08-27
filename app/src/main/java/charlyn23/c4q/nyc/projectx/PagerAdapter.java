@@ -24,12 +24,12 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new ProjectXMapFragment();
             case 1:
+                return new StatsFragment();
+            case 2:
                 if (isLoggedIn)
                     return new ProfileFragment();
                 else
                     return new SignUpFragment();
-            case 2:
-                return new StatsFragment();
             default:
                 return null;
         }

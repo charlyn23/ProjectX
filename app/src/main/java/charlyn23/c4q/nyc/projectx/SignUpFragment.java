@@ -50,7 +50,6 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
         //initializes views
         Button fb = (Button) view.findViewById(R.id.facebook_button);
         Button twitter = (Button) view.findViewById(R.id.twitter_button);
-        Button logOut = (Button) view.findViewById(R.id.log_out);
         SignInButton google = (SignInButton) view.findViewById(R.id.sign_in_button);
 
         ParseFacebookUtils.initialize(view.getContext());
@@ -67,7 +66,6 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
-        logOut.setOnClickListener(this);
 
         return view;
     }
@@ -209,9 +207,6 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
                 break;
             case R.id.twitter_button:
                 logInViaTwitter();
-                break;
-            case R.id.log_out:
-                logOut();
                 break;
         }
     }
