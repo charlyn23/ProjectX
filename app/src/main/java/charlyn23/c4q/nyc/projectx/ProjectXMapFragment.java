@@ -25,7 +25,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -136,7 +139,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
 
-        //TODO populate map with parse data
+        // populate map with parse data
         ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
         Calendar cal = Calendar.getInstance();
         //TODO month = 0-2? maybe get back a list of all shames in that period, then sort by type
@@ -147,7 +150,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         query.findInBackground(new FindCallback<Shame>() {
             public void done(List<Shame> shames, ParseException e) {
                 if (e == null) {
-
                     for (Shame shame : shames) {
                         double latitude = shame.getDouble("latitude");
                         double longitude = shame.getDouble("longitude");
@@ -226,7 +228,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
-            //TODO differentiate shame markers
             if (marker.equals(new_marker)) {
                 Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_delete, snackBarDelete)
@@ -252,7 +253,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         .show();
                 Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
                 Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
-
             }
             return true;
         }
@@ -287,7 +287,23 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         @Override
                         public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                             // TODO filter markers
+                            if (dialog.getSelectedIndex() < 0)
+                                YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
+                            else {
+                                map.clear();
+                                switch (which) {
+                                    case 0: //woman
 
+
+                                        break;
+                                    case 1: //POC
+                                        break;
+                                    case 2: //LGBTQ
+                                        break;
+                                    case 3: //minor
+                                        break;
+                                }
+                            }
                             return true;
                         }
                     })
@@ -297,7 +313,10 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
-                            dialog.cancel();
+                            if (dialog.getSelectedIndex() < 0)
+                                YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
+                            else
+                                dialog.cancel();
                         }
 
                         @Override

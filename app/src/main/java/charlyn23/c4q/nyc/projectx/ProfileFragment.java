@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
         });
 
         ListView shame_list = (ListView) view.findViewById(R.id.shame_list);
-        // IF list == 0, print "You haven't submitted any shames yet!"
+        // TODO IF list == 0, print "You haven't submitted any shames yet!"
 
         Button logout = (Button) view.findViewById(R.id.log_out);
         logout.setOnClickListener(logoutClick);
@@ -89,8 +89,7 @@ public class ProfileFragment extends Fragment {
         if (bm != null) {
             profileImage.setImageBitmap(bm);
         } else {
-            //TODO: put default profile image
-            profileImage.setImageResource(R.drawable.map);
+            profileImage.setImageResource(R.drawable.logo);
         }
     }
 
