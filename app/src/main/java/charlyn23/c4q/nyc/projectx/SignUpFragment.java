@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -22,6 +23,8 @@ import com.google.android.gms.plus.Plus;
 import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class SignUpFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -48,9 +51,9 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
             latLng = extras.getParcelable(LAT_LONG);
 
         //initializes views
-        Button fb = (Button) view.findViewById(R.id.facebook_button);
-        Button twitter = (Button) view.findViewById(R.id.twitter_button);
-        SignInButton google = (SignInButton) view.findViewById(R.id.sign_in_button);
+        CircleImageView fb = (CircleImageView) view.findViewById(R.id.facebook_button);
+        CircleImageView twitter = (CircleImageView) view.findViewById(R.id.twitter_button);
+        CircleImageView google = (CircleImageView) view.findViewById(R.id.googleplus_button);
 
         ParseFacebookUtils.initialize(view.getContext());
         // builds GoogleApiClient with access to basic profile
@@ -202,7 +205,7 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
             case R.id.facebook_button:
                 logInViaFB(permissions);
                 break;
-            case R.id.sign_in_button:
+            case R.id.googleplus_button:
                 onSignInClicked();
                 break;
             case R.id.twitter_button:
