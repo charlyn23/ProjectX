@@ -23,10 +23,10 @@ public class ShameDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shame_layout);
 
-        TextView group = (TextView) findViewById(R.id.group);
+        TextView group = (TextView) findViewById(R.id.who);
         TextView where = (TextView) findViewById(R.id.where);
         TextView when = (TextView) findViewById(R.id.when);
-        TextView shameDetail = (TextView) findViewById(R.id.shameDetail);
+        TextView shameDetail = (TextView) findViewById(R.id.what);
 
         //Populate textfields
         group.setText(getIntent().getStringExtra("who"));
