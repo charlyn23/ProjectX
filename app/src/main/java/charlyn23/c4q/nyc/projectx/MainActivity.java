@@ -1,32 +1,18 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
-
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.plus.Plus;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-
-import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "c4q.nyc.projectx";
-    private static final String SHAME_REPORT = "shameReport";
+
     private static final String LAT_LONG = "latLong";
     private PagerAdapter adapter;
     private NoSwipeViewPager viewPager;
@@ -40,19 +26,7 @@ public class MainActivity extends AppCompatActivity {
         projectXMapFragment = new ProjectXMapFragment();
 
         setUpActionBar();
-
-        // brings up the dialog after the user logs in with the latlong coordinates
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            boolean createDialog = extras.getBoolean(SHAME_REPORT);
-            LatLng latLng = extras.getParcelable(LAT_LONG);
-            if (createDialog && latLng!=null) {
-                MaterialDialogs dialogs = new MaterialDialogs();
-                dialogs.initialDialog(this, latLng.latitude, latLng.longitude);
-            }
-        }
     }
-
 
     public void setUpActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -95,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         if (id == R.id.log_out) {
+            // TODO should say "log in" when user is not logged in
             Intent intent = new Intent (this, SignUpActivity.class);
             startActivity(intent);
         }

@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -23,9 +23,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.Highlight;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -35,7 +32,8 @@ import java.util.List;
 
 public class StatsFragment extends Fragment {
     private PieChart pieChart;
-    private TextView detailView;
+    private TextView next;
+    private EditText zipcode;
     private int numVerbalShame;
     private int numPhysicalShame;
     private int numOtherShame;
@@ -59,11 +57,25 @@ public class StatsFragment extends Fragment {
 
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         barChart = (HorizontalBarChart) view.findViewById(R.id.bar_chart);
-        //detailView = (TextView) view.findViewById(R.id.detail_view);
+        zipcode = (EditText) view.findViewById(R.id.zipcode);
+        next = (TextView) view.findViewById(R.id.next);
 
-        configPieChart(pieChart);
+        if (zipcode.getText().toString().equals("")) {
+            configPieChart(pieChart);
+            getCountShameTypes(zipcode.getText().toString());
+        }
+
+        //configPieChart(pieChart);
         configBarChart(barChart);
-        getCountShameTypes();
+        //getCountShameTypes();
+
+//        next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                StatsFragmentBarChart barFragment = new StatsFragmentBarChart();
+//                getChildFragmentManager().add
+//            }
+//        });
 
 //            pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
 //                @Override
@@ -132,11 +144,16 @@ public class StatsFragment extends Fragment {
     }
 
 
-    public void getCountShameTypes() {
+    public void getCountShameTypes(String zipcode) {
+        int zip = 0;
         numVerbalShame = 0;
         numPhysicalShame = 0;
         numOtherShame = 0;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
+        if (zipcode.length() > 0) {
+            zip = Integer.parseInt(zipcode);
+            //TODO: where statement
+        }
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {

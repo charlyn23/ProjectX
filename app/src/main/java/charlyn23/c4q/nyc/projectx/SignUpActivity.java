@@ -21,8 +21,6 @@ import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
 
-import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
-
 
 public class SignUpActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "c4q.nyc.projectx";
@@ -185,7 +183,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         intent.putExtra(SHAME_REPORT, true);
         intent.putExtra(LAT_LONG, latLng);
         startActivity(intent);
-
     }
 
     @Override
@@ -256,11 +253,10 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
             googleApiClient.disconnect();
         }
 
-
         editor = preferences.edit();
         editor.putBoolean(LOGGED_IN, false).commit();
         Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

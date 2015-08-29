@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,8 +20,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -38,16 +41,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
-import charlyn23.c4q.nyc.projectx.shames.MaterialDialogs;
+import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
+    private static final String SHAME_REPORT = "shameReport";
     private static final String LOGGED_IN = "isLoggedIn";
     private static final String LAT_LONG = "latLong";
     private static final LatLngBounds BOUNDS = new LatLngBounds(
@@ -58,11 +68,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private boolean isDropped;
     private View view;
     private GoogleMap map;
-    private Marker marker;
+    private Marker new_marker, woman, LGBTQ, minor, POC;
     private FloatingActionButton addShame;
-    private Location location;
     private AutoCompleteTextView search;
     private LatLng searchLocation;
+    private LatLng search_location;
+    private Button filter;
 
     @Nullable
     @Override
@@ -75,7 +86,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         buildGoogleApiClient(view.getContext());
         addMapFragment();
 
+        // Autocomplete Places setup
         search = (AutoCompleteTextView) view.findViewById(R.id.search);
+        search.setOnItemClickListener(mAutocompleteClickListener);
+        mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
+                client, BOUNDS, null);
+        search.setAdapter(mAdapter);
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -89,13 +105,25 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        search.setOnItemClickListener(mAutocompleteClickListener);
-        mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
-                client, BOUNDS, null);
-        search.setAdapter(mAdapter);
+        filter = (Button) view.findViewById(R.id.filter);
+        filter.setOnClickListener(filterClick);
 
-        //TODO populate map with parse data
-//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class); 
+        // brings up the dialog after the user logs in with the latlong coordinates
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras != null) {
+            boolean createDialog = extras.getBoolean(SHAME_REPORT);
+            LatLng latLng = extras.getParcelable(LAT_LONG);
+            if (createDialog && latLng!=null) {
+                ShameDialogs dialogs = new ShameDialogs();
+                new_marker = map.addMarker(new MarkerOptions()
+                        .title(latLng.latitude + " : " + latLng.longitude)
+                        .position(latLng)
+                        .draggable(true));
+                addShame.setVisibility(View.VISIBLE);
+                isDropped = true;
+                dialogs.initialDialog(view.getContext(), latLng.latitude, latLng.longitude, new_marker, addShame);
+            }
+        }
 
         return view;
     }
@@ -121,21 +149,44 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
-        map.setOnInfoWindowClickListener(deleteMarkerListener);
 
-        // fake data TODO DELETE
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(40.7449386285115534, -73.9359836652875)));
+        //TODO populate map with parse data
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Shame.class);
 
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(40.741885070719945, -73.933373875916))
-                .title("Hello world"));
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(40.73994785206857, -73.93543615937233))
-                .title("Hello world"));
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(40.74341224816964, -73.93776163458824))
-                .title("Hello world"));
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
+        Calendar cal = Calendar.getInstance();
+        //TODO month = 0-2?
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+        query.whereGreaterThan("shameTime", last_two_months);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> shames, ParseException e) {
+                if (e == null) {
+//                    for (ParseObject shame : shames) {
+//                        LatLng position = new LatLng(shame.getLong("latitude"), shame.getLong("longitude"));
+//                        String shame_type = shame.getString("Group");
+//
+//                        switch (shame_type) {
+//                            case "woman":
+//                                woman = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                            case "minor":
+//                                minor = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                            case "POC":
+//                                POC = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                            case "LGBTQ":
+//                                LGBTQ = map.addMarker(new MarkerOptions().position(position));
+//                                break;
+//                        }
+//                    }
+                    Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
+                } else {
+                    Log.d("List of Shames", "Error: " + e.getMessage());
+                }
+            }
+        });
     }
 
     //directs the user to SignUp Activity if not logged in yet or to Shame Activity if logged in when FAB is clicked
@@ -146,13 +197,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
-                MaterialDialogs dialogs = new MaterialDialogs();
+                ShameDialogs dialogs = new ShameDialogs();
                 //gets location coordinates of the last dropped pin
-                Log.i(TAG, marker.getPosition().latitude + " " + marker.getPosition().longitude);
-                dialogs.initialDialog(view.getContext(), marker.getPosition().latitude, marker.getPosition().longitude);
+                Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
+                dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
             } else {
                 Intent intent = new Intent(view.getContext(), SignUpActivity.class);
-                intent.putExtra(LAT_LONG, marker.getPosition());
+                intent.putExtra(LAT_LONG, new_marker.getPosition());
                 startActivity(intent);
             }
         }
@@ -164,15 +215,15 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         public void onMapClick(LatLng point) {
             map.setOnMyLocationChangeListener(null);
             if (!isDropped) {
-                marker = map.addMarker(new MarkerOptions()
+                new_marker = map.addMarker(new MarkerOptions()
                         .title(point.latitude + " : " + point.longitude)
                         .position(point)
                         .draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
             } else {
-                marker.remove();
-                marker = map.addMarker(new MarkerOptions()
+                new_marker.remove();
+                new_marker = map.addMarker(new MarkerOptions()
                         .title(point.latitude + " : " + point.longitude)
                         .position(point)
                         .draggable(true));
@@ -188,15 +239,21 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
-            //TODO differentiate shame markers with location markers
-            Snackbar.make(view, "SHAME + Date", 7000)
-                    .setAction(R.string.snackbar_action, snackbarClick)
-                    .show();
+            //TODO differentiate shame markers
+            if (marker.equals(new_marker)) {
+                Snackbar.make(view, "Click the \"+\" to report new shame", 7000)
+                        .setAction(R.string.snackbar_delete, snackBarDelete)
+                        .show();
+            } else {
+                Snackbar.make(view, "SHAME + Date", 7000)
+                        .setAction(R.string.snackbar_action, snackbarDetail)
+                        .show();
+            }
             return true;
         }
     };
 
-    private View.OnClickListener snackbarClick = new View.OnClickListener() {
+    private View.OnClickListener snackbarDetail = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             //TODO bring to shame detail
@@ -205,14 +262,44 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     };
 
-    //removes a marker from the map if the user places it in the wrong location
-    private GoogleMap.OnInfoWindowClickListener deleteMarkerListener = new GoogleMap.OnInfoWindowClickListener() {
-        //TODO: add a trash bin icon on the info window. When the user taps it, marker gets deleted
+    private View.OnClickListener snackBarDelete = new View.OnClickListener() {
         @Override
-        public void onInfoWindowClick(Marker marker) {
-            marker.remove();
+        public void onClick(View v) {
+            new_marker.remove();
+            isDropped = false;
             addShame.setVisibility(View.INVISIBLE);
-            map.setOnMapClickListener(mapClickListener);
+        }
+    };
+
+    View.OnClickListener filterClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new MaterialDialog.Builder(view.getContext())
+                    .title(R.string.filter)
+                    .content(R.string.filter_content)
+                    .items(R.array.filter_types)
+                    .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                            // TODO filter markers
+                            return true;
+                        }
+                    })
+                    .positiveText(R.string.done)
+                    .negativeText(R.string.cancel)
+                    .autoDismiss(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            dialog.cancel();
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            dialog.cancel();
+                        }
+                    })
+                    .show();
         }
     };
 
@@ -250,7 +337,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(Bundle bundle) {
-        location = LocationServices.FusedLocationApi.getLastLocation(client);
+        Location location = LocationServices.FusedLocationApi.getLastLocation(client);
         if (location == null)
             LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
                 @Override

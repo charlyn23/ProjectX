@@ -41,21 +41,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        RadioGroup sex = (RadioGroup) view.findViewById(R.id.sex);
-        sex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // find which radio button is selected
-                if (checkedId == R.id.male) {
-                    //TODO save sex
-                } else {
-                    //TODO save sex
-                }
-            }
-
-        });
-
 
         return view;
     }
