@@ -51,6 +51,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -77,7 +78,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private AutoCompleteTextView search;
     private LatLng searchLocation;
     private ViewPager viewPager;
-    private List<LatLng> woman_loc, minor_loc, lgbtq_loc, poc_loc;
+    private List<LatLng> woman_loc = new ArrayList<>(),
+            minor_loc = new ArrayList<>(),
+            lgbtq_loc = new ArrayList<>(),
+            poc_loc = new ArrayList<>();
+    private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
 
     @Nullable
     @Override
@@ -282,25 +287,24 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     .title(R.string.filter)
                     .content(R.string.filter_content)
                     .items(R.array.filter_types)
-                    .itemsCallbackMultiChoice(new Integer[]{0, 1, 2, 3}, new MaterialDialog.ListCallbackMultiChoice() {
+                    .itemsCallbackMultiChoice(filter_chosen, new MaterialDialog.ListCallbackMultiChoice() {
                         @Override
                         public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-                            // TODO filter markers
-                            if (dialog.getSelectedIndex() < 0)
-                                YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
-                            else {
-                                map.clear();
-                                for (int i = which.length - 1; i >= 0; --i) {
-                                    if (which[i] == 0)
-                                        populateMap("woman");
-                                    else if (which[i] == 1)
-                                        populateMap("poc");
-                                    else if (which[i] == 2)
-                                        populateMap("lgbtq");
-                                    else if (which[i] == 0)
-                                        populateMap("minor");
-                                }
+                            map.clear();
+                            filter_chosen = new Integer[which.length];
+                            for (int i = which.length - 1; i >= 0; --i) {
+                                if (which[i] == 0)
+                                    populateMap("woman");
+                                else if (which[i] == 1)
+                                    populateMap("poc");
+                                else if (which[i] == 2)
+                                    populateMap("lgbtq");
+                                else if (which[i] == 0)
+                                    populateMap("minor");
+
+                                filter_chosen[i] = which[i];
                             }
+                            
                             return true;
                         }
                     })
@@ -310,10 +314,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
-                            if (dialog.getSelectedIndex() < 0)
-                                YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
-                            else
-                                dialog.cancel();
+                            dialog.cancel();
                         }
 
                         @Override
