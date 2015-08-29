@@ -34,7 +34,7 @@
         </activity>
 
         <activity
-            android:name=".SignUpActivity"
+            android:name=".SignUpFragment"
             android:label="@string/title_activity_sign_up" >
         </activity>
 

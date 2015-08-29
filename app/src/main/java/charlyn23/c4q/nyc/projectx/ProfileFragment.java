@@ -1,7 +1,9 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,8 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.google.android.gms.plus.Plus;
+import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -23,6 +31,8 @@ public class ProfileFragment extends Fragment {
     private static final String TAG = "c4q.nyc.projectx";
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final String PROFILE_IMAGE = "profileImage";
+    private static final String SHARED_PREFERENCE = "sharedPreference";
+    private static final String LOGGED_IN = "isLoggedIn";
     private View view;
     private CircleImageView profileImage;
 
@@ -33,7 +43,6 @@ public class ProfileFragment extends Fragment {
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
 
-
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +50,11 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        ListView shame_list = (ListView) view.findViewById(R.id.shame_list);
+        // TODO IF list == 0, print "You haven't submitted any shames yet!"
+
+        Button logout = (Button) view.findViewById(R.id.log_out);
+        logout.setOnClickListener(logoutClick);
 
         return view;
     }
@@ -75,8 +89,7 @@ public class ProfileFragment extends Fragment {
         if (bm != null) {
             profileImage.setImageBitmap(bm);
         } else {
-            //TODO: put default profile image
-            profileImage.setImageResource(R.drawable.map);
+            profileImage.setImageResource(R.drawable.logo);
         }
     }
 
@@ -99,4 +112,19 @@ public class ProfileFragment extends Fragment {
             PictureUtil.saveToCacheFile(bitmap);
         }
     }
+
+    View.OnClickListener logoutClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ParseUser user = ParseUser.getCurrentUser();
+            user.logOut();
+
+            SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(LOGGED_IN, false).apply();
+            Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            startActivity(intent);
+        }
+    };
 }

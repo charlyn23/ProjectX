@@ -30,7 +30,7 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatsFragment extends Fragment {
+public class StatsFragmentPieChart extends Fragment {
     private PieChart pieChart;
     private TextView next;
     private EditText zipcode;
@@ -53,93 +53,16 @@ public class StatsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.stats_fragment, container, false);
+        View view = inflater.inflate(R.layout.stats_fragment_pie_chart, container, false);
 
-        pieChart = (PieChart) view.findViewById(R.id.pie_chart);
-        barChart = (HorizontalBarChart) view.findViewById(R.id.bar_chart);
-        zipcode = (EditText) view.findViewById(R.id.zipcode);
         next = (TextView) view.findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StatsFragmentVP.innerViewPager.setCurrentItem(1);
 
-        if (zipcode.getText().toString().equals("")) {
-            configPieChart(pieChart);
-            getCountShameTypes(zipcode.getText().toString());
-        }
-
-        //configPieChart(pieChart);
-        configBarChart(barChart);
-        //getCountShameTypes();
-
-//        next.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                StatsFragmentBarChart barFragment = new StatsFragmentBarChart();
-//                getChildFragmentManager().add
-//            }
-//        });
-
-//            pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-//                @Override
-//                public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-//                    colors.clear();
-//                    if (!changeColorIndex) {
-//                        if (h.getXIndex() == 0) {
-//                            colors.add(getResources().getColor(android.R.color.holo_blue_dark));
-//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                            detailView.setText(numVerbalShame + " instances of verbal harassment");
-//                            changeColorIndex = true;
-//
-//                        } else if (h.getXIndex() == 1) {
-//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                            colors.add(getResources().getColor(android.R.color.holo_green_dark));
-//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                            detailView.setText(numPhysicalShame + " instances of physical harassment");
-//                            changeColorIndex = true;
-//                        } else {
-//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                            colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                            colors.add(getResources().getColor(android.R.color.holo_orange_dark));
-//                            detailView.setText(numOtherShame + " instances of other harassment");
-//                            changeColorIndex = true;
-//                        }
-//                    } else {
-//                        colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                        colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                        colors.add(getResources().getColor(android.R.color.holo_red_dark));
-//                        changeColorIndex = false;
-//                    }
-//                    pieChartSet.setColors(colors);
-//                    PieData data = new PieData(xVals, pieChartSet);
-//                    pieChart.setData(data);
-//                }
-
-//                @Override
-//                public void onNothingSelected() {
-//
-//                }
-//            });
-
-//        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-//            @Override
-//            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-//                if (e == null)
-//                    return;
-//
-//                RectF bounds = barChart.getBarBounds((BarEntry) e);
-//                PointF position = barChart.getPosition(e, barChart.getData().getDataSetByIndex(dataSetIndex)
-//                        .getAxisDependency());
-//
-//                Log.i("bounds", bounds.toString());
-//                Log.i("position", position.toString());
-//            }
-//
-//            @Override
-//            public void onNothingSelected() {
-//
-//            }
-//        });
-        getCountGroups();
-
+            }
+        });
         return view;
     }
 
@@ -345,23 +268,4 @@ public class StatsFragment extends Fragment {
 
         barChart.setData(data);
     }
-
-
-//    @SuppressLint("NewApi")
-
-//    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-//
-//        if (e == null)
-//            return;
-//
-//        RectF bounds = barChart.getBarBounds((BarEntry) e);
-//        PointF position = barChart.getPosition(e, barChart.getData().getDataSetByIndex(dataSetIndex)
-//                .getAxisDependency());
-//
-//        Log.i("bounds", bounds.toString());
-//        Log.i("position", position.toString());
-//    }
-//
-//    public void onNothingSelected() {
-//    };
 }
