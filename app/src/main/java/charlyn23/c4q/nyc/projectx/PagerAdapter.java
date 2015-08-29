@@ -10,26 +10,33 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
     boolean isLoggedIn;
+    Fragment[] pagerFragments;
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs, boolean isLoggedIn) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         this.isLoggedIn = isLoggedIn;
+
+        pagerFragments = new Fragment[3];
+        pagerFragments[0] = new ProjectXMapFragment();
+        pagerFragments[1] = new StatsFragment();
+        pagerFragments[2] = new SignUpFragment();
     }
+
 
     @Override
     public Fragment getItem(int position) {
 
         switch (position) {
             case 0:
-                return new ProjectXMapFragment();
+                return pagerFragments[0];
             case 1:
-                return new StatsFragmentVP();
+                return pagerFragments[1];
             case 2:
                 if (isLoggedIn)
-                    return new ProfileFragment();
+                    return pagerFragments[2];
                 else
-                    return new SignUpFragment();
+                    return pagerFragments[2];
             default:
                 return null;
         }

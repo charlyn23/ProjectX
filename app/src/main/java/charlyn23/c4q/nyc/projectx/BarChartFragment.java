@@ -1,15 +1,11 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.app.Activity;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -28,7 +24,7 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatsFragmentBarChart extends android.support.v4.app.Fragment {
+public class BarChartFragment extends android.support.v4.app.Fragment {
     private int numWomen;
     private int numPOC;
     private int numLGBTQ;
@@ -46,17 +42,17 @@ public class StatsFragmentBarChart extends android.support.v4.app.Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StatsFragmentVP.innerViewPager.setCurrentItem(0);
+                StatsFragment.innerViewPager.setCurrentItem(0);
 
             }
         });
 
         configBarChart(barChart);
-        getCountGroups();
+        getCountGroups("");
         return view;
     }
 
-    public void getCountGroups() {
+    public void getCountGroups(String zipcode) {
         numWomen = 0;
         numPOC = 0;
         numLGBTQ = 0;

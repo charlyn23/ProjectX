@@ -1,14 +1,12 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 
 
@@ -17,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private boolean isLoggedIn;
     private NoSwipeViewPager viewPager;
+    PagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +41,34 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.stats));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.profile));
 
-        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), isLoggedIn);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), isLoggedIn);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    StatsFragment statsFragment = (StatsFragment) viewPagerAdapter.getItem(position);
+                    statsFragment.pageSelected();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+
             }
 
             @Override
@@ -60,24 +80,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-//    // MENU RESOURCES
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.log_out) {
-//            // TODO should say "log in" when user is not logged in
-//            Intent intent = new Intent (this, SignUpActivity.class);
-//            startActivity(intent);
-//        }
-//        return true;
-//    }
 
     //displays the first page on the Back Button pressed
     @Override
