@@ -145,12 +145,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         // populate map with parse data
         ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-        Calendar cal = Calendar.getInstance();
-        //TODO month = 0-2? maybe get back a list of all shames in that period, then sort by type
-        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-        Log.i("last_two_months", last_two_months); //good
-        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
+//        Calendar cal = Calendar.getInstance();
+//        //TODO month = 0-2? maybe get back a list of all shames in that period, then sort by type
+//        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+//        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+//        Log.i("last_two_months", last_two_months); //good
+//        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
         query.findInBackground(new FindCallback<Shame>() {
             public void done(List<Shame> shames, ParseException e) {
                 if (e == null) {
@@ -159,6 +159,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         double longitude = shame.getDouble("longitude");
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString("Group");
+                        if (shame_group == null)
+                            continue;
 
                         switch (shame_group) {
                             case "woman":
@@ -304,7 +306,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
                                 filter_chosen[i] = which[i];
                             }
-                            
+
                             return true;
                         }
                     })
