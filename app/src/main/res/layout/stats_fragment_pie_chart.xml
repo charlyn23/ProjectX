@@ -27,11 +27,11 @@
             <!--android:textColorHint="#363636" />-->
     <!--</android.support.design.widget.TextInputLayout>-->
 
-    <!--<com.github.mikephil.charting.charts.PieChart-->
-        <!--android:id="@+id/pie_chart"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="4" />-->
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="5"/>
 
 
     <!--<com.github.mikephil.charting.charts.HorizontalBarChart-->
@@ -49,7 +49,10 @@
     <TextView
         android:id="@+id/next"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEXT-->"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:layout_gravity="end"
+        android:text="Next"/>
 
 </LinearLayout>

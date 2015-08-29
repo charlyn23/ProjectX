@@ -6,11 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+        android:id="@+id/bar_chart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4" />
+
     <TextView
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="back"/>
+        android:gravity="bottom"
+        android:layout_gravity="end"
+        android:text="BACK"/>
 
 </LinearLayout>

@@ -1,6 +1,5 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,18 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -33,21 +23,12 @@ import java.util.List;
 public class StatsFragmentPieChart extends Fragment {
     private PieChart pieChart;
     private TextView next;
-    private EditText zipcode;
     private int numVerbalShame;
     private int numPhysicalShame;
     private int numOtherShame;
-    private int numWomen;
-    private int numPOC;
-    private int numLGBTQ;
-    private int numMinor;
     private ArrayList<Integer> colors;
-    PieData data;
     ArrayList<String> xVals;
     PieDataSet pieChartSet;
-    boolean changeColorIndex = false;
-    protected HorizontalBarChart barChart;
-    private Typeface tf;
 
 
     @Nullable
@@ -55,6 +36,7 @@ public class StatsFragmentPieChart extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stats_fragment_pie_chart, container, false);
 
+        pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         next = (TextView) view.findViewById(R.id.next);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +45,16 @@ public class StatsFragmentPieChart extends Fragment {
 
             }
         });
+
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        configPieChart(pieChart);
+        getCountShameTypes("");
+    }
 
     public void getCountShameTypes(String zipcode) {
         int zip = 0;
@@ -83,18 +72,17 @@ public class StatsFragmentPieChart extends Fragment {
                     for (int i = 0; i < objects.size(); ++i) {
                         if (objects.get(i).get("shameType") == null) {
                             continue;
-                        }
-                        else if (objects.get(i).get("shameType").equals("verbal")) {
+                        } else if (objects.get(i).get("shameType").equals("verbal")) {
                             numVerbalShame++;
                         } else if (objects.get(i).get("shameType").equals("physical")) {
                             numPhysicalShame++;
-                        } else{
+                        } else {
                             numOtherShame++;
                         }
                     }
-                    Log.d("yuliya", numVerbalShame + "" );
-                    Log.d("yuliya", numPhysicalShame + "" );
-                    Log.d("yuliya", numOtherShame + "" );
+                    Log.d("yuliya", numVerbalShame + "");
+                    Log.d("yuliya", numPhysicalShame + "");
+                    Log.d("yuliya", numOtherShame + "");
 
                     setDataPieChart(pieChart);
                 }
@@ -102,37 +90,7 @@ public class StatsFragmentPieChart extends Fragment {
         });
    }
 
-    public void getCountGroups() {
-        numWomen = 0;
-        numPOC = 0;
-        numLGBTQ = 0;
-        numMinor = 0;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get("Group") == null) {
-                            continue;
-                        } else if (objects.get(i).get("Group").equals("woman")) {
-                            numWomen++;
-                        } else if (objects.get(i).get("Group").equals("LGBTQ")) {
-                            numLGBTQ++;
-                        } else if (objects.get(i).get("Group").equals("POC")) {
-                            numPOC++;
-                        } else {
-                            numMinor++;
-                        }
-                    }
-                    Log.d("yuliya", numWomen + "w ");
-                    Log.d("yuliya", numPOC + " poc");
-                    Log.d("yuliya", numLGBTQ + "lgbtq ");
 
-                    setDataBarChart(4, 80);
-                }
-            }
-        });
-    }
 
     public PieChart configPieChart(PieChart chart) {
         chart.setHoleColorTransparent(true);
@@ -142,8 +100,6 @@ public class StatsFragmentPieChart extends Fragment {
         chart.setDescription("");
         chart.setTransparentCircleRadius(5f);
         //pieChart.setDrawYValues(true);
-        chart.setDrawCenterText(true);
-        chart.setDrawHoleEnabled(true);
         chart.setRotationAngle(0);
         //pieChart.setDrawXValues(false);
         chart.setRotationEnabled(true);
@@ -152,63 +108,7 @@ public class StatsFragmentPieChart extends Fragment {
         return chart;
     }
 
-    public BarChart configBarChart(BarChart barChart) {
-        barChart.setHighlightEnabled(true);
 
-        barChart.setDrawValueAboveBar(true);
-
-//        barChart.setDescription("Groups of people");
-
-        // if more than 60 entries are displayed in the pieChart, no values will be
-        // drawn
-        //barChart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
-        barChart.setPinchZoom(false);
-
-        // draw shadows for each bar that show the maximum value
-        barChart.setDrawBarShadow(true);
-
-        // barChart.setDrawXLabels(false);
-
-        barChart.setDrawGridBackground(false);
-
-        // barChart.setDrawYLabels(false);
-
-        //tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-
-        XAxis xl = barChart.getXAxis();
-        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xl.setTypeface(tf);
-        xl.setDrawAxisLine(true);
-        xl.setDrawGridLines(false);
-        xl.setGridLineWidth(0.3f);
-
-        YAxis yl = barChart.getAxisLeft();
-        yl.setTypeface(tf);
-        yl.setDrawAxisLine(true);
-        yl.setDrawGridLines(false);
-        yl.setGridLineWidth(0.3f);
-//        yl.setInverted(true);
-
-        YAxis yr = barChart.getAxisRight();
-        yr.setTypeface(tf);
-        yr.setDrawAxisLine(true);
-        yr.setDrawGridLines(false);
-
-//        yr.setInverted(true);
-
-        //setData(4, 100);
-        barChart.animateY(3000);
-
-        Legend l = barChart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-        l.setFormSize(20f);
-        l.setXEntrySpace(4f);
-
-        // barChart.setDrawLegend(false);
-        return barChart;
-    }
 
     private PieChart setDataPieChart(PieChart chart) {
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
@@ -238,34 +138,4 @@ public class StatsFragmentPieChart extends Fragment {
         return chart;
     }
 
-    private void setDataBarChart(int count, float range) {
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        xVals.add("woman");
-        xVals.add("POC");
-        xVals.add("LGBTQ");
-        xVals.add("MINOR");
-
-        yVals1.add(new BarEntry((float) numWomen, 0));
-        yVals1.add(new BarEntry((float) numPOC, 1));
-        yVals1.add(new BarEntry((float) numLGBTQ, 2));
-        yVals1.add(new BarEntry((float) numMinor, 3));
-
-        BarDataSet set = new BarDataSet(yVals1, "Groups of people");
-        colors = new ArrayList<Integer>();
-        colors.add(getResources().getColor(android.R.color.holo_red_dark));
-        //colors.add(getResources().getColor(android.R.color.holo_red_light));
-        set.setColors(colors);
-
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
-        dataSets.add(set);
-
-
-        BarData data = new BarData(xVals, dataSets);
-        data.setValueTextSize(15f);
-        data.setValueTypeface(tf);
-
-        barChart.setData(data);
-    }
 }

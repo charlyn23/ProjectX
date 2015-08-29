@@ -2,6 +2,7 @@ package charlyn23.c4q.nyc.projectx;
 
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,17 +15,25 @@ import android.widget.EditText;
 
 public class StatsFragmentVP extends android.support.v4.app.Fragment {
     private EditText zipcode;
+    private Button update;
     public static ViewPager innerViewPager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stats_fragment_vp, container, false);
         zipcode = (EditText) view.findViewById(R.id.zipcode);
+        update = (Button) view.findViewById(R.id.update);
 
-        if (zipcode.getText().toString().equals("")) {
-            //configPieChart(pieChart);
-            //getCountShameTypes(zipcode.getText().toString());
-        }
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userInput = zipcode.getText().toString();
+                if (userInput.length() > 0) {
+
+                }
+            }
+        });
 
         innerViewPager = (ViewPager) view.findViewById(R.id.inner_pager);
         innerViewPager.setAdapter(new InnerAdapter(getChildFragmentManager()));
