@@ -56,6 +56,7 @@ Bonus features we plan to implement if baseline features are completed in time:
 |        | Graph data statistics               | Yuliya, Anthony|
 |        | Filter feature                      | Charlyn, Sufei |
 |        | Save user profile data              | Yuliya         |
+|        | Search places autocomplete          | Sufei          |
 
 ##### Week 3: 
 | Week 3 | Task            | Members        |
@@ -63,7 +64,7 @@ Bonus features we plan to implement if baseline features are completed in time:
 |        | Location alerts | Sufei, Anthony |
 |        | Debugging       | Yuliya         |
 |        | Demo prep       | Charlyn        |
-|        | Make it pretty  | Sufei          |
+|        | Make it pretty  | Anthony, Sufei |
   
 ##### General Roles: 
 ###### Anthony: 
