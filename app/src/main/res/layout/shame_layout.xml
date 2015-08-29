@@ -91,7 +91,7 @@
                 android:layout_margin="12dp" />
 
             <TextView
-                android:id="@+id/who"
+                android:id="@+id/group"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -101,7 +101,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:layout_margin="12dp" />
+                android:layout_margin="12dp"
+                android:id="@+id/shameDetail" />
 
             <TextView
                 android:layout_width="match_parent"

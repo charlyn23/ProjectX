@@ -12,9 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -22,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
@@ -58,9 +61,8 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
-    private static final String SHAME_REPORT = "shameReport";
     private static final String LOGGED_IN = "isLoggedIn";
-    private static final String LAT_LONG = "latLong";
+    private static final int LOG_IN_VIEW = 2;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
 
@@ -73,19 +75,21 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private FloatingActionButton addShame;
     private AutoCompleteTextView search;
     private LatLng searchLocation;
-    private LatLng search_location;
     private Button filter;
-    //latitude,  longitude,  date,  who,  type
     private double latitude;
     private double longitude;
     private String date;
     private String who;
     private String type;
+    private ViewPager viewPager;
+
+    private OnDataPass dataPasser;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
+        viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         addShame.setOnClickListener(addShameListener);
 
@@ -115,22 +119,22 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         filter = (Button) view.findViewById(R.id.filter);
         filter.setOnClickListener(filterClick);
 
-        // brings up the dialog after the user logs in with the latlong coordinates
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null) {
-            boolean createDialog = extras.getBoolean(SHAME_REPORT);
-            LatLng latLng = extras.getParcelable(LAT_LONG);
-            if (createDialog && latLng != null) {
-                ShameDialogs dialogs = new ShameDialogs();
-                new_marker = map.addMarker(new MarkerOptions()
-                        .title(latLng.latitude + " : " + latLng.longitude)
-                        .position(latLng)
-                        .draggable(true));
-                addShame.setVisibility(View.VISIBLE);
-                isDropped = true;
-                dialogs.initialDialog(view.getContext(), latLng.latitude, latLng.longitude, new_marker, addShame);
-            }
-        }
+//        // brings up the dialog after the user logs in with the latlong coordinates
+//        Bundle extras = getActivity().getIntent().getExtras();
+//        if (extras != null) {
+//            boolean createDialog = extras.getBoolean(SHAME_REPORT);
+//            LatLng latLng = extras.getParcelable(LAT_LONG);
+//            if (createDialog && latLng != null) {
+//                ShameDialogs dialogs = new ShameDialogs();
+//                new_marker = map.addMarker(new MarkerOptions()
+//                        .title(latLng.latitude + " : " + latLng.longitude)
+//                        .position(latLng)
+//                        .draggable(true));
+//                addShame.setVisibility(View.VISIBLE);
+//                isDropped = true;
+//                dialogs.initialDialog(view.getContext(), latLng.latitude, latLng.longitude, new_marker, addShame);
+//            }
+//        }
 
         return view;
     }
@@ -211,9 +215,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
                 dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
             } else {
-                Intent intent = new Intent(view.getContext(), SignUpActivity.class);
-                intent.putExtra(LAT_LONG, new_marker.getPosition());
-                startActivity(intent);
+                viewPager.setCurrentItem(LOG_IN_VIEW);
+                Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -240,7 +243,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
             }
-            //dataPasser.onDataPass(point.latitude, point.longitude);
+//            dataPasser.onDataPass(point.latitude, point.longitude);
 
         }
     };
@@ -254,28 +257,10 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
             } else {
-                ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-                query.whereEqualTo("latitude", marker.getPosition().latitude);
-                query.whereEqualTo("longitude", marker.getPosition().longitude);
-                query.getFirstInBackground(new GetCallback<Shame>() {
-                    @Override
-                    public void done(Shame shame, ParseException e) {
-                        if (shame == null) {
-                            Log.e("shame", "not found");
-                        } else {
-                            Log.d("shame : ", String.valueOf(shame));
-                            Double latitude = shame.getDouble("latitude");
-                            Double longitude = shame.getDouble("longitude");
-                            String when = shame.getString("shameTime");
-                            String date = getDate(when);
+                latitude =  marker.getPosition().latitude;
+                longitude =  marker.getPosition().longitude;
 
-                            String who = shame.getString("Group");
-                            String type = shame.getString("shameType");
 
-                            Log.i("shame data", latitude + " " + longitude + " " + date + " " + who + " " + type);
-                        }
-                    }
-                });
                 Snackbar.make(view, "SHAME + Date", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_action, snackbarDetail)
                         .show();
@@ -291,8 +276,31 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public void onClick(View v) {
             //TODO bring to shame detail
-            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
+//            startActivity(intent);
+            ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
+            query.whereEqualTo("latitude", latitude);
+            query.whereEqualTo("longitude", longitude);
+            query.getFirstInBackground(new GetCallback<Shame>() {
+                @Override
+                public void done(Shame shame, ParseException e) {
+                    if (shame == null) {
+                        Log.e("shame", "not found");
+                    } else {
+                        Log.d("shame : ", String.valueOf(shame));
+                        Double latitude = shame.getDouble("latitude");
+                        Double longitude = shame.getDouble("longitude");
+                        String when = shame.getString("shameTime");
+
+                        String who = shame.getString("Group");
+                        String type = shame.getString("shameType");
+
+                        Log.i("shame data", latitude + " " + longitude + " " + when  + " " + who + " " + type);
+                        dataPasser.onDataPass(latitude, longitude, when, who, type);
+                    }
+                }
+            });
+
         }
     };
 
@@ -466,12 +474,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public interface OnDataPass {
-        public void onDataPass(double latitude, double longitude, String date, String who, String type);
+        public void onDataPass(double latitude, double longitude, String when, String who, String type);
     }
 
-
-
-    public void passData(String data) {
-        dataPasser.onDataPass( latitude,  longitude,  date,  who,  type);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            dataPasser = (ProjectXMapFragment.OnDataPass) activity;
+            Log.i("datapasser", "works!");
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnDataPass");
+        }
     }
+
 }

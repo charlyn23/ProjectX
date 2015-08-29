@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -22,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class SignUpActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class SignUpFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHAME_REPORT = "shameReport";
     private static final int RC_SIGN_IN = 0;
@@ -33,73 +35,71 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     public static GoogleApiClient googleApiClient;
     private boolean mIsResolving = false;
     private boolean mShouldResolve = false;
+    private View view;
     private SharedPreferences preferences = null;
     private LatLng latLng;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.signup_fragment, container, false);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras != null)
             latLng = extras.getParcelable(LAT_LONG);
-        }
 
         //initializes views
-        Button fb = (Button) findViewById(R.id.facebook_button);
-        Button twitter = (Button) findViewById(R.id.twitter_button);
-        Button logOut = (Button) findViewById(R.id.log_out);
-        SignInButton google = (SignInButton) findViewById(R.id.sign_in_button);
+        Button fb = (Button) view.findViewById(R.id.facebook_button);
+        Button twitter = (Button) view.findViewById(R.id.twitter_button);
+        SignInButton google = (SignInButton) view.findViewById(R.id.sign_in_button);
 
-        ParseFacebookUtils.initialize(getApplicationContext());
+        ParseFacebookUtils.initialize(view.getContext());
         // builds GoogleApiClient with access to basic profile
-        googleApiClient = new GoogleApiClient.Builder(this)
+        googleApiClient = new GoogleApiClient.Builder(view.getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
                 .addScope(new Scope(Scopes.EMAIL))
                 .build();
 
-        preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
-        logOut.setOnClickListener(this);
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         googleApiClient.connect();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         googleApiClient.disconnect();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
     private void logInViaFB(final List<String> permissions) {
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpActivity.this, permissions, new LogInCallback() {
+        ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpFragment.this, permissions, new LogInCallback() {
             @Override
             public void done(final ParseUser user, ParseException err) {
                 if (user == null) {
                     Log.i(TAG, "Log in failed");
-                    Toast.makeText(getApplicationContext(), "Try again, please!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "Try again, please!", Toast.LENGTH_SHORT).show();
                     ParseUser.logOut();
-
                 } else if (user.isNew()) {
                     Log.i(TAG, "User signed up and logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
-                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
+                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpFragment.this, permissions, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(user)) {
@@ -109,13 +109,13 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                         });
                     }
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).commit();
+                    editor.putBoolean(LOGGED_IN, true).apply();
                     reportShame();
 
                 } else {
                     Log.i(TAG, "User logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
-                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpActivity.this, permissions, new SaveCallback() {
+                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpFragment.this, permissions, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(user)) {
@@ -125,7 +125,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                         });
                     }
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).commit();
+                    editor.putBoolean(LOGGED_IN, true).apply();
                     reportShame();
                 }
             }
@@ -133,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void logInViaTwitter() {
-        ParseTwitterUtils.logIn(SignUpActivity.this, new LogInCallback() {
+        ParseTwitterUtils.logIn(view.getContext(), new LogInCallback() {
             @Override
             public void done(final ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
@@ -143,7 +143,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                 } else if (parseUser.isNew()) {
                     Log.i(TAG, "New user signed up and logged in through Twitter!");
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
-                        ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
+                        ParseTwitterUtils.link(parseUser, view.getContext(), new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseTwitterUtils.isLinked(parseUser)) {
@@ -154,13 +154,13 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                     }
 
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).commit();
+                    editor.putBoolean(LOGGED_IN, true).apply();
                     reportShame();
 
                 } else {
                     Log.i(TAG, "User logged in through Twitter!");
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
-                        ParseTwitterUtils.link(parseUser, SignUpActivity.this, new SaveCallback() {
+                        ParseTwitterUtils.link(parseUser, view.getContext(), new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseTwitterUtils.isLinked(parseUser)) {
@@ -170,16 +170,15 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                         });
                     }
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).commit();
+                    editor.putBoolean(LOGGED_IN, true).apply();
                     reportShame();
                 }
             }
         });
     }
 
-
     private void reportShame() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(view.getContext(), MainActivity.class);
         intent.putExtra(SHAME_REPORT, true);
         intent.putExtra(LAT_LONG, latLng);
         startActivity(intent);
@@ -209,9 +208,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
             case R.id.twitter_button:
                 logInViaTwitter();
                 break;
-            case R.id.log_out:
-                logOut();
-                break;
         }
     }
 
@@ -222,7 +218,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         if (!mIsResolving && mShouldResolve) {
             if (connectionResult.hasResolution()) {
                 try {
-                    connectionResult.startResolutionForResult(this, RC_SIGN_IN);
+                    connectionResult.startResolutionForResult(getActivity(), RC_SIGN_IN);
                     mIsResolving = true;
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Could not resolve ConnectionResult.", e);
@@ -230,7 +226,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                     googleApiClient.connect();
                 }
             } else {
-                Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -240,8 +236,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         googleApiClient.connect();
         reportShame();
         editor = preferences.edit();
-        editor.putBoolean(LOGGED_IN, true).commit();
-        Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+        editor.putBoolean(LOGGED_IN, true).apply();
+        Toast.makeText(view.getContext(), "Signing in", Toast.LENGTH_LONG).show();
     }
 
     private void logOut() {
@@ -255,9 +251,9 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
 
 
         editor = preferences.edit();
-        editor.putBoolean(LOGGED_IN, false).commit();
-        Toast.makeText(this, getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        editor.putBoolean(LOGGED_IN, false).apply();
+        Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(view.getContext(), MainActivity.class);
         startActivity(intent);
     }
 }

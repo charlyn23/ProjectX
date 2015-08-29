@@ -1,14 +1,15 @@
 package charlyn23.c4q.nyc.projectx;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+
+import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass {
@@ -16,10 +17,14 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
     private static final String LAT_LONG = "latLong";
     private PagerAdapter adapter;
+    private static final String LOGGED_IN = "isLoggedIn";
+    private static final String SHARED_PREFERENCE = "sharedPreference";
+    private boolean isLoggedIn;
     private NoSwipeViewPager viewPager;
 
-    ProjectXMapFragment.OnDataPass dataPasser;
+    ShameDetailActivity shameDetailActivity = new ShameDetailActivity();
 
+    ProjectXMapFragment.OnDataPass dataPasser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,23 +32,26 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         setContentView(R.layout.activity_main);
 
 
+        ProjectXMapFragment projectXMapFragment = new ProjectXMapFragment();
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
+
         setUpActionBar();
     }
 
     public void setUpActionBar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         viewPager = (NoSwipeViewPager) findViewById(R.id.view_pager);
-        mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.map));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.profile));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.stats));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.profile));
 
-        adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), isLoggedIn);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -62,50 +70,29 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         });
     }
 
-    // MENU RESOURCES
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-//            Intent intent = new Intent (this, AccountSetting.class);
-//            startActivity(intent);
-        } else if (id == R.id.log_out) {
-            // TODO should say "log in" when user is not logged in
-            Intent intent = new Intent (this, SignUpActivity.class);
-            startActivity(intent);
-        }
-        return true;
-    }
+    public void onDataPass(double latitude, double longitude, String when, String who, String type) {
+        Log.d("onDataPass" , String.valueOf(latitude) + " " +  String.valueOf(longitude) +" " +  when +" " +   who +" " +  type);
+        double shameLat = latitude;
+        double shameLong = longitude;
+        String shameDateTime = when;
+        String shameGroup = who;
+        String shameType =  type;
 
-    //displays the first page on the Back Button pressed
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            viewPager.setCurrentItem(0, true);
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
+        Intent intent = new Intent(MainActivity.this, ShameDetailActivity.class);
+        intent.putExtra("when", when);
+        Log.i("date intent has ", String.valueOf(when));
+        intent.putExtra("who", who);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        intent.putExtra("type", type);
+        startActivity(intent);
 
-    @Override
-    public void onDataPass(double latitude, double longitude, String date, String who, String type) {
-    }
+//        TextView group = (TextView) shameDetailActivity.findViewById(R.id.group);
+//        group.setText(who);
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            dataPasser = (ProjectXMapFragment.OnDataPass) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnDataPass");
-        }
     }
 
 
