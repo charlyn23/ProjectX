@@ -30,6 +30,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stats_fragment, container, false);
         Button update = (Button) view.findViewById(R.id.update);
+        Button overView = (Button) view.findViewById(R.id.overview);
         zipCode = (EditText) view.findViewById(R.id.zipcode);
 
         //child fragments
@@ -48,6 +49,15 @@ public class StatsFragment extends android.support.v4.app.Fragment {
                 else {
                     Toast.makeText(getActivity(), "Invalid zipCode", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        overView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zipCode.setText("");
+                ((PieChartFragment) fragments[0]).getCountShameTypes("");
+                ((BarChartFragment) fragments[1]).getCountGroups("");
             }
         });
 

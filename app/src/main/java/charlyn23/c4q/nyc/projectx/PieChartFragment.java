@@ -28,10 +28,6 @@ public class PieChartFragment extends Fragment {
     private int numVerbalShame;
     private int numPhysicalShame;
     private int numOtherShame;
-    private ArrayList<Integer> colors;
-    ArrayList<String> xVals;
-    PieDataSet pieChartSet;
-
 
     @Nullable
     @Override
@@ -104,6 +100,7 @@ public class PieChartFragment extends Fragment {
         chart.setRotationEnabled(true);
         chart.setUsePercentValues(true);
         chart.setCenterText(getString(R.string.types_of_harassment));
+        chart.setCenterTextSize(15f);
         return chart;
     }
 
@@ -114,19 +111,19 @@ public class PieChartFragment extends Fragment {
         yVals.add(new Entry(numPhysicalShame, 1));
         yVals.add(new Entry(numOtherShame, 2));
 
-        xVals = new ArrayList<String>();
+        ArrayList<String> xVals = new ArrayList<String>();
         xVals.add("verbal");
         xVals.add("physical");
         xVals.add("other");
 
-        pieChartSet = new PieDataSet(yVals, "");
+        PieDataSet pieChartSet = new PieDataSet(yVals, "");
         pieChartSet.setSliceSpace(3f);
-        colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
         //colors.add(getResources().getColor(android.R.color.holo_red_light));
         pieChartSet.setColors(colors);
         PieData data = new PieData(xVals, pieChartSet);
-        data.setValueTextSize(15f);
+        data.setValueTextSize(13f);
         chart.setData(data);
         //pieChart.highlightValues(null);
         chart.animateY(2000);
