@@ -23,6 +23,8 @@ import com.parse.*;
 import java.util.Arrays;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class SignUpFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private static final String TAG = "c4q.nyc.projectx";
@@ -48,9 +50,9 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
             latLng = extras.getParcelable(LAT_LONG);
 
         //initializes views
-        Button fb = (Button) view.findViewById(R.id.facebook_button);
-        Button twitter = (Button) view.findViewById(R.id.twitter_button);
-        SignInButton google = (SignInButton) view.findViewById(R.id.sign_in_button);
+        CircleImageView fb = (CircleImageView) view.findViewById(R.id.facebook_button);
+        CircleImageView twitter = (CircleImageView) view.findViewById(R.id.twitter_button);
+        CircleImageView google = (CircleImageView) view.findViewById(R.id.googleplus_button);
 
         ParseFacebookUtils.initialize(view.getContext());
         // builds GoogleApiClient with access to email
@@ -202,7 +204,7 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
             case R.id.facebook_button:
                 logInViaFB(permissions);
                 break;
-            case R.id.sign_in_button:
+            case R.id.googleplus_button:
                 onSignInClicked();
                 break;
             case R.id.twitter_button:

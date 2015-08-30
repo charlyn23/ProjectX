@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,12 +16,13 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.ParseObject;
+
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import charlyn23.c4q.nyc.projectx.R;
 
@@ -526,7 +526,8 @@ public class ShameDialogs {
         Geocoder geocoder;
         List<Address> addresses;
         geocoder = new Geocoder(context, Locale.getDefault());
-        addresses = geocoder.getFromLocation(latitude, longitude, 1); // 1 represents max location result to returned, by documents it recommended 1 to 5
+        // 1 represents max location result to returned, by documents it recommended 1 to 5
+        addresses = geocoder.getFromLocation(latitude, longitude, 1);
         String postalCode = addresses.get(0).getPostalCode();
         return postalCode;
     }

@@ -79,7 +79,7 @@ public class PieChartFragment extends Fragment {
                     Log.d("yuliya", numVerbalShame + "");
                     Log.d("yuliya", numPhysicalShame + "");
                     Log.d("yuliya", numOtherShame + "");
-                    
+
                     setDataPieChart(pieChart);
                 }
             }

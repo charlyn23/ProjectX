@@ -16,7 +16,7 @@ public class Shame extends ParseObject {
 
     public Shame(float latitude, float longitude, int shameType, int verbalShame,
                  int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                 long shameTime, int shameReason) {
+                 long shameTime, String group) {
         super();
         setLatitude(latitude);
         setLongitude(longitude);
@@ -27,19 +27,18 @@ public class Shame extends ParseObject {
         setShameFeel(shameFeel);
         setShameDoing(shameDoing);
         setShameTime(shameTime);
-        setShameReason(shameReason);
+        setGroup(group);
     }
 
     public void reportShame(float latitude, float longitude, int shameType, int verbalShame,
                          int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                         long shameTime, int shameReason){
+                         long shameTime, String group){
         setLatitude(latitude);
         setLongitude(longitude);
         setOtherShame(otherShame);       //shameType = other(three options)
         setShameType(shameType); //shameType = physical (six options)
         setShameDoing(shameDoing);       //what user was doing at time of shame (six options)
         setShameFeel(shameFeel);         //how they felt (five options)
-        setShameReason(shameReason);     // why they were targeted (four options)
         setShameTime(shameTime);         // time of incident
         setPhysicalShame(physicalShame);     // verbal description (four options)
     }
@@ -76,13 +75,15 @@ public class Shame extends ParseObject {
         return getShameTime();
     }
 
-    public int getShameType() {
+    public String getShameType() {
         return getShameType();
     }
 
     public int getVerbalShame() {
         return getVerbalShame();
     }
+
+    public String getGroup() { return getGroup();}
 
     public void setLatitude(float latitude) {
         put("latitude", latitude);
@@ -108,10 +109,6 @@ public class Shame extends ParseObject {
         put("shameFeel", shameFeel);
     }
 
-    public void setShameReason(int shameReason) {
-        put("shameReason", shameReason);
-    }
-
     public void setShameTime(long shameTime) {
         put("shameTime", shameTime);
     }
@@ -122,5 +119,9 @@ public class Shame extends ParseObject {
 
     public void setVerbalShame(int verbalShame) {
         put("verbalShame", verbalShame);
+    }
+
+    public void setGroup(String group) {
+        put("Group", group);
     }
 }
