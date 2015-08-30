@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class StatsFragment extends android.support.v4.app.Fragment {
-    private EditText zipcode;
+    private EditText zipCode;
     private String userInput;
     private int lastChildFragmentShown = 0;
     private static Fragment[] fragments;
@@ -28,9 +28,9 @@ public class StatsFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.stats_fragment_vp, container, false);
+        View view = inflater.inflate(R.layout.stats_fragment, container, false);
         Button update = (Button) view.findViewById(R.id.update);
-        zipcode = (EditText) view.findViewById(R.id.zipcode);
+        zipCode = (EditText) view.findViewById(R.id.zipcode);
 
         //child fragments
         fragments= new Fragment[2];
@@ -40,7 +40,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userInput = zipcode.getText().toString();
+                userInput = zipCode.getText().toString();
                 if (userInput.length() == 5) {
                     ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
                     ((BarChartFragment) fragments[1]).getCountGroups(userInput);
@@ -72,10 +72,10 @@ public class StatsFragment extends android.support.v4.app.Fragment {
 
             }
         });
-
         return view;
     }
 
+    //inner view pager adapter
    public static class InnerAdapter extends FragmentPagerAdapter {
 
         public InnerAdapter(FragmentManager fm) {

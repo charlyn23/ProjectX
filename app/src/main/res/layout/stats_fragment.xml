@@ -28,7 +28,7 @@
                 android:hint="@string/zipcode"
                 android:inputType="number"
                 android:maxLength="5"
-                android:textColor="@color/accent"
+                android:textColor="@color/text_black"
                 android:textColorHint="#363636" />
         </android.support.design.widget.TextInputLayout>
 

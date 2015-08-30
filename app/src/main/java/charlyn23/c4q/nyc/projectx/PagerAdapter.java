@@ -17,10 +17,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         this.mNumOfTabs = NumOfTabs;
         this.isLoggedIn = isLoggedIn;
 
-        pagerFragments = new Fragment[3];
+        pagerFragments = new Fragment[4];
         pagerFragments[0] = new ProjectXMapFragment();
         pagerFragments[1] = new StatsFragment();
-        pagerFragments[2] = new SignUpFragment();
+        pagerFragments[2] = new ProfileFragment();
+        pagerFragments[3] = new SignUpFragment();
     }
 
 
@@ -36,7 +37,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 if (isLoggedIn)
                     return pagerFragments[2];
                 else
-                    return pagerFragments[2];
+                    return pagerFragments[3];
             default:
                 return null;
         }

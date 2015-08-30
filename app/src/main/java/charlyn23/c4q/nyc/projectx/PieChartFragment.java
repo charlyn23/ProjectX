@@ -36,7 +36,7 @@ public class PieChartFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.stats_fragment_pie_chart, container, false);
+        View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
         TextView next = (TextView) view.findViewById(R.id.next);
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         configPieChart(pieChart);
@@ -79,6 +79,10 @@ public class PieChartFragment extends Fragment {
                     Log.d("yuliya", numVerbalShame + "");
                     Log.d("yuliya", numPhysicalShame + "");
                     Log.d("yuliya", numOtherShame + "");
+
+                    if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
+                        Toast.makeText(getActivity(), "Cases of harassment have not been reported in your area!", Toast.LENGTH_LONG).show();
+                    }
 
                     setDataPieChart(pieChart);
                 }
