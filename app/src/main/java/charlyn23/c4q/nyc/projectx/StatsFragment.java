@@ -17,14 +17,17 @@ public class StatsFragment extends android.support.v4.app.Fragment {
     private String userInput;
     private int lastChildFragmentShown = 0;
     private static Fragment[] fragments;
-    static ViewPager innerViewPager;
+    public static ViewPager innerViewPager;
 
+    //remember and animate the last viewed inner graph fragment
     public void pageSelected() {
         if (lastChildFragmentShown == 0) {
             ((PieChartFragment) fragments[0]).animateChart();
         }
+        else if (lastChildFragmentShown == 1) {
+            ((BarChartFragment) fragments[1]).animateChart();
+        }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
         fragments[0] = new PieChartFragment();
         fragments[1] = new BarChartFragment();
 
+        //updates the graph based on the user's zipCode
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +56,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        //shows the general data collected
         overView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +78,9 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             public void onPageSelected(int position) {
                 if (position == 0) {
                     ((PieChartFragment) fragments[0]).animateChart();
+                }
+                else {
+                    ((BarChartFragment) fragments[1]).animateChart();
                 }
                 lastChildFragmentShown = position;
             }

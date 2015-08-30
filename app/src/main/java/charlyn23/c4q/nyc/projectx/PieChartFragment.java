@@ -62,7 +62,7 @@ public class PieChartFragment extends Fragment {
         }
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
+                if (e == null && objects != null) {
                     for (int i = 0; i < objects.size(); ++i) {
                         if (objects.get(i).get("shameType").equals("verbal")) {
                             numVerbalShame++;
