@@ -49,8 +49,8 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         });
 
         configBarChart(barChart);
-        setDataBarChart(4, 6, 7, 8);
-        //getCountGroups("");
+        //setDataBarChart(4, 6, 7, 8);
+        getCountGroups("");
         return view;
     }
 
@@ -84,7 +84,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                     if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0 ) {
                         barChart.setNoDataText("Cases of harassment have not been reported in your area!");
                     }
-                    setDataBarChart(5, 7, 8, 4);
+                    setDataBarChart(numWomen, numPOC, numLGBTQ, numMinor);
                 }
             }
         });
@@ -95,7 +95,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         barChart.setDrawValueAboveBar(false);
         barChart.setDescription("");
         barChart.setDrawBarShadow(false);
-        
+
         XAxis xl = barChart.getXAxis();
         xl.setTextSize(13);
         xl.setDrawAxisLine(false);
@@ -114,6 +114,8 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         yr.setTextSize(13);
         yr.setDrawAxisLine(false);
         yr.setDrawGridLines(false);
+        yr.setEnabled(false);
+        
         Legend l = barChart.getLegend();
         l.setEnabled(false);
         return barChart;
@@ -150,6 +152,8 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(13);
         barChart.setData(data);
+
+        barChart.animateY(2000);
     }
 
     public void animateChart() {
