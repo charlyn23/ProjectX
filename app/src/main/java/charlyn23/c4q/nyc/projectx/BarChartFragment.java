@@ -1,14 +1,12 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -24,6 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BarChartFragment extends android.support.v4.app.Fragment {
+    private static final String LGBTQ = "LGBTQ";
+    private static final String POC = "POC";
+    private static final String WOMEN = "women";
+    private static final String WOMAN = "woman";
+    private static final String MINOR = "minor";
+    private static final String GROUP = "Group";
+
     private int numWomen;
     private int numPOC;
     private int numLGBTQ;
@@ -62,11 +67,11 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null && objects != null) {
                     for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get("Group").equals("woman")) {
+                        if (objects.get(i).get(GROUP).equals(WOMAN)) {
                             numWomen++;
-                        } else if (objects.get(i).get("Group").equals("LGBTQ")) {
+                        } else if (objects.get(i).get(GROUP).equals(LGBTQ)) {
                             numLGBTQ++;
-                        } else if (objects.get(i).get("Group").equals("POC")) {
+                        } else if (objects.get(i).get(GROUP).equals(POC)) {
                             numPOC++;
                         } else {
                             numMinor++;
@@ -79,12 +84,14 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                     if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0 ) {
                         barChart.setNoDataText("Cases of harassment have not been reported in your area!");
                     }
-                    setDataBarChart(numWomen, numPOC, numLGBTQ, numMinor);
+                    Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
+                    setDataBarChart(data.getyVals(), data.getxValues());
                 }
             }
         });
     }
 
+    //configures the characteristics of the chart
     public BarChart configBarChart(BarChart barChart) {
         barChart.setHighlightEnabled(true);
         barChart.setDrawValueAboveBar(false);
@@ -116,45 +123,150 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         return barChart;
     }
 
-    private void setDataBarChart(int women, int POC, int LGBTQ, int minor) {
-        float sum = women + POC + LGBTQ + minor;
-        float womenPerCent = women / sum * 100;
-        float POCPerCent = POC / sum * 100;
-        float LGBTQPerCent = LGBTQ / sum * 100;
-        float minorPerCent = minor / sum * 100;
-
-        ArrayList<BarEntry> yVals = new ArrayList<BarEntry>();
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        xVals.add("WOMAN");
-        xVals.add("POC");
-        xVals.add("LGBTQ");
-        xVals.add("MINOR");
-
-        yVals.add(new BarEntry(womenPerCent, 0));
-        yVals.add(new BarEntry(POCPerCent, 1));
-        yVals.add(new BarEntry(LGBTQPerCent, 2));
-        yVals.add(new BarEntry(minorPerCent, 3));
-
+    //sets the data on the configured chart
+    private void setDataBarChart(ArrayList<BarEntry> yVals, ArrayList<String> xVals) {
         BarDataSet set = new BarDataSet(yVals, "");
         ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
         set.setColors(colors);
-
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
         dataSets.add(set);
-
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(13);
         barChart.setData(data);
-
         barChart.animateY(2000);
     }
 
+    //animates the cart
     public void animateChart() {
         if (barChart == null) {
             return;
         }
         barChart.animateY(2000);
+    }
+
+    //sets up the number of bars in the chart
+    private Data setBars(int numWomen, int numPOC, int numLGBTQ, int numMinor) {
+        //presents info in %
+        float sum = numWomen + numPOC + numLGBTQ + numMinor;
+        float womenPerCent = numWomen / sum * 100;
+        float POCPerCent = numPOC / sum * 100;
+        float LGBTQPerCent = numLGBTQ / sum * 100;
+        float minorPerCent = numMinor / sum * 100;
+
+        ArrayList<BarEntry> yVals = new ArrayList<>();
+        ArrayList<String> xVals = new ArrayList<>();
+
+        //calculates how many bars to display and hides 0-value entries
+        if (numWomen == 0) {
+            if (numPOC == 0) {
+                if (numLGBTQ == 0) {
+                    yVals.add(new BarEntry(minorPerCent, 0));
+                    xVals.add(MINOR);
+                }
+                else {
+                    yVals.add(new BarEntry(LGBTQPerCent, 0));
+                    yVals.add(new BarEntry(minorPerCent, 1));
+                    xVals.add(LGBTQ);
+                    xVals.add(MINOR);
+                }
+            }
+            else if (numLGBTQ == 0) {
+                if (numMinor == 0) {
+                    yVals.add(new BarEntry(POCPerCent, 0));
+                    xVals.add(POC);
+                }
+                else {
+                    yVals.add(new BarEntry(POCPerCent, 0));
+                    yVals.add(new BarEntry(minorPerCent, 1));
+                    xVals.add(POC);
+                    xVals.add(MINOR);
+                }
+            }
+            else if (numMinor == 0) {
+                yVals.add(new BarEntry(POCPerCent, 0));
+                yVals.add(new BarEntry(LGBTQPerCent, 1));
+                xVals.add(POC);
+                xVals.add(LGBTQ);
+            }
+            else {
+                yVals.add(new BarEntry(POCPerCent, 0));
+                yVals.add(new BarEntry(LGBTQPerCent, 1));
+                yVals.add(new BarEntry(minorPerCent, 2));
+                xVals.add(POC);
+                xVals.add(LGBTQ);
+                xVals.add(MINOR);
+            }
+        }
+
+        else if (numPOC == 0) {
+            if (numLGBTQ == 0) {
+                if (numMinor == 0) {
+                    yVals.add(new BarEntry(womenPerCent, 0));
+                    xVals.add(WOMEN);
+                }
+                else {
+                    yVals.add(new BarEntry(womenPerCent, 0));
+                    yVals.add(new BarEntry(minorPerCent, 1));
+                    xVals.add(WOMEN);
+                    xVals.add(MINOR);
+                }
+            }
+            else if (numMinor == 0) {
+                yVals.add(new BarEntry(womenPerCent, 0));
+                yVals.add(new BarEntry(LGBTQPerCent, 1));
+                xVals.add(WOMEN);
+                xVals.add(LGBTQ);
+            }
+            else {
+                yVals.add(new BarEntry(womenPerCent, 0));
+                yVals.add(new BarEntry(LGBTQPerCent, 1));
+                yVals.add(new BarEntry(minorPerCent, 2));
+                xVals.add(WOMEN);
+                xVals.add(LGBTQ);
+                xVals.add(MINOR);
+            }
+        }
+
+        else if (numLGBTQ == 0) {
+            if (numMinor == 0) {
+                yVals.add(new BarEntry(womenPerCent, 0));
+                yVals.add(new BarEntry(POCPerCent, 1));
+                xVals.add(WOMEN);
+                xVals.add(POC);
+            }
+            else {
+                yVals.add(new BarEntry(womenPerCent, 0));
+                yVals.add(new BarEntry(POCPerCent, 1));
+                yVals.add(new BarEntry(minorPerCent, 2));
+                xVals.add(WOMEN);
+                xVals.add(POC);
+                xVals.add(MINOR);
+            }
+        }
+
+        else if (numMinor == 0) {
+            yVals.add(new BarEntry(womenPerCent, 0));
+            yVals.add(new BarEntry(POCPerCent, 1));
+            yVals.add(new BarEntry(LGBTQPerCent, 2));
+            xVals.add(WOMEN);
+            xVals.add(POC);
+            xVals.add(LGBTQ);
+        }
+
+        else {
+            yVals.add(new BarEntry(womenPerCent, 0));
+            yVals.add(new BarEntry(POCPerCent, 1));
+            yVals.add(new BarEntry(LGBTQPerCent, 2));
+            yVals.add(new BarEntry(minorPerCent, 3));
+            xVals.add(WOMEN);
+            xVals.add(POC);
+            xVals.add(LGBTQ);
+            xVals.add(MINOR);
+        }
+
+        Data data = new Data(yVals, xVals);
+        return data;
     }
 }

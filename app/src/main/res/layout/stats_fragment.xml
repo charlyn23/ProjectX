@@ -17,9 +17,8 @@
             android:id="@+id/zipcode_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-            android:layout_weight="5">
+            android:layout_weight="6">
 
             <EditText
                 android:id="@+id/zipcode"

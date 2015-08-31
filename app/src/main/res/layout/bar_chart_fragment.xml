@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="@string/groups"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_weight="0.5"

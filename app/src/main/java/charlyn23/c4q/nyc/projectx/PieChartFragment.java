@@ -22,6 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PieChartFragment extends Fragment {
+    private static final String VERBAL = "verbal";
+    private static final String PHYSICAL = "physical";
+    private static final String OTHER = "other";
+    private static final String SHAME_TYPE = "shameType";
+    private static final String PIE_CHART = "pieChart";
+
     private PieChart pieChart;
     private int numVerbalShame;
     private int numPhysicalShame;
@@ -47,7 +53,6 @@ public class PieChartFragment extends Fragment {
         return view;
     }
 
-
     public void getCountShameTypes(String zipCode) {
         numVerbalShame = 0;
         numPhysicalShame = 0;
@@ -61,9 +66,9 @@ public class PieChartFragment extends Fragment {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null && objects != null) {
                     for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get("shameType").equals("verbal")) {
+                        if (objects.get(i).get(SHAME_TYPE).equals(VERBAL)) {
                             numVerbalShame++;
-                        } else if (objects.get(i).get("shameType").equals("physical")) {
+                        } else if (objects.get(i).get(SHAME_TYPE).equals(PHYSICAL)) {
                             numPhysicalShame++;
                         } else {
                             numOtherShame++;
@@ -77,7 +82,8 @@ public class PieChartFragment extends Fragment {
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
                         Toast.makeText(getActivity(), "Cases of harassment have not been reported in your area!", Toast.LENGTH_LONG).show();
                     }
-                    setDataPieChart(pieChart, numVerbalShame, numPhysicalShame, numOtherShame);
+                    Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
+                    setDataPieChart(pieChart, data.getyValues(), data.getxValues());
                 }
             }
         });
@@ -99,9 +105,7 @@ public class PieChartFragment extends Fragment {
     }
 
     //sets the data on the configured chart
-    private PieChart setDataPieChart(PieChart chart, int numVerbalShame, int numPhysicalShame, int numOtherShame) {
-        ArrayList<Entry> yVals = getYValues(numVerbalShame, numPhysicalShame, numOtherShame);
-        ArrayList<String> xVals = getXValues(numVerbalShame, numPhysicalShame, numOtherShame);
+    private PieChart setDataPieChart(PieChart chart, ArrayList<Entry> yVals, ArrayList<String> xVals) {
         ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
         //colors.add(getResources().getColor(android.R.color.holo_red_light));
@@ -130,81 +134,54 @@ public class PieChartFragment extends Fragment {
     }
 
     //sets up the number of y values to display in the chart depending on the type of data available in db
-    private ArrayList<Entry> getYValues(int numVerbalShame, int numPhysicalShame, int numOtherShame) {
+    private Data setBars(int numVerbalShame, int numPhysicalShame, int numOtherShame) {
         ArrayList<Entry> yVals = new ArrayList<Entry>();
+        ArrayList<String> xVals = new ArrayList<String>();
 
         if (numOtherShame == 0 && numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
+            xVals.add(VERBAL);
         }
 
         else if (numOtherShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
+            xVals.add(PHYSICAL);
         }
 
         else if (numPhysicalShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numOtherShame, 0));
+            xVals.add(OTHER);
         }
 
         else if (numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
+            xVals.add(PHYSICAL);
+            xVals.add(OTHER);
         }
 
         else if (numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
+            xVals.add(VERBAL);
+            xVals.add(OTHER);
         }
         else if (numOtherShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
+            xVals.add(VERBAL);
+            xVals.add(PHYSICAL);
         }
 
         else {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
             yVals.add(new Entry(numOtherShame, 2));
+            xVals.add(VERBAL);
+            xVals.add(PHYSICAL);
+            xVals.add(OTHER);
         }
-
-        return yVals;
-    }
-
-    //set up the number of x values to display in the chart depending on the type of data available in db
-    private ArrayList<String> getXValues(int numVerbalShame, int numPhysicalShame, int numOtherShame) {
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        if (numOtherShame == 0 && numPhysicalShame == 0) {
-            xVals.add("verbal");
-        }
-
-        else if (numOtherShame == 0 && numVerbalShame == 0) {
-            xVals.add("physical");
-        }
-
-        else if (numPhysicalShame == 0 && numVerbalShame == 0) {
-            xVals.add("other");
-        }
-
-        else if (numVerbalShame == 0) {
-            xVals.add("physical");
-            xVals.add("other");
-        }
-
-        else if (numPhysicalShame == 0) {
-            xVals.add("verbal");
-            xVals.add("other");
-        }
-
-        else if (numOtherShame == 0) {
-            xVals.add("verbal");
-            xVals.add("physical");
-        }
-
-        else {
-            xVals.add("verbal");
-            xVals.add("physical");
-            xVals.add("other");
-        }
-
-        return xVals;
+        Data data = new Data(PIE_CHART, yVals, xVals);
+        return data;
     }
 }
