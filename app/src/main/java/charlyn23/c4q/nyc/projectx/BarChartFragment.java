@@ -10,20 +10,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.utils.ValueFormatter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +45,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         });
 
         configBarChart(barChart);
-        //setDataBarChart(4, 6, 7, 8);
         getCountGroups("");
         return view;
     }
@@ -115,18 +110,18 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         yr.setDrawAxisLine(false);
         yr.setDrawGridLines(false);
         yr.setEnabled(false);
-        
+
         Legend l = barChart.getLegend();
         l.setEnabled(false);
         return barChart;
     }
 
     private void setDataBarChart(int women, int POC, int LGBTQ, int minor) {
-        int sum = women + POC + LGBTQ + minor;
-        double womenPerCent = women * 100 / sum;
-        double POCPerCent = POC * 100 / sum;
-        double LGBTQPerCent = LGBTQ * 100 / sum;
-        double minorPerCent = minor * 100 / sum;
+        float sum = women + POC + LGBTQ + minor;
+        float womenPerCent = women / sum * 100;
+        float POCPerCent = POC / sum * 100;
+        float LGBTQPerCent = LGBTQ / sum * 100;
+        float minorPerCent = minor / sum * 100;
 
         ArrayList<BarEntry> yVals = new ArrayList<BarEntry>();
         ArrayList<String> xVals = new ArrayList<String>();
@@ -136,10 +131,10 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         xVals.add("LGBTQ");
         xVals.add("MINOR");
 
-        yVals.add(new BarEntry((float) womenPerCent, 0));
-        yVals.add(new BarEntry((float) POCPerCent, 1));
-        yVals.add(new BarEntry((float) LGBTQPerCent, 2));
-        yVals.add(new BarEntry((float) minorPerCent, 3));
+        yVals.add(new BarEntry(womenPerCent, 0));
+        yVals.add(new BarEntry(POCPerCent, 1));
+        yVals.add(new BarEntry(LGBTQPerCent, 2));
+        yVals.add(new BarEntry(minorPerCent, 3));
 
         BarDataSet set = new BarDataSet(yVals, "");
         ArrayList<Integer> colors = new ArrayList<Integer>();
