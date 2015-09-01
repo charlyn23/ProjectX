@@ -510,6 +510,7 @@ public class ShameDialogs {
                         else {
                             dialog.cancel();
                             Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
+                            addShame.setVisibility(View.INVISIBLE);
                         }
                     }
 
