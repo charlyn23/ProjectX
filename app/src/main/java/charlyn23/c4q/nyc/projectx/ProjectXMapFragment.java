@@ -162,44 +162,44 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMarkerClickListener(markerClickListener);
 
 
-        //populates map with shames that occured within the last two months
-//        ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-//        Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-//        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-//        Log.i("last_two_months", last_two_months); //good
-//        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
-//        query.findInBackground(new FindCallback<Shame>() {
-//            public void done(List<Shame> shames, ParseException e) {
-//                if (e == null) {
-//
-//                    for (Shame shame : shames) {
-//                        double latitude = shame.getDouble("latitude");
-//                        double longitude = shame.getDouble("longitude");
-//                        LatLng location = new LatLng(latitude, longitude);
-//                        String shame_group = shame.getString("Group");
-//
-//                        switch (shame_group) {
-//                            case "woman":
-//                                woman = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                            case "minor":
-//                                minor = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                            case "POC":
-//                                POC = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                            case "LGBTQ":
-//                                LGBTQ = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                        }
-//                    }
-//                    Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
-//                } else {
-//                    Log.d("List of Shames", "Error: " + e.getMessage());
-//                }
-//            }
-//        });
+        //populates map with shames that occurred within the last two months
+        ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+        Log.i("last_two_months", last_two_months); //good
+        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
+        query.findInBackground(new FindCallback<Shame>() {
+            public void done(List<Shame> shames, ParseException e) {
+                if (e == null) {
+
+                    for (Shame shame : shames) {
+                        double latitude = shame.getDouble("latitude");
+                        double longitude = shame.getDouble("longitude");
+                        LatLng location = new LatLng(latitude, longitude);
+                        String shame_group = shame.getString("Group");
+
+                        switch (shame_group) {
+                            case "woman":
+                                woman = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                            case "minor":
+                                minor = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                            case "POC":
+                                POC = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                            case "LGBTQ":
+                                LGBTQ = map.addMarker(new MarkerOptions().position(location));
+                                break;
+                        }
+                    }
+                    Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
+                } else {
+                    Log.d("List of Shames", "Error: " + e.getMessage());
+                }
+            }
+        });
     }
 
     //directs the user to SignUp Fragment if not logged in yet or to Map Fragment if logged in when FAB is clicked

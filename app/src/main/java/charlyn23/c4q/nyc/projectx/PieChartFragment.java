@@ -22,11 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PieChartFragment extends Fragment {
+    private static final String SHAME = "Shame";
+    private static final String ZIPCODE = "zipCode";
     private static final String VERBAL = "verbal";
     private static final String PHYSICAL = "physical";
     private static final String OTHER = "other";
     private static final String SHAME_TYPE = "shameType";
     private static final String PIE_CHART = "pieChart";
+    private static final int BAR_CHART = 1;
+
 
     private PieChart pieChart;
     private int numVerbalShame;
@@ -44,7 +48,7 @@ public class PieChartFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StatsFragment.innerViewPager.setCurrentItem(1);
+                StatsFragment.innerViewPager.setCurrentItem(BAR_CHART);
             }
         });
 
@@ -58,9 +62,9 @@ public class PieChartFragment extends Fragment {
         numPhysicalShame = 0;
         numOtherShame = 0;
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(SHAME);
         if (zipCode.length() > 0) {
-            query.whereEqualTo("zipCode", zipCode);
+            query.whereEqualTo(ZIPCODE, zipCode);
         }
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> objects, ParseException e) {

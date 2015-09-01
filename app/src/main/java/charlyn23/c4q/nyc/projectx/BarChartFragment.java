@@ -22,12 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BarChartFragment extends android.support.v4.app.Fragment {
+    private static final String SHAME = "Shame";
+    private static final String ZIPCODE = "zipCode";
     private static final String LGBTQ = "LGBTQ";
     private static final String POC = "POC";
     private static final String WOMEN = "women";
     private static final String WOMAN = "woman";
     private static final String MINOR = "minor";
     private static final String GROUP = "Group";
+    private static final int PIE_CHART = 0;
+
 
     private int numWomen;
     private int numPOC;
@@ -44,7 +48,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StatsFragment.innerViewPager.setCurrentItem(0);
+                StatsFragment.innerViewPager.setCurrentItem(PIE_CHART);
 
             }
         });
@@ -59,9 +63,9 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         numPOC = 0;
         numLGBTQ = 0;
         numMinor = 0;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Shame");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(SHAME);
         if (zipCode.length() > 0) {
-            query.whereEqualTo("zipCode", zipCode);
+            query.whereEqualTo(ZIPCODE, zipCode);
         }
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> objects, ParseException e) {
