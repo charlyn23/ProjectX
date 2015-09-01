@@ -165,6 +165,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         double longitude = shame.getDouble("longitude");
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString("Group");
+                        Log.i("Shames", String.valueOf(shame)); //pulling all shames - good
+                        map.addMarker(new MarkerOptions().position(location));
 
                         if (shame_group != null) {
                             switch (shame_group) {
