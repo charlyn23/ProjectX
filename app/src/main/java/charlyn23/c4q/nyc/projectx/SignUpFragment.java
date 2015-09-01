@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,9 +33,9 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
     private static final String LOGGED_IN = "isLoggedIn";
     private static final String LAT_LONG = "latLong";
     private SharedPreferences.Editor editor;
-    public static GoogleApiClient googleApiClient;
-    private boolean mIsResolving = false;
-    private boolean mShouldResolve = false;
+    private GoogleApiClient googleApiClient;
+    private boolean isResolving = false;
+    private boolean shouldResolve = false;
     private View view;
     private SharedPreferences preferences = null;
     private LatLng latLng;
@@ -68,6 +67,13 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
+        final Button logOut = (Button) view.findViewById(R.id.log_out);
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logOut();
+            }
+        });
 
         return view;
     }
@@ -189,7 +195,7 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
     @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected: " + bundle);
-        mShouldResolve = false;
+        shouldResolve = false;
     }
 
     @Override
@@ -217,14 +223,14 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed: " + connectionResult);
 
-        if (!mIsResolving && mShouldResolve) {
+        if (!isResolving && shouldResolve) {
             if (connectionResult.hasResolution()) {
                 try {
                     connectionResult.startResolutionForResult(getActivity(), RC_SIGN_IN);
-                    mIsResolving = true;
+                    isResolving = true;
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Could not resolve ConnectionResult.", e);
-                    mIsResolving = false;
+                    isResolving = false;
                     googleApiClient.connect();
                 }
             } else {
@@ -234,7 +240,7 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
     }
 
     private void onSignInClicked() {
-        mShouldResolve = true;
+        shouldResolve = true;
         googleApiClient.connect();
         reportShame();
         editor = preferences.edit();

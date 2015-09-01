@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,18 +22,26 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int RC_SIGN_IN = 0;
     private static final String PROFILE_IMAGE = "profileImage";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
+    private GoogleApiClient googleApiClient;
+    private boolean isResolving = false;
+    private boolean shouldResolve = false;
     private View view;
     private CircleImageView profileImage;
 
@@ -55,6 +64,14 @@ public class ProfileFragment extends Fragment {
 
         Button logout = (Button) view.findViewById(R.id.log_out);
         logout.setOnClickListener(logoutClick);
+
+
+        googleApiClient = new GoogleApiClient.Builder(view.getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API)
+                .addScope(new Scope(Scopes.EMAIL))
+                .build();
 
         return view;
     }
@@ -94,6 +111,58 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected: " + bundle);
+        shouldResolve = false;
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed: " + connectionResult);
+
+        if (!isResolving && shouldResolve) {
+            if (connectionResult.hasResolution()) {
+                try {
+                    connectionResult.startResolutionForResult(getActivity(), RC_SIGN_IN);
+                    isResolving = true;
+                } catch (IntentSender.SendIntentException e) {
+                    Log.e(TAG, "Could not resolve ConnectionResult.", e);
+                    isResolving = false;
+                    googleApiClient.connect();
+                }
+            } else {
+                Toast.makeText(view.getContext(), getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+    View.OnClickListener logoutClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ParseUser user = ParseUser.getCurrentUser();
+            user.logOut();
+
+            if (googleApiClient.isConnected()) {
+                Plus.AccountApi.clearDefaultAccount(googleApiClient);
+                googleApiClient.disconnect();
+            }
+
+            SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(LOGGED_IN, false).apply();
+            Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            startActivity(intent);
+        }
+    };
+
     //saves profile image in the background
     public static class PictureService extends IntentService{
 
@@ -113,19 +182,4 @@ public class ProfileFragment extends Fragment {
             PictureUtil.saveToCacheFile(bitmap);
         }
     }
-
-    View.OnClickListener logoutClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ParseUser user = ParseUser.getCurrentUser();
-            user.logOut();
-
-            SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGGED_IN, false).apply();
-            Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(view.getContext(), MainActivity.class);
-            startActivity(intent);
-        }
-    };
 }

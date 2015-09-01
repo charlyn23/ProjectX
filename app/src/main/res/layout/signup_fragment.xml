@@ -87,5 +87,10 @@
             android:src="@drawable/google"
             app:border_color="@color/accent"
             app:border_width="2dp"/>
+
+        <Button
+            android:id="@+id/log_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>
