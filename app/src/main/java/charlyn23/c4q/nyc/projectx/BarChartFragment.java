@@ -71,14 +71,16 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null && objects != null) {
                     for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get(GROUP).equals(WOMAN)) {
-                            numWomen++;
-                        } else if (objects.get(i).get(GROUP).equals(LGBTQ)) {
-                            numLGBTQ++;
-                        } else if (objects.get(i).get(GROUP).equals(POC)) {
-                            numPOC++;
-                        } else {
-                            numMinor++;
+                        if (objects.get(i).get(GROUP) != null) {
+                            if (objects.get(i).get(GROUP).equals(WOMAN)) {
+                                numWomen++;
+                            } else if (objects.get(i).get(GROUP).equals(LGBTQ)) {
+                                numLGBTQ++;
+                            } else if (objects.get(i).get(GROUP).equals(POC)) {
+                                numPOC++;
+                            } else {
+                                numMinor++;
+                            }
                         }
                     }
                     Log.d("yuliya", numWomen + "w ");

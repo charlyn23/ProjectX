@@ -70,12 +70,14 @@ public class PieChartFragment extends Fragment {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null && objects != null) {
                     for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get(SHAME_TYPE).equals(VERBAL)) {
-                            numVerbalShame++;
-                        } else if (objects.get(i).get(SHAME_TYPE).equals(PHYSICAL)) {
-                            numPhysicalShame++;
-                        } else {
-                            numOtherShame++;
+                        if (objects.get(i).get(SHAME_TYPE) != null) {
+                            if (objects.get(i).get(SHAME_TYPE).equals(VERBAL)) {
+                                numVerbalShame++;
+                            } else if (objects.get(i).get(SHAME_TYPE).equals(PHYSICAL)) {
+                                numPhysicalShame++;
+                            } else {
+                                numOtherShame++;
+                            }
                         }
                     }
                     Log.d("yuliya", numVerbalShame + "");
