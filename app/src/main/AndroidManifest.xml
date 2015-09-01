@@ -33,11 +33,6 @@
                 android:value="splitActionBarWhenNarrow" />
         </activity>
 
-        <activity
-            android:name=".SignUpFragment"
-            android:label="@string/title_activity_sign_up" >
-        </activity>
-
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"

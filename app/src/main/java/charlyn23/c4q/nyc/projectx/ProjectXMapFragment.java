@@ -2,7 +2,6 @@ package charlyn23.c4q.nyc.projectx;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -50,11 +48,11 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.shames.Shame;
-import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
 
@@ -62,16 +60,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
+    private static final String MARKER_DROPPED = "markerDropped";
     private static final int LOG_IN_VIEW = 2;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
 
+    private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
     private GoogleApiClient client;
     private boolean isDropped;
     private View view;
     private GoogleMap map;
-    private Marker new_marker, woman, LGBTQ, minor, POC;
+    private Marker new_marker, woman_marker, LGBTQ_marker, minor_marker, POC_marker;
     private FloatingActionButton addShame;
     private AutoCompleteTextView search;
     private LatLng searchLocation;
@@ -82,8 +82,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private String who;
     private String type;
     private ViewPager viewPager;
-
     private OnDataPass dataPasser;
+    private List<LatLng> woman_loc = new ArrayList<>(),
+            minor_loc = new ArrayList<>(),
+            lgbtq_loc = new ArrayList<>(),
+            poc_loc = new ArrayList<>();
+    private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
+
 
     @Nullable
     @Override
@@ -91,6 +96,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         view = inflater.inflate(R.layout.map_fragment, container, false);
         viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
 
         // Connect to Geolocation API to make current location request & load map
@@ -119,23 +125,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         filter = (Button) view.findViewById(R.id.filter);
         filter.setOnClickListener(filterClick);
 
-        // brings up the dialog after the user logs in with the latlong coordinates
-//        Bundle extras = getActivity().getIntent().getExtras();
-//        if (extras != null) {
-//            boolean createDialog = extras.getBoolean(SHAME_REPORT);
-//            LatLng latLng = extras.getParcelable(LAT_LONG);
-//            if (createDialog && latLng != null) {
-//                ShameDialogs dialogs = new ShameDialogs();
-//                new_marker = map.addMarker(new MarkerOptions()
-//                        .title(latLng.latitude + " : " + latLng.longitude)
-//                        .position(latLng)
-//                        .draggable(true));
-//                addShame.setVisibility(View.VISIBLE);
-//                isDropped = true;
-//                dialogs.initialDialog(view.getContext(), latLng.latitude, latLng.longitude, new_marker, addShame);
-//            }
-//        }
-
         return view;
     }
 
@@ -161,52 +150,52 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
 
-
         //populates map with shames that occurred within the last two months
-//        ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-//        Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-//        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-//        Log.i("last_two_months", last_two_months); //good
-//        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
-//        query.findInBackground(new FindCallback<Shame>() {
-//            public void done(List<Shame> shames, ParseException e) {
-//                if (e == null) {
-//
-//                    for (Shame shame : shames) {
-//                        double latitude = shame.getDouble("latitude");
-//                        double longitude = shame.getDouble("longitude");
-//                        LatLng location = new LatLng(latitude, longitude);
-//                        String shame_group = shame.getString("Group");
-//
-//                        switch (shame_group) {
-//                            case "woman":
-//                                woman = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                            case "minor":
-//                                minor = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                            case "POC":
-//                                POC = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                            case "LGBTQ":
-//                                LGBTQ = map.addMarker(new MarkerOptions().position(location));
-//                                break;
-//                        }
-//                    }
-//                    Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
-//                } else {
-//                    Log.d("List of Shames", "Error: " + e.getMessage());
-//                }
-//            }
-//        });
+        ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+        Log.i("last_two_months", last_two_months); //good
+        query.whereGreaterThanOrEqualTo("shameTime", last_two_months);
+        query.findInBackground(new FindCallback<Shame>() {
+            public void done(List<Shame> shames, ParseException e) {
+                if (e == null) {
+
+                    for (Shame shame : shames) {
+                        double latitude = shame.getDouble("latitude");
+                        double longitude = shame.getDouble("longitude");
+                        LatLng location = new LatLng(latitude, longitude);
+                        String shame_group = shame.getString("Group");
+
+                        if (shame_group != null) {
+                            switch (shame_group) {
+                                case "woman":
+                                    woman_loc.add(location);
+                                    break;
+                                case "minor":
+                                    minor_loc.add(location);
+                                    break;
+                                case "POC":
+                                    poc_loc.add(location);
+                                    break;
+                                case "LGBTQ":
+                                    lgbtq_loc.add(location);
+                                    break;
+                            }
+                        }
+                    }
+                    Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
+                } else {
+                    Log.d("List of Shames", "Error: " + e.getMessage());
+                }
+            }
+        });
     }
 
     //directs the user to SignUp Fragment if not logged in yet or to Map Fragment if logged in when FAB is clicked
     private View.OnClickListener addShameListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
             boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
             if (isLoggedIn) {
@@ -233,6 +222,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         .draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
+                preferences.edit().putBoolean(MARKER_DROPPED, true).apply();
             } else {
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
@@ -251,22 +241,28 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(final Marker marker) {
-            //TODO differentiate shame markers
             if (marker.equals(new_marker)) {
                 Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
             } else {
-                latitude =  marker.getPosition().latitude;
-                longitude =  marker.getPosition().longitude;
-
-
-                Snackbar.make(view, "SHAME + Date", Snackbar.LENGTH_LONG)
-                        .setAction(R.string.snackbar_action, snackbarDetail)
-                        .show();
-                Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
-                Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
-
+                ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
+                query.whereEqualTo("latitude", marker.getPosition().latitude);
+                query.whereEqualTo("longitude", marker.getPosition().longitude);
+                query.getFirstInBackground(new GetCallback<Shame>() {
+                    @Override
+                    public void done(Shame shame, ParseException e) {
+                        if (shame == null)
+                            Log.e("shame", "not found");
+                        else
+                            Log.d("shame : ", String.valueOf(shame));
+                        Snackbar.make(view, String.valueOf(shame.getGroup()) + " on " + shame.getShameTime(), Snackbar.LENGTH_LONG)
+                                .setAction(R.string.snackbar_action, snackbarDetail)
+                                .show();
+                        Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
+                        Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
+                    }
+                });
             }
             return true;
         }
@@ -275,7 +271,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private View.OnClickListener snackbarDetail = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //TODO bring to shame detail
 //            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
 //            startActivity(intent);
             ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
@@ -309,6 +304,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         public void onClick(View v) {
             new_marker.remove();
             isDropped = false;
+            preferences.edit().putBoolean(MARKER_DROPPED, false).apply();
             addShame.setVisibility(View.INVISIBLE);
         }
     };
@@ -320,11 +316,23 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     .title(R.string.filter)
                     .content(R.string.filter_content)
                     .items(R.array.filter_types)
-                    .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                    .itemsCallbackMultiChoice(filter_chosen, new MaterialDialog.ListCallbackMultiChoice() {
                         @Override
-                        public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            // TODO filter markers
+                        public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                            map.clear();
+                            filter_chosen = new Integer[which.length];
+                            for (int i = which.length - 1; i >= 0; --i) {
+                                if (which[i] == 0)
+                                    populateMap("woman");
+                                else if (which[i] == 1)
+                                    populateMap("poc");
+                                else if (which[i] == 2)
+                                    populateMap("lgbtq");
+                                else if (which[i] == 0)
+                                    populateMap("minor");
 
+                                filter_chosen[i] = which[i];
+                            }
                             return true;
                         }
                     })
@@ -345,6 +353,39 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     .show();
         }
     };
+
+    public void populateMap(String group) {
+        if (group.equals("woman")) {
+            for (LatLng loc : woman_loc) {
+                woman_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+        } else if (group.equals("minor")) {
+            for (LatLng loc : minor_loc) {
+                minor_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+        } else if (group.equals("lgbtq")) {
+            for (LatLng loc : lgbtq_loc) {
+                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+        } else if (group.equals("poc")) {
+            for (LatLng loc : poc_loc) {
+                POC_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+        } else {
+            for (LatLng loc : woman_loc) {
+                woman_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+            for (LatLng loc : minor_loc) {
+                minor_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+            for (LatLng loc : lgbtq_loc) {
+                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+            for (LatLng loc : poc_loc) {
+                POC_marker = map.addMarker(new MarkerOptions().position(loc));
+            }
+        }
+    }
 
     // Listener that handles selections from suggestions from the AutoCompleteTextView
     private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
@@ -453,6 +494,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void onStart() {
         super.onStart();
         client.connect();
+        isDropped = preferences.getBoolean(MARKER_DROPPED, false);
     }
 
     @Override
