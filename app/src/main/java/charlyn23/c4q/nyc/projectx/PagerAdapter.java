@@ -7,15 +7,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
     boolean isLoggedIn;
     Fragment[] pagerFragments;
+    GoogleApiClient client;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs, boolean isLoggedIn) {
+    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
-        this.isLoggedIn = isLoggedIn;
 
         pagerFragments = new Fragment[4];
         pagerFragments[0] = new ProjectXMapFragment();

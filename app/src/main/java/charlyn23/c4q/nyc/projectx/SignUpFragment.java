@@ -241,20 +241,4 @@ public class SignUpFragment extends Fragment implements GoogleApiClient.Connecti
         editor.putBoolean(LOGGED_IN, true).apply();
         Toast.makeText(view.getContext(), "Signing in", Toast.LENGTH_LONG).show();
     }
-
-    private void logOut() {
-        ParseUser user = ParseUser.getCurrentUser();
-        user.logOut();
-
-        if (googleApiClient.isConnected()) {
-            Plus.AccountApi.clearDefaultAccount(googleApiClient);
-            googleApiClient.disconnect();
-        }
-
-        editor = preferences.edit();
-        editor.putBoolean(LOGGED_IN, false).apply();
-        Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(view.getContext(), MainActivity.class);
-        startActivity(intent);
-    }
 }
