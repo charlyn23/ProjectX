@@ -89,7 +89,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -229,6 +228,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         .title(point.latitude + " : " + point.longitude)
                         .position(point)
                         .draggable(true));
+                addShame.setVisibility(View.VISIBLE);
             }
             if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
@@ -257,7 +257,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         else
                             Log.d("shame : ", String.valueOf(shame));
                         Snackbar.make(view, String.valueOf(shame.getGroup()) + " on " + shame.getShameTime(), Snackbar.LENGTH_LONG)
-                                .setAction(R.string.snackbar_action, snackbarDetail)
+                                .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
                                 .show();
                         Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
                         Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
@@ -268,14 +268,21 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     };
 
-    private View.OnClickListener snackbarDetail = new View.OnClickListener() {
+    public class snackbarDetail implements View.OnClickListener {
+        double lat, lon;
+
+        public snackbarDetail(double lat, double lon) {
+            this.lat = lat;
+            this.lon = lon;
+        }
+
         @Override
         public void onClick(View v) {
 //            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
 //            startActivity(intent);
             ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
-            query.whereEqualTo("latitude", latitude);
-            query.whereEqualTo("longitude", longitude);
+            query.whereEqualTo("latitude", lat);
+            query.whereEqualTo("longitude", lon);
             query.getFirstInBackground(new GetCallback<Shame>() {
                 @Override
                 public void done(Shame shame, ParseException e) {
@@ -283,21 +290,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         Log.e("shame", "not found");
                     } else {
                         Log.d("shame : ", String.valueOf(shame));
-                        Double latitude = shame.getDouble("latitude");
-                        Double longitude = shame.getDouble("longitude");
                         String when = shame.getString("shameTime");
 
                         String who = shame.getString("Group");
                         String type = shame.getString("shameType");
 
-                        Log.i("shame data", latitude + " " + longitude + " " + when  + " " + who + " " + type);
-                        dataPasser.onDataPass(latitude, longitude, when, who, type);
+                        Log.i("shame data", lat + " " + lon + " " + when  + " " + who + " " + type);
+                        dataPasser.onDataPass(lat, lon, when, who, type);
                     }
                 }
             });
-
         }
-    };
+    }
 
     private View.OnClickListener snackBarDelete = new View.OnClickListener() {
         @Override
@@ -494,7 +498,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void onStart() {
         super.onStart();
         client.connect();
-        isDropped = preferences.getBoolean(MARKER_DROPPED, false);
     }
 
     @Override
@@ -516,7 +519,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public interface OnDataPass {
-        public void onDataPass(double latitude, double longitude, String when, String who, String type);
+        void onDataPass(double latitude, double longitude, String when, String who, String type);
     }
 
     @Override

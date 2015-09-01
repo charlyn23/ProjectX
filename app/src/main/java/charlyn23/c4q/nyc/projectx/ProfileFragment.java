@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +34,7 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int RC_SIGN_IN = 0;
     private static final String PROFILE_IMAGE = "profileImage";
+    private static final String LOGGED_IN_GOOGLE = "isLoggedInGoogle";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
     private GoogleApiClient googleApiClient;
@@ -44,11 +42,23 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
     private boolean shouldResolve = false;
     private View view;
     private CircleImageView profileImage;
+    private GoogleApiClient client;
+    private boolean isLoggedIn_Google;
+    private SharedPreferences preferences;
+
+    public  ProfileFragment() {
+    }
+
+    public ProfileFragment(GoogleApiClient client) {
+        this.client = client;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
+        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        isLoggedIn_Google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
 
@@ -148,6 +158,14 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
         public void onClick(View v) {
             ParseUser user = ParseUser.getCurrentUser();
             user.logOut();
+//
+//            if (client.isConnected()) {
+//                    client.connect();
+//                    Plus.AccountApi.clearDefaultAccount(client);
+//                    preferences.edit().putBoolean(LOGGED_IN_GOOGLE, false).apply();
+//                    client.disconnect();
+//
+//            }
 
             if (googleApiClient.isConnected()) {
                 Plus.AccountApi.clearDefaultAccount(googleApiClient);
