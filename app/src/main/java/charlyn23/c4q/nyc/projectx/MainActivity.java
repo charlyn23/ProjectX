@@ -2,8 +2,8 @@ package charlyn23.c4q.nyc.projectx;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -11,15 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
+import com.parse.ParseFacebookUtils;
 
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
@@ -27,14 +26,21 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String LAT_LONG = "latLong";
-    private PagerAdapter adapter;
     private static final String LOGGED_IN = "isLoggedIn";
+    private static final String LOGGED_IN_GOOGLE = "isLoggedInGoogle";
+    private static final String SHOULD_RESOLVE = "should_resolve";
+    private static final String IS_RESOLVING = "is_resolving";
+    private static final int MAP_VIEW = 0;
+    private static final int RC_SIGN_IN = 0;
     private static final String SHARED_PREFERENCE = "sharedPreference";
-    private boolean isLoggedIn;
     private NoSwipeViewPager viewPager;
     private PagerAdapter viewPagerAdapter;
+    private boolean mIsResolving = false;
+    private boolean mShouldResolve = false;
     private GoogleApiClient client;
+    private boolean isLoggedIn, isLoggedIn_Google;
     private SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,38 +59,71 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         client = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
+                .addApi(Plus.API)
+                .addScope(new Scope(Scopes.EMAIL))
                 .build();
-        Log.d("Map", "Connected to Google API Client");
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(client);
-        if (location == null)
-            LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    preferences.edit().putString("Lat", String.valueOf(location.getLatitude()));
-                    preferences.edit().putString("Long", String.valueOf(location.getLongitude())).apply();
-                }
-            });
-        else {
-            preferences.edit().putString("Lat", String.valueOf(location.getLatitude()));
-            preferences.edit().putString("Long", String.valueOf(location.getLongitude())).apply();
-        }
-    }
+        Log.d(TAG, "onConnected: Google+");
 
-    private LocationRequest createLocationRequest() {
-        return new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setNumUpdates(1);
+        mShouldResolve = false;
+        preferences.edit().putBoolean(SHOULD_RESOLVE, false).apply();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed: " + connectionResult);
+
+        mIsResolving = preferences.getBoolean(IS_RESOLVING, false);
+        mShouldResolve = preferences.getBoolean(SHOULD_RESOLVE, false);
+        if (!mIsResolving && mShouldResolve) {
+            if (connectionResult.hasResolution()) {
+                try {
+                    connectionResult.startResolutionForResult(this, RC_SIGN_IN);
+                    mIsResolving = true;
+                    preferences.edit().putBoolean(IS_RESOLVING, true).apply();
+                } catch (IntentSender.SendIntentException e) {
+                    Log.e(TAG, "Could not resolve ConnectionResult.", e);
+                    mIsResolving = false;
+                    preferences.edit().putBoolean(IS_RESOLVING, false).apply();
+                    client.connect();
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Log.d("MAINACTIVITY", "OnConnectionFailed -- should not resolve");
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            // If the error resolution was not successful we should not resolve further.
+            if (resultCode != RESULT_OK) {
+                mShouldResolve = false;
+                preferences.edit().putBoolean(SHOULD_RESOLVE, false).apply();
+            }
+
+            mIsResolving = false;
+            preferences.edit().putBoolean(IS_RESOLVING, false).apply();
+            client.connect();
+            viewPager.setCurrentItem(MAP_VIEW);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(LOGGED_IN, true);
+            editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+            Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void setUpActionBar() {
@@ -99,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.stats));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.profile));
 
-        viewPagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), isLoggedIn, client);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -170,12 +209,5 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 //        TextView group = (TextView) shameDetailActivity.findViewById(R.id.group);
 //        group.setText(who);
 
-    }
-
-    // Called when the Activity could not connect to Google Play services and the auto manager
-    // could resolve the error automatically.
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
 }

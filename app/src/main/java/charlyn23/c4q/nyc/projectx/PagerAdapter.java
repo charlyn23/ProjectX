@@ -15,17 +15,18 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     Fragment[] pagerFragments;
     GoogleApiClient client;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+    public PagerAdapter(FragmentManager fm, int NumOfTabs, boolean isLoggedIn,GoogleApiClient client) {
         super(fm);
+        this.isLoggedIn = isLoggedIn;
         this.mNumOfTabs = NumOfTabs;
+        this.client = client;
 
         pagerFragments = new Fragment[4];
         pagerFragments[0] = new ProjectXMapFragment();
         pagerFragments[1] = new StatsFragment();
-        pagerFragments[2] = new ProfileFragment();
-        pagerFragments[3] = new SignUpFragment();
+        pagerFragments[2] = new ProfileFragment(client);
+        pagerFragments[3] = new SignUpFragment(client);
     }
-
 
     @Override
     public Fragment getItem(int position) {
