@@ -24,21 +24,21 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private static final String TAG = "c4q.nyc.projectx";
-    private static final String LAT_LONG = "latLong";
-    private static final String LOGGED_IN = "isLoggedIn";
-    private static final String LOGGED_IN_GOOGLE = "isLoggedInGoogle";
-    private static final String SHOULD_RESOLVE = "should_resolve";
-    private static final String IS_RESOLVING = "is_resolving";
-    private static final int MAP_VIEW = 0;
-    private static final int RC_SIGN_IN = 0;
-    private static final String SHARED_PREFERENCE = "sharedPreference";
+    public static final String TAG = "c4q.nyc.projectx";
+    public static final String LAT_LONG = "latLong";
+    public static final String LOGGED_IN = "isLoggedIn";
+    public static final String LOGGED_IN_GOOGLE = "logIn_Google";
+    public static final String SHOULD_RESOLVE = "should_resolve";
+    public static final String IS_RESOLVING = "is_resolving";
+    public static final int MAP_VIEW = 0;
+    public static final int RC_SIGN_IN = 0;
+    public static final String SHARED_PREFERENCE = "sharedPreference";
     private NoSwipeViewPager viewPager;
     private PagerAdapter viewPagerAdapter;
     private boolean mIsResolving = false;
     private boolean mShouldResolve = false;
-    private GoogleApiClient client;
-    private boolean isLoggedIn, isLoggedIn_Google;
+    public GoogleApiClient googleLogInClient;
+    private boolean isLoggedIn;
     private SharedPreferences preferences;
 
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     }
 
     protected synchronized void buildGoogleApiClient(Context context) {
-        client = new GoogleApiClient.Builder(context)
+        googleLogInClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         mIsResolving = preferences.getBoolean(IS_RESOLVING, false);
         mShouldResolve = preferences.getBoolean(SHOULD_RESOLVE, false);
-        if (!mIsResolving && mShouldResolve) {
+//        if (!mIsResolving && mShouldResolve) {
             if (connectionResult.hasResolution()) {
                 try {
                     connectionResult.startResolutionForResult(this, RC_SIGN_IN);
@@ -93,14 +93,14 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                     Log.e(TAG, "Could not resolve ConnectionResult.", e);
                     mIsResolving = false;
                     preferences.edit().putBoolean(IS_RESOLVING, false).apply();
-                    client.connect();
+                    googleLogInClient.connect();
                 }
             } else {
                 Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
             }
-        } else {
-            Log.d("MAINACTIVITY", "OnConnectionFailed -- should not resolve");
-        }
+//        } else {
+//            Log.d("MAINACTIVITY", "OnConnectionFailed -- should not resolve");
+//        }
     }
 
     @Override
@@ -117,12 +117,15 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
             mIsResolving = false;
             preferences.edit().putBoolean(IS_RESOLVING, false).apply();
-            client.connect();
-            viewPager.setCurrentItem(MAP_VIEW);
+            googleLogInClient.connect();
+
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGGED_IN, true);
+            editor.putBoolean(LOGGED_IN, true).apply();
+            editor.putBoolean(MainActivity.SHOULD_RESOLVE, true).apply();
             editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.stats));
         tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.profile));
 
-        viewPagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), isLoggedIn, client);
+        viewPagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), isLoggedIn, googleLogInClient);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

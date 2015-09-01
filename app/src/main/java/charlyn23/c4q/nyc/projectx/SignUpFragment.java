@@ -21,32 +21,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = "c4q.nyc.projectx";
     private static final String SHAME_REPORT = "shameReport";
     private static final int RC_SIGN_IN = 0;
-    private static final String SHARED_PREFERENCE = "sharedPreference";
-    private static final String LOGGED_IN = "isLoggedIn";
-    private static final String LAT_LONG = "latLong";
-    private static final String SHOULD_RESOLVE = "should_resolve";
-    private boolean mShouldResolve = false;
     private SharedPreferences.Editor editor;
-    public GoogleApiClient client;
+    public GoogleApiClient googleLogInClient;
     private View view;
     private SharedPreferences preferences = null;
     private LatLng latLng;
 
-    public SignUpFragment(GoogleApiClient client) {
-        this.client = client;
+    public SignUpFragment(GoogleApiClient googleLogInClient) {
+        this.googleLogInClient = googleLogInClient;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.signup_fragment, container, false);
-        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
         Bundle extras = getActivity().getIntent().getExtras();
         if (extras != null)
-            latLng = extras.getParcelable(LAT_LONG);
+            latLng = extras.getParcelable(MainActivity.LAT_LONG);
 
         //initializes views
         CircleImageView fb = (CircleImageView) view.findViewById(R.id.facebook_button);
@@ -68,39 +62,39 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             @Override
             public void done(final ParseUser user, ParseException err) {
                 if (user == null) {
-                    Log.i(TAG, "Log in failed");
+                    Log.i(MainActivity.TAG, "Log in failed");
                     Toast.makeText(view.getContext(), "Try again, please!", Toast.LENGTH_SHORT).show();
                     ParseUser.logOut();
                 } else if (user.isNew()) {
-                    Log.i(TAG, "User signed up and logged in through Facebook!");
+                    Log.i(MainActivity.TAG, "User signed up and logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
                         ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpFragment.this, permissions, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(user)) {
-                                    Log.i(TAG, "New user logged in with Facebook and is linked!");
+                                    Log.i(MainActivity.TAG, "New user logged in with Facebook and is linked!");
                                 }
                             }
                         });
                     }
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).apply();
+                    editor.putBoolean(MainActivity.LOGGED_IN, true).apply();
                     reportShame();
 
                 } else {
-                    Log.i(TAG, "User logged in through Facebook!");
+                    Log.i(MainActivity.TAG, "User logged in through Facebook!");
                     if (!ParseFacebookUtils.isLinked(user)) {
                         ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpFragment.this, permissions, new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseFacebookUtils.isLinked(user)) {
-                                    Log.i(TAG, "User logged in with Facebook and is linked!");
+                                    Log.i(MainActivity.TAG, "User logged in with Facebook and is linked!");
                                 }
                             }
                         });
                     }
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).apply();
+                    editor.putBoolean(MainActivity.LOGGED_IN, true).apply();
                     reportShame();
                 }
             }
@@ -112,40 +106,40 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             @Override
             public void done(final ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
-                    Log.i(TAG, "User cancelled the Twitter login.");
+                    Log.i(MainActivity.TAG, "User cancelled the Twitter login.");
                     ParseUser.logOut();
 
                 } else if (parseUser.isNew()) {
-                    Log.i(TAG, "New user signed up and logged in through Twitter!");
+                    Log.i(MainActivity.TAG, "New user signed up and logged in through Twitter!");
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
                         ParseTwitterUtils.link(parseUser, view.getContext(), new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseTwitterUtils.isLinked(parseUser)) {
-                                    Log.i(TAG, "New user logged in with Twitter and is linked!");
+                                    Log.i(MainActivity.TAG, "New user logged in with Twitter and is linked!");
                                 }
                             }
                         });
                     }
 
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).apply();
+                    editor.putBoolean(MainActivity.LOGGED_IN, true).apply();
                     reportShame();
 
                 } else {
-                    Log.i(TAG, "User logged in through Twitter!");
+                    Log.i(MainActivity.TAG, "User logged in through Twitter!");
                     if (!ParseTwitterUtils.isLinked(parseUser)) {
                         ParseTwitterUtils.link(parseUser, view.getContext(), new SaveCallback() {
                             @Override
                             public void done(ParseException ex) {
                                 if (ParseTwitterUtils.isLinked(parseUser)) {
-                                    Log.i(TAG, "User logged in with Twitter and is linked!");
+                                    Log.i(MainActivity.TAG, "User logged in with Twitter and is linked!");
                                 }
                             }
                         });
                     }
                     editor = preferences.edit();
-                    editor.putBoolean(LOGGED_IN, true).apply();
+                    editor.putBoolean(MainActivity.LOGGED_IN, true).apply();
                     reportShame();
                 }
             }
@@ -155,7 +149,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private void reportShame() {
         Intent intent = new Intent(view.getContext(), MainActivity.class);
         intent.putExtra(SHAME_REPORT, true);
-        intent.putExtra(LAT_LONG, latLng);
+        intent.putExtra(MainActivity.LAT_LONG, latLng);
         startActivity(intent);
     }
 
@@ -176,8 +170,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void onSignInClicked() {
-        mShouldResolve = true;
-        preferences.edit().putBoolean(SHOULD_RESOLVE, true).apply();
-        client.connect();
+        googleLogInClient.connect();
     }
 }
