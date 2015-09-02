@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 
 
 public class PictureUtil {
-    private static final String TAG = "c4q.nyc.projectx";
 
     public static File getSavePath() {
         File path;
@@ -36,7 +35,7 @@ public class PictureUtil {
             Bitmap bitmap = BitmapFactory.decodeFile(filename);
             return bitmap;
         } catch (Exception e) {
-            Log.d(TAG, "Bitmap is not retrieved from the file");
+            Log.d(Constants.TAG, "Bitmap is not retrieved from the file");
             return null;
         }
     }
@@ -56,7 +55,7 @@ public class PictureUtil {
             out.flush();
             out.close();
         } catch (Exception e) {
-            Log.d(TAG, "Bitmap is not saved to the file.");
+            Log.d(Constants.TAG, "Bitmap is not saved to the file.");
         }
     }
 

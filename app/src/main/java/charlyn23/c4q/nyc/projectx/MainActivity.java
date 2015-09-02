@@ -28,12 +28,6 @@ import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    public static final String TAG = "c4q.nyc.projectx";
-    public static final String LAT_LONG = "latLong";
-    public static final String LOGGED_IN = "isLoggedIn";
-    public static final String LOGGED_IN_GOOGLE = "logIn_Google";
-    public static final int RC_SIGN_IN = 0;
-    public static final String SHARED_PREFERENCE = "sharedPreference";
     private NoSwipeViewPager viewPager;
     private PagerAdapter viewPagerAdapter;
     public GoogleApiClient googleLogInClient;
@@ -45,9 +39,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
-        isLoggedIn_google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
+        preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
+        isLoggedIn_google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
@@ -69,9 +63,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         if (Plus.PeopleApi.getCurrentPerson(googleLogInClient) != null && !isLoggedIn_google) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGGED_IN, true).apply();
+            editor.putBoolean(Constants.LOGGED_IN, true).apply();
             isLoggedIn_google = true;
-            editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+            editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -89,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         if (connectionResult.hasResolution()) {
             try {
-                connectionResult.startResolutionForResult(this, RC_SIGN_IN);
+                connectionResult.startResolutionForResult(this, Constants.RC_SIGN_IN);
             } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Could not resolve ConnectionResult.", e);
+                Log.e(Constants.TAG, "Could not resolve ConnectionResult.", e);
             }
         } else {
             Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
@@ -103,15 +97,15 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constants.RC_SIGN_IN) {
             if (resultCode != RESULT_OK) {
                 Log.d("MainActivity", "resultCode =! OKAY");
             } else {
                 googleLogInClient.connect();
 
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(LOGGED_IN, true).apply();
-                editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+                editor.putBoolean(Constants.LOGGED_IN, true).apply();
+                editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
                 Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProjectX</string>
+    <string name="app_name">Blazon</string>
     <string name="action_settings">Log out</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="shame_activity">ShameActivity</string>
