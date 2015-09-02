@@ -20,7 +20,11 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseFacebookUtils;
 
+import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
+import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
+import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
+import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {

@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
@@ -46,37 +48,6 @@ public class ProfileFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(MainActivity.LOGGED_IN_GOOGLE, false);
 
-        // set custom font
-        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        TextView profile = (TextView) view.findViewById(R.id.profile_text);
-        TextView submitted_shames = (TextView) view.findViewById(R.id.submitted_shames);
-        TextView age = (TextView) view.findViewById(R.id.age);
-        TextView identify = (TextView) view.findViewById(R.id.identify_as);
-        TextView man = (TextView) view.findViewById(R.id.man);
-        TextView woman = (TextView) view.findViewById(R.id.woman);
-        TextView lesbian = (TextView) view.findViewById(R.id.lesbian);
-        TextView poc = (TextView) view.findViewById(R.id.poc);
-        TextView gay = (TextView) view.findViewById(R.id.gay);
-        TextView trans = (TextView) view.findViewById(R.id.trans);
-        TextView bisexual = (TextView) view.findViewById(R.id.bisexual);
-        TextView minor = (TextView) view.findViewById(R.id.minor);
-        TextView queer = (TextView) view.findViewById(R.id.queer);
-        EditText year = (EditText) view.findViewById(R.id.year);
-        profile.setTypeface(questrial);
-        submitted_shames.setTypeface(questrial);
-        age.setTypeface(questrial);
-        year.setTypeface(questrial);
-        identify.setTypeface(questrial);
-        man.setTypeface(questrial);
-        woman.setTypeface(questrial);
-        lesbian.setTypeface(questrial);
-        poc.setTypeface(questrial);
-        gay.setTypeface(questrial);
-        trans.setTypeface(questrial);
-        bisexual.setTypeface(questrial);
-        minor.setTypeface(questrial);
-        queer.setTypeface(questrial);
-
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +62,32 @@ public class ProfileFragment extends Fragment {
 
         Button logout = (Button) view.findViewById(R.id.log_out);
         logout.setOnClickListener(logoutClick);
+
+        // set custom font
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView profile = (TextView) view.findViewById(R.id.profile_text);
+        ToggleButton man = (ToggleButton) view.findViewById(R.id.man);
+        ToggleButton woman = (ToggleButton) view.findViewById(R.id.woman);
+        ToggleButton lesbian = (ToggleButton) view.findViewById(R.id.lesbian);
+        ToggleButton poc = (ToggleButton) view.findViewById(R.id.poc);
+        ToggleButton gay = (ToggleButton) view.findViewById(R.id.gay);
+        ToggleButton trans = (ToggleButton) view.findViewById(R.id.trans);
+        ToggleButton bisexual = (ToggleButton) view.findViewById(R.id.bisexual);
+        ToggleButton minor = (ToggleButton) view.findViewById(R.id.minor);
+        ToggleButton queer = (ToggleButton) view.findViewById(R.id.queer);
+        EditText year = (EditText) view.findViewById(R.id.year);
+        profile.setTypeface(questrial);
+        year.setTypeface(questrial);
+        man.setTypeface(questrial);
+        woman.setTypeface(questrial);
+        lesbian.setTypeface(questrial);
+        poc.setTypeface(questrial);
+        gay.setTypeface(questrial);
+        trans.setTypeface(questrial);
+        bisexual.setTypeface(questrial);
+        minor.setTypeface(questrial);
+        queer.setTypeface(questrial);
+        logout.setTypeface(questrial);
 
         return view;
     }

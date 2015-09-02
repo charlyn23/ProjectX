@@ -59,11 +59,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         // set custom font
         Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         TextView blazon = (TextView) view.findViewById(R.id.blazon);
-        TextView slogan = (TextView) view.findViewById(R.id.slogan);
-        TextView login = (TextView) view.findViewById(R.id.login);
         blazon.setTypeface(questrial);
-        slogan.setTypeface(questrial);
-        login.setTypeface(questrial);
 
         return view;
     }

@@ -1,4 +1,4 @@
-package charlyn23.c4q.nyc.projectx;
+package charlyn23.c4q.nyc.projectx.map;
 
 import android.app.Activity;
 import android.content.Context;
@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 

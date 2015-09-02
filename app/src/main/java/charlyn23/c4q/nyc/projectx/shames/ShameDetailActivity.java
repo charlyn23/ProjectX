@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -23,10 +24,18 @@ public class ShameDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shame_layout);
 
+        // set custom font
+        Typeface questrial = Typeface.createFromAsset(this.getAssets(), "questrial.ttf");
+        TextView details = (TextView) findViewById(R.id.details_text);
         TextView group = (TextView) findViewById(R.id.who);
         TextView where = (TextView) findViewById(R.id.where);
         TextView when = (TextView) findViewById(R.id.when);
         TextView shameDetail = (TextView) findViewById(R.id.what);
+        details.setTypeface(questrial);
+        group.setTypeface(questrial);
+        where.setTypeface(questrial);
+        when.setTypeface(questrial);
+        shameDetail.setTypeface(questrial);
 
         //Populate textfields
         group.setText(getIntent().getStringExtra("who"));

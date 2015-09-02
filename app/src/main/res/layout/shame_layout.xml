@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/details_text"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
@@ -37,6 +38,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@id/details_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Location"
@@ -62,6 +64,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@id/details_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Time"
@@ -87,6 +90,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@id/details_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Group Effected"
@@ -112,6 +116,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@id/details_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="What Happened"
@@ -137,6 +142,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@id/details_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Addional Info"

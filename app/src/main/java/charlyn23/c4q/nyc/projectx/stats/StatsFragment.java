@@ -1,4 +1,4 @@
-package charlyn23.c4q.nyc.projectx;
+package charlyn23.c4q.nyc.projectx.stats;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.stats.BarChartFragment;
+import charlyn23.c4q.nyc.projectx.stats.PieChartFragment;
 
 public class StatsFragment extends android.support.v4.app.Fragment {
     private EditText zipCode;
