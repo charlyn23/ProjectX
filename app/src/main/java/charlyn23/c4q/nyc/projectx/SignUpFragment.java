@@ -49,7 +49,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
         ParseFacebookUtils.initialize(view.getContext());
 
-
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
@@ -171,5 +170,11 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private void onSignInClicked() {
         googleLogInClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        googleLogInClient.disconnect();
     }
 }

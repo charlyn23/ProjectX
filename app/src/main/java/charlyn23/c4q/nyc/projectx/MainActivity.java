@@ -35,10 +35,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public static final String SHARED_PREFERENCE = "sharedPreference";
     private NoSwipeViewPager viewPager;
     private PagerAdapter viewPagerAdapter;
-    private boolean mIsResolving = false;
-    private boolean mShouldResolve = false;
     public GoogleApiClient googleLogInClient;
-    private boolean isLoggedIn;
+    private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
 
 
@@ -49,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
+        isLoggedIn_google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
@@ -66,56 +65,55 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected: Google+");
+        Log.d("LOG OUT PELASE", "onConnected: Google+");
 
-        mShouldResolve = false;
-        preferences.edit().putBoolean(SHOULD_RESOLVE, false).apply();
+        if (Plus.PeopleApi.getCurrentPerson(googleLogInClient) != null && !isLoggedIn_google) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(LOGGED_IN, true).apply();
+            editor.putBoolean(IS_RESOLVING, false).apply();
+            editor.putBoolean(MainActivity.SHOULD_RESOLVE, true).apply();
+            isLoggedIn_google = true;
+            editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+            Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
+    public void onConnectionSuspended ( int i){
+        Log.d("LOG OUT PELASE", "Connection suspended in mainactivity");
+        googleLogInClient.connect();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed: " + connectionResult);
+        Log.d("LOG OUT PELASE", "onConnectionFailed: " + connectionResult);
 
-        mIsResolving = preferences.getBoolean(IS_RESOLVING, false);
-        mShouldResolve = preferences.getBoolean(SHOULD_RESOLVE, false);
-//        if (!mIsResolving && mShouldResolve) {
             if (connectionResult.hasResolution()) {
                 try {
                     connectionResult.startResolutionForResult(this, RC_SIGN_IN);
-                    mIsResolving = true;
                     preferences.edit().putBoolean(IS_RESOLVING, true).apply();
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Could not resolve ConnectionResult.", e);
-                    mIsResolving = false;
                     preferences.edit().putBoolean(IS_RESOLVING, false).apply();
-                    googleLogInClient.connect();
                 }
             } else {
                 Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
             }
-//        } else {
-//            Log.d("MAINACTIVITY", "OnConnectionFailed -- should not resolve");
-//        }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             // If the error resolution was not successful we should not resolve further.
             if (resultCode != RESULT_OK) {
-                mShouldResolve = false;
                 preferences.edit().putBoolean(SHOULD_RESOLVE, false).apply();
             }
 
-            mIsResolving = false;
             preferences.edit().putBoolean(IS_RESOLVING, false).apply();
             googleLogInClient.connect();
 
@@ -212,5 +210,12 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 //        TextView group = (TextView) shameDetailActivity.findViewById(R.id.group);
 //        group.setText(who);
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        googleLogInClient.disconnect();
+        Log.d("LOG IN PELASE", "DISCONNECTED IN MAIN ACTIVITY");
     }
 }

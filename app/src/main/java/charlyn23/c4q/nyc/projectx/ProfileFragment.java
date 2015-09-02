@@ -48,6 +48,10 @@ public class ProfileFragment extends Fragment {
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
 
+        if (isLoggedIn_Google) {
+            googleLogInClient.connect();
+        }
+
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,9 +130,8 @@ public class ProfileFragment extends Fragment {
             user.logOut();
 
             if (googleLogInClient.isConnected()) {
+                Log.d("LOG OUT PELASE", "CLIENT WAS CONNECTED");
                 Plus.AccountApi.clearDefaultAccount(googleLogInClient);
-                Plus.AccountApi.revokeAccessAndDisconnect(googleLogInClient);
-                preferences.edit().putBoolean(MainActivity.LOGGED_IN_GOOGLE, false).apply();
                 googleLogInClient.disconnect();
             }
 
