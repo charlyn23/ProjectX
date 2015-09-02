@@ -33,8 +33,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
     private View view;
     private CircleImageView profileImage;
+    private SharedPreferences preferences;
     private GoogleApiClient googleLogInClient;
     private CheckBox allow_geofence;
+    private TextView profile;
+    private ToggleButton man, woman, lesbian, poc, gay, trans, bisexual, minor, queer;
+    private EditText age;
+    private ListView shame_list;
+    private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
     private int year;
 
@@ -46,12 +52,16 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
+        initializeViews();
+        setCustomFont();
+        logout.setOnClickListener(logoutClick);
 
-        final SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        // get preference
+        preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
 
-        profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
+        // set profile image
         setProfileImage();
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,40 +69,6 @@ public class ProfileFragment extends Fragment {
                 changeProfileImage();
             }
         });
-
-        ListView shame_list = (ListView) view.findViewById(R.id.shame_list);
-        // IF list == 0, print "You haven't submitted any shames yet!"
-
-        Button logout = (Button) view.findViewById(R.id.log_out);
-        logout.setOnClickListener(logoutClick);
-
-        // set custom font
-        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        TextView profile = (TextView) view.findViewById(R.id.profile_text);
-        ToggleButton man = (ToggleButton) view.findViewById(R.id.man);
-        ToggleButton woman = (ToggleButton) view.findViewById(R.id.woman);
-        ToggleButton lesbian = (ToggleButton) view.findViewById(R.id.lesbian);
-        ToggleButton poc = (ToggleButton) view.findViewById(R.id.poc);
-        ToggleButton gay = (ToggleButton) view.findViewById(R.id.gay);
-        ToggleButton trans = (ToggleButton) view.findViewById(R.id.trans);
-        ToggleButton bisexual = (ToggleButton) view.findViewById(R.id.bisexual);
-        ToggleButton minor = (ToggleButton) view.findViewById(R.id.minor);
-        ToggleButton queer = (ToggleButton) view.findViewById(R.id.queer);
-        EditText age = (EditText) view.findViewById(R.id.year);
-        allow_geofence = (CheckBox) view.findViewById(R.id.enable_geofence);
-        profile.setTypeface(questrial);
-        age.setTypeface(questrial);
-        man.setTypeface(questrial);
-        woman.setTypeface(questrial);
-        lesbian.setTypeface(questrial);
-        poc.setTypeface(questrial);
-        gay.setTypeface(questrial);
-        trans.setTypeface(questrial);
-        bisexual.setTypeface(questrial);
-        minor.setTypeface(questrial);
-        queer.setTypeface(questrial);
-        logout.setTypeface(questrial);
-        allow_geofence.setTypeface(questrial);
 
         allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -106,6 +82,9 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+
+        // TODO populate listview of shames
+        // IF list == 0, print "You haven't submitted any shames yet!"
 
         return view;
     }
@@ -188,6 +167,40 @@ public class ProfileFragment extends Fragment {
         }
     };
 
+    public void initializeViews() {
+        profile = (TextView) view.findViewById(R.id.profile_text);
+        man = (ToggleButton) view.findViewById(R.id.man);
+        woman = (ToggleButton) view.findViewById(R.id.woman);
+        lesbian = (ToggleButton) view.findViewById(R.id.lesbian);
+        poc = (ToggleButton) view.findViewById(R.id.poc);
+        gay = (ToggleButton) view.findViewById(R.id.gay);
+        trans = (ToggleButton) view.findViewById(R.id.trans);
+        bisexual = (ToggleButton) view.findViewById(R.id.bisexual);
+        minor = (ToggleButton) view.findViewById(R.id.minor);
+        queer = (ToggleButton) view.findViewById(R.id.queer);
+        age = (EditText) view.findViewById(R.id.year);
+        allow_geofence = (CheckBox) view.findViewById(R.id.enable_geofence);
+        logout = (Button) view.findViewById(R.id.log_out);
+        shame_list = (ListView) view.findViewById(R.id.shame_list);
+        profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
+    }
+
+    public void setCustomFont() {
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        profile.setTypeface(questrial);
+        age.setTypeface(questrial);
+        man.setTypeface(questrial);
+        woman.setTypeface(questrial);
+        lesbian.setTypeface(questrial);
+        poc.setTypeface(questrial);
+        gay.setTypeface(questrial);
+        trans.setTypeface(questrial);
+        bisexual.setTypeface(questrial);
+        minor.setTypeface(questrial);
+        queer.setTypeface(questrial);
+        logout.setTypeface(questrial);
+        allow_geofence.setTypeface(questrial);
+    }
 
     @Override
     public void onStart() {

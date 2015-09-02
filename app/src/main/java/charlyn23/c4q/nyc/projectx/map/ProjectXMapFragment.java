@@ -92,19 +92,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
-        viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
-        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        initializeViews();
+        setCustomFont();
+
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
+        filter.setOnClickListener(filterClick);
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
         addMapFragment();
 
         // Autocomplete Places setup
-        search = (AutoCompleteTextView) view.findViewById(R.id.search);
-        search.setTypeface(questrial);
         search.setOnItemClickListener(mAutocompleteClickListener);
         mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
                 client, BOUNDS, null);
@@ -122,9 +121,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        filter = (Button) view.findViewById(R.id.filter);
-        filter.setTypeface(questrial);
-        filter.setOnClickListener(filterClick);
 
         return view;
     }
@@ -503,6 +499,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         return p1;
+    }
+
+    public void initializeViews() {
+        viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
+        addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
+        search = (AutoCompleteTextView) view.findViewById(R.id.search);
+        filter = (Button) view.findViewById(R.id.filter);
+    }
+
+    public void setCustomFont() {
+        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        search.setTypeface(questrial);
+        filter.setTypeface(questrial);
     }
 
     @Override
