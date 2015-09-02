@@ -50,9 +50,11 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +88,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             lgbtq_loc = new ArrayList<>(),
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
-    private ArrayList<Geofence> mGeofenceList;
+    private ArrayList<Geofence> geofenceList = new ArrayList<>();
+    public HashMap<String, LatLng> geofence_landmarks = new HashMap<>();
     private PendingIntent mGeofencePendingIntent;
 
     @Nullable
@@ -99,7 +102,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
         filter.setOnClickListener(filterClick);
-        mGeofenceList = new ArrayList<>();
+        geofenceList = new ArrayList<>();
         mGeofencePendingIntent = null;
         populateGeofenceList();
 
@@ -129,8 +132,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         return view;
     }
 
-    public void populateGeofenceList() {
-        for (Map.Entry<String, LatLng> entry : Constants.BAY_AREA_LANDMARKS.entrySet()) {
+    public ArrayList<Geofence> populateGeofenceList() {
+        ArrayList<Geofence> landmarks = new ArrayList<>();
+
+        // TODO get landmarks from db
+        // TODO put landmarks into db (from new shames?)
+        // TODO save landmarks locally
+
+        for (Map.Entry<String, LatLng> entry : geofence_landmarks.entrySet()) {
 
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
