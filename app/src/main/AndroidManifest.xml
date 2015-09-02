@@ -58,6 +58,8 @@
             android:enabled="true"
             android:name=".ProfileFragment$PictureService"/>
 
+        <service
+            android:name=".map.GeofenceIntentService" />
     </application>
 
 </manifest>

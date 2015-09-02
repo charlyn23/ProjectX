@@ -14,5 +14,6 @@ public class Constants {
     public static final String PROFILE_IMAGE = "profileImage";
     public static final String SHAME_REPORT = "shameReport";
     public static final String MARKER_DROPPED = "markerDropped";
+    public static final String ALLOW_GEOFENCE = "allowGeofence";
     public static final int LOG_IN_VIEW = 2;
 }

@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +34,9 @@ public class ProfileFragment extends Fragment {
     private View view;
     private CircleImageView profileImage;
     private GoogleApiClient googleLogInClient;
-    private boolean isLoggedIn_Google = false;
+    private CheckBox allow_geofence;
+    private boolean isLoggedIn_Google, geofenceEnabled;
+    private int year;
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
@@ -43,8 +47,9 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
 
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        final SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
+        geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
 
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
@@ -73,9 +78,10 @@ public class ProfileFragment extends Fragment {
         ToggleButton bisexual = (ToggleButton) view.findViewById(R.id.bisexual);
         ToggleButton minor = (ToggleButton) view.findViewById(R.id.minor);
         ToggleButton queer = (ToggleButton) view.findViewById(R.id.queer);
-        EditText year = (EditText) view.findViewById(R.id.year);
+        EditText age = (EditText) view.findViewById(R.id.year);
+        allow_geofence = (CheckBox) view.findViewById(R.id.enable_geofence);
         profile.setTypeface(questrial);
-        year.setTypeface(questrial);
+        age.setTypeface(questrial);
         man.setTypeface(questrial);
         woman.setTypeface(questrial);
         lesbian.setTypeface(questrial);
@@ -86,6 +92,20 @@ public class ProfileFragment extends Fragment {
         minor.setTypeface(questrial);
         queer.setTypeface(questrial);
         logout.setTypeface(questrial);
+        allow_geofence.setTypeface(questrial);
+
+        allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    geofenceEnabled = true;
+                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
+                } else {
+                    geofenceEnabled = true;
+                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
+                }
+            }
+        });
 
         return view;
     }

@@ -28,7 +28,7 @@
                 app:border_width="2dp" />
 
             <TextView
-                android:id="@+id/profile_text"
+                android:id="@id/profile_text"
                 android:layout_width="0dp"
                 android:textColor="@color/text_white"
                 android:layout_height="match_parent"
@@ -48,7 +48,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/profile_text"
+                android:id="@id/profile_text"
                 style="@style/profile_text"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
@@ -73,7 +73,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/profile_text"
+                android:id="@id/profile_text"
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,6 +94,31 @@
                     android:textColor="@color/accent"
                     android:textColorHint="#363636" />
             </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <View style="@style/Divider"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="28dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@id/profile_text"
+                style="@style/profile_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enable Notification" />
+
+            <CheckBox
+                android:id="@+id/enable_geofence"
+                android:layout_marginTop="16dp"
+                android:text="Alert me when entering areas with high harassment activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
