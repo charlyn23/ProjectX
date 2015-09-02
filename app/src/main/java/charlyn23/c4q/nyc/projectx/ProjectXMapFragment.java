@@ -258,7 +258,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             Log.e("shame", "not found");
                         else
                             Log.d("shame : ", String.valueOf(shame));
-                        Snackbar.make(view, String.valueOf(shame.getGroup()) + " on " + shame.getShameTime(), Snackbar.LENGTH_LONG)
+                        Snackbar.make(view, "foo" + " on " + "foo", Snackbar.LENGTH_LONG)
                                 .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
                                 .show();
                         Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
