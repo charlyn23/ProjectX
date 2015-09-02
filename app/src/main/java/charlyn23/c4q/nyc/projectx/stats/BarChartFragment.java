@@ -1,4 +1,4 @@
-package charlyn23.c4q.nyc.projectx;
+package charlyn23.c4q.nyc.projectx.stats;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
+
+import charlyn23.c4q.nyc.projectx.R;
 
 public class BarChartFragment extends android.support.v4.app.Fragment {
     private static final String SHAME = "Shame";

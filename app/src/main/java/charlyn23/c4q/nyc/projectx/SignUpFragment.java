@@ -2,38 +2,27 @@ package charlyn23.c4q.nyc.projectx;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.plus.Plus;
 import com.parse.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
     private static final String SHAME_REPORT = "shameReport";
-    private static final int RC_SIGN_IN = 0;
-    private static final String SHARED_PREFERENCE = "sharedPreference";
-    private static final String LOGGED_IN = "isLoggedIn";
-    private static final String LAT_LONG = "latLong";
-    private GoogleApiClient googleApiClient;
-    private boolean isResolving = false;
-    private boolean shouldResolve = false;
-    private static final String SHOULD_RESOLVE = "should_resolve";
-    private boolean mShouldResolve = false;
     private SharedPreferences.Editor editor;
     public GoogleApiClient googleLogInClient;
     private View view;
@@ -54,24 +43,27 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             latLng = extras.getParcelable(MainActivity.LAT_LONG);
 
         //initializes views
-        CircleImageView fb = (CircleImageView) view.findViewById(R.id.facebook_button);
-        CircleImageView twitter = (CircleImageView) view.findViewById(R.id.twitter_button);
-        CircleImageView google = (CircleImageView) view.findViewById(R.id.googleplus_button);
+        ImageButton fb = (ImageButton) view.findViewById(R.id.facebook_button);
+        ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
+        ImageButton google = (ImageButton) view.findViewById(R.id.googleplus_button);
 
         ParseFacebookUtils.initialize(view.getContext());
 
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
-//        final Button logOut = (Button) view.findViewById(R.id.log_out);
-//        logOut.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                logOut();
-//            }
-//        });
+
+        //sets custom font
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView blazon = (TextView) view.findViewById(R.id.blazon);
+        blazon.setTypeface(questrial);
 
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
     private void logInViaFB(final List<String> permissions) {
@@ -170,7 +162,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-
     @Override
     public void onClick(View v) {
         List<String> permissions = Arrays.asList("public_profile", "email");
@@ -179,7 +170,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 logInViaFB(permissions);
                 break;
             case R.id.googleplus_button:
-                onSignInClicked();
+                logInViaGooglePlus();
                 break;
             case R.id.twitter_button:
                 logInViaTwitter();
@@ -187,40 +178,14 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
-
-//    private void onSignInClicked() {
-//        shouldResolve = true;
-//        googleApiClient.connect();
-//        reportShame();
-//        editor = preferences.edit();
-//        editor.putBoolean(LOGGED_IN, true).apply();
-//        Toast.makeText(view.getContext(), "Signing in", Toast.LENGTH_LONG).show();
-//    }
-
-    private void logOut() {
-        ParseUser user = ParseUser.getCurrentUser();
-        user.logOut();
-
-        if (googleApiClient.isConnected()) {
-            Plus.AccountApi.clearDefaultAccount(googleApiClient);
-            googleApiClient.disconnect();
-        }
-
-        editor = preferences.edit();
-        editor.putBoolean(LOGGED_IN, false).apply();
-        Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(view.getContext(), MainActivity.class);
-        startActivity(intent);
-    }
-
-    private void onSignInClicked() {
+    private void logInViaGooglePlus() {
         googleLogInClient.connect();
+        Log.d("SignUpFragment", "Google+ login successful");
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         googleLogInClient.disconnect();
     }
 }

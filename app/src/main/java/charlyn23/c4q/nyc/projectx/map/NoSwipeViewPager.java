@@ -1,4 +1,4 @@
-package charlyn23.c4q.nyc.projectx;
+package charlyn23.c4q.nyc.projectx.map;
 
 /**
  * Created by sufeizhao on 8/11/15.

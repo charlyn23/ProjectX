@@ -1,4 +1,4 @@
-package charlyn23.c4q.nyc.projectx;
+package charlyn23.c4q.nyc.projectx.stats;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +20,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
+
+import charlyn23.c4q.nyc.projectx.R;
 
 public class PieChartFragment extends Fragment {
     private static final String SHAME = "Shame";

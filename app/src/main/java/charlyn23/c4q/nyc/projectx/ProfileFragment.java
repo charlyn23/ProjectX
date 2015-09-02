@@ -3,10 +3,10 @@ package charlyn23.c4q.nyc.projectx;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,52 +16,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
-
 import java.io.FileNotFoundException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
-    private static final String TAG = "c4q.nyc.projectx";
     private static final int PICK_IMAGE_REQUEST = 1;
-    private static final int RC_SIGN_IN = 0;
     private static final String PROFILE_IMAGE = "profileImage";
-    private static final String LOGGED_IN_GOOGLE = "isLoggedInGoogle";
-    private static final String SHARED_PREFERENCE = "sharedPreference";
-    private static final String LOGGED_IN = "isLoggedIn";
-    private boolean isResolving = false;
-    private boolean shouldResolve = false;
     private View view;
     private CircleImageView profileImage;
     private GoogleApiClient googleLogInClient;
     private boolean isLoggedIn_Google = false;
-    private SharedPreferences preferences;
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
-    }
-
-    public ProfileFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
-        preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+
+        SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(MainActivity.LOGGED_IN_GOOGLE, false);
+
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
-
-        if (isLoggedIn_Google) {
-            googleLogInClient.connect();
-        }
-
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +62,33 @@ public class ProfileFragment extends Fragment {
 
         Button logout = (Button) view.findViewById(R.id.log_out);
         logout.setOnClickListener(logoutClick);
+
+        // set custom font
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView profile = (TextView) view.findViewById(R.id.profile_text);
+        ToggleButton man = (ToggleButton) view.findViewById(R.id.man);
+        ToggleButton woman = (ToggleButton) view.findViewById(R.id.woman);
+        ToggleButton lesbian = (ToggleButton) view.findViewById(R.id.lesbian);
+        ToggleButton poc = (ToggleButton) view.findViewById(R.id.poc);
+        ToggleButton gay = (ToggleButton) view.findViewById(R.id.gay);
+        ToggleButton trans = (ToggleButton) view.findViewById(R.id.trans);
+        ToggleButton bisexual = (ToggleButton) view.findViewById(R.id.bisexual);
+        ToggleButton minor = (ToggleButton) view.findViewById(R.id.minor);
+        ToggleButton queer = (ToggleButton) view.findViewById(R.id.queer);
+        EditText year = (EditText) view.findViewById(R.id.year);
+        profile.setTypeface(questrial);
+        year.setTypeface(questrial);
+        man.setTypeface(questrial);
+        woman.setTypeface(questrial);
+        lesbian.setTypeface(questrial);
+        poc.setTypeface(questrial);
+        gay.setTypeface(questrial);
+        trans.setTypeface(questrial);
+        bisexual.setTypeface(questrial);
+        minor.setTypeface(questrial);
+        queer.setTypeface(questrial);
+        logout.setTypeface(questrial);
+
         return view;
     }
 
@@ -108,36 +123,9 @@ public class ProfileFragment extends Fragment {
             profileImage.setImageBitmap(bm);
         } else {
             //TODO: put default profile image
-            profileImage.setImageResource(R.drawable.map);
+            profileImage.setImageResource(R.drawable.logo);
         }
     }
-
-    View.OnClickListener logoutClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ParseUser user = ParseUser.getCurrentUser();
-            user.logOut();
-
-            if (googleLogInClient.isConnected()) {
-                Plus.AccountApi.clearDefaultAccount(googleLogInClient);
-                googleLogInClient.disconnect();
-            }
-
-            if (googleLogInClient.isConnected()) {
-                Log.d("LOG OUT PELASE", "CLIENT WAS CONNECTED");
-                Plus.AccountApi.clearDefaultAccount(googleLogInClient);
-                googleLogInClient.disconnect();
-            }
-
-            SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(MainActivity.LOGGED_IN, false).apply();
-            editor.putBoolean(MainActivity.LOGGED_IN_GOOGLE, false).apply();
-            Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(view.getContext(), MainActivity.class);
-            startActivity(intent);
-        }
-    };
 
     //saves profile image in the background
     public static class PictureService extends IntentService {
@@ -153,10 +141,51 @@ public class ProfileFragment extends Fragment {
             try {
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(Uri.parse(selectedImage)));
             } catch (FileNotFoundException e) {
-                Log.d(TAG, "Image uri is not received or recognized");
+                Log.d(MainActivity.TAG, "Image uri is not received or recognized");
             }
             PictureUtil.saveToCacheFile(bitmap);
         }
     }
-}
 
+    View.OnClickListener logoutClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ParseUser user = ParseUser.getCurrentUser();
+            user.logOut();
+
+            if (googleLogInClient.isConnected()) {
+                Log.d("ProfileFragment", "Google Client log out");
+                Plus.AccountApi.clearDefaultAccount(googleLogInClient);
+                Plus.AccountApi.revokeAccessAndDisconnect(googleLogInClient);
+                googleLogInClient.disconnect();
+            }
+
+            SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(MainActivity.LOGGED_IN, false).apply();
+            editor.putBoolean(MainActivity.LOGGED_IN_GOOGLE, false).apply();
+            Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            startActivity(intent);
+        }
+    };
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isLoggedIn_Google) {
+            googleLogInClient.connect();
+            Log.d("ProfileFragment", "Connected onStart");
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (googleLogInClient.isConnected()) {
+            googleLogInClient.disconnect();
+            Log.d("ProfileFragment", "Disconnected onStop");
+        }
+    }
+}

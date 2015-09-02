@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
 
-    <charlyn23.c4q.nyc.projectx.NoSwipeViewPager
+    <charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
