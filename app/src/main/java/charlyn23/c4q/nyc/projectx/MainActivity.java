@@ -28,9 +28,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public static final String LAT_LONG = "latLong";
     public static final String LOGGED_IN = "isLoggedIn";
     public static final String LOGGED_IN_GOOGLE = "logIn_Google";
-    public static final String SHOULD_RESOLVE = "should_resolve";
-    public static final String IS_RESOLVING = "is_resolving";
-    public static final int MAP_VIEW = 0;
     public static final int RC_SIGN_IN = 0;
     public static final String SHARED_PREFERENCE = "sharedPreference";
     private NoSwipeViewPager viewPager;
@@ -70,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         if (Plus.PeopleApi.getCurrentPerson(googleLogInClient) != null && !isLoggedIn_google) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(LOGGED_IN, true).apply();
-            editor.putBoolean(IS_RESOLVING, false).apply();
-            editor.putBoolean(MainActivity.SHOULD_RESOLVE, true).apply();
             isLoggedIn_google = true;
             editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
@@ -93,10 +88,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             if (connectionResult.hasResolution()) {
                 try {
                     connectionResult.startResolutionForResult(this, RC_SIGN_IN);
-                    preferences.edit().putBoolean(IS_RESOLVING, true).apply();
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Could not resolve ConnectionResult.", e);
-                    preferences.edit().putBoolean(IS_RESOLVING, false).apply();
                 }
             } else {
                 Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
@@ -109,17 +102,10 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            // If the error resolution was not successful we should not resolve further.
-            if (resultCode != RESULT_OK) {
-                preferences.edit().putBoolean(SHOULD_RESOLVE, false).apply();
-            }
-
-            preferences.edit().putBoolean(IS_RESOLVING, false).apply();
             googleLogInClient.connect();
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(LOGGED_IN, true).apply();
-            editor.putBoolean(MainActivity.SHOULD_RESOLVE, true).apply();
             editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
@@ -216,6 +202,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     protected void onStop() {
         super.onStop();
         googleLogInClient.disconnect();
-        Log.d("LOG IN PELASE", "DISCONNECTED IN MAIN ACTIVITY");
+        Log.d("MainActivity ==", "Successfully logged out");
     }
 }

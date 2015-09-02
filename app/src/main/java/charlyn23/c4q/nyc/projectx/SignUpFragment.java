@@ -22,7 +22,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
     private static final String SHAME_REPORT = "shameReport";
-    private static final int RC_SIGN_IN = 0;
     private SharedPreferences.Editor editor;
     public GoogleApiClient googleLogInClient;
     private View view;
@@ -173,8 +172,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         googleLogInClient.disconnect();
     }
 }

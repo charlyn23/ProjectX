@@ -43,14 +43,11 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
+
         preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(MainActivity.LOGGED_IN_GOOGLE, false);
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
-
-        if (isLoggedIn_Google) {
-            googleLogInClient.connect();
-        }
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,4 +141,21 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         }
     };
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isLoggedIn_Google) {
+            googleLogInClient.connect();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (googleLogInClient.isConnected()) {
+            googleLogInClient.disconnect();
+        }
+    }
 }

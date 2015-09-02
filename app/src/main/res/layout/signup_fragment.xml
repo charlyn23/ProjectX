@@ -19,8 +19,8 @@
             android:layout_width="159dp"
             android:layout_height="159dp"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
-            android:src="@drawable/blazonogo"/>
+            android:layout_marginTop="40dp"
+            android:src="@drawable/logo"/>
 
         <TextView
             android:layout_width="match_parent"
