@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx.map;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -30,6 +31,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -52,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
@@ -74,11 +77,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private AutoCompleteTextView search;
     private LatLng searchLocation;
     private Button filter;
-    private double latitude;
-    private double longitude;
-    private String date;
-    private String who;
-    private String type;
+    private double latitude, longitude;
+    private String date, who, type;
     private ViewPager viewPager;
     private OnDataPass dataPasser;
     private List<LatLng> woman_loc = new ArrayList<>(),
@@ -86,7 +86,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             lgbtq_loc = new ArrayList<>(),
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
-    private Typeface questrial;
+    private ArrayList<Geofence> mGeofenceList;
+    private PendingIntent mGeofencePendingIntent;
 
     @Nullable
     @Override
@@ -98,6 +99,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
         filter.setOnClickListener(filterClick);
+        mGeofenceList = new ArrayList<>();
+        mGeofencePendingIntent = null;
+        populateGeofenceList();
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
@@ -124,6 +128,37 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         return view;
     }
+
+    public void populateGeofenceList() {
+        for (Map.Entry<String, LatLng> entry : Constants.BAY_AREA_LANDMARKS.entrySet()) {
+
+            mGeofenceList.add(new Geofence.Builder()
+                    // Set the request ID of the geofence. This is a string to identify this
+                    // geofence.
+                    .setRequestId(entry.getKey())
+
+                            // Set the circular region of this geofence.
+                    .setCircularRegion(
+                            entry.getValue().latitude,
+                            entry.getValue().longitude,
+                            Constants.GEOFENCE_RADIUS_IN_METERS
+                    )
+
+                            // Set the expiration duration of the geofence. This geofence gets automatically
+                            // removed after this period of time.
+                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+
+                            // Set the transition types of interest. Alerts are only generated for these
+                            // transition. We track entry and exit transitions in this sample.
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+
+                            // Create the geofence.
+                    .build());
+        }
+    }
+
+
 
     // adds Google MapFragment to the existing xml and set listeners
     public void addMapFragment() {
@@ -509,7 +544,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void setCustomFont() {
-        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         search.setTypeface(questrial);
         filter.setTypeface(questrial);
     }

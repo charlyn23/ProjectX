@@ -94,4 +94,6 @@
     <string name="filter_content">Only show Shames effecting:</string>
     <string name="done">Done</string>
     <string name="groups">Groups of People (%)</string>
+
+    <string name="geofence_transition_notification_text">Click notification to view details</string>
 </resources>
