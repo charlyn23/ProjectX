@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,15 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
-
 import java.io.FileNotFoundException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
@@ -33,7 +33,6 @@ public class ProfileFragment extends Fragment {
     private CircleImageView profileImage;
     private GoogleApiClient googleLogInClient;
     private boolean isLoggedIn_Google = false;
-    private SharedPreferences preferences;
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
@@ -44,11 +43,42 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
 
-        preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(MainActivity.LOGGED_IN_GOOGLE, false);
+
+        // set custom font
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView profile = (TextView) view.findViewById(R.id.profile_text);
+        TextView submitted_shames = (TextView) view.findViewById(R.id.submitted_shames);
+        TextView age = (TextView) view.findViewById(R.id.age);
+        TextView identify = (TextView) view.findViewById(R.id.identify_as);
+        TextView man = (TextView) view.findViewById(R.id.man);
+        TextView woman = (TextView) view.findViewById(R.id.woman);
+        TextView lesbian = (TextView) view.findViewById(R.id.lesbian);
+        TextView poc = (TextView) view.findViewById(R.id.poc);
+        TextView gay = (TextView) view.findViewById(R.id.gay);
+        TextView trans = (TextView) view.findViewById(R.id.trans);
+        TextView bisexual = (TextView) view.findViewById(R.id.bisexual);
+        TextView minor = (TextView) view.findViewById(R.id.minor);
+        TextView queer = (TextView) view.findViewById(R.id.queer);
+        EditText year = (EditText) view.findViewById(R.id.year);
+        profile.setTypeface(questrial);
+        submitted_shames.setTypeface(questrial);
+        age.setTypeface(questrial);
+        year.setTypeface(questrial);
+        identify.setTypeface(questrial);
+        man.setTypeface(questrial);
+        woman.setTypeface(questrial);
+        lesbian.setTypeface(questrial);
+        poc.setTypeface(questrial);
+        gay.setTypeface(questrial);
+        trans.setTypeface(questrial);
+        bisexual.setTypeface(questrial);
+        minor.setTypeface(questrial);
+        queer.setTypeface(questrial);
+
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
-
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,12 +3,16 @@ package charlyn23.c4q.nyc.projectx;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -42,15 +46,24 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             latLng = extras.getParcelable(MainActivity.LAT_LONG);
 
         //initializes views
-        CircleImageView fb = (CircleImageView) view.findViewById(R.id.facebook_button);
-        CircleImageView twitter = (CircleImageView) view.findViewById(R.id.twitter_button);
-        CircleImageView google = (CircleImageView) view.findViewById(R.id.googleplus_button);
+        ImageButton fb = (ImageButton) view.findViewById(R.id.facebook_button);
+        ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
+        ImageButton google = (ImageButton) view.findViewById(R.id.googleplus_button);
 
         ParseFacebookUtils.initialize(view.getContext());
 
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
+
+        // set custom font
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView blazon = (TextView) view.findViewById(R.id.blazon);
+        TextView slogan = (TextView) view.findViewById(R.id.slogan);
+        TextView login = (TextView) view.findViewById(R.id.login);
+        blazon.setTypeface(questrial);
+        slogan.setTypeface(questrial);
+        login.setTypeface(questrial);
 
         return view;
     }

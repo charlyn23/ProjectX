@@ -10,42 +10,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"
+        android:layout_weight="6"
+        android:gravity="center"
         android:orientation="vertical">
-
 
         <ImageView
             android:id="@+id/name"
             android:layout_width="159dp"
             android:layout_height="159dp"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_marginBottom="25dp"
             android:src="@drawable/logo"/>
 
         <TextView
+            android:id="@+id/blazon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
             android:gravity="center"
             android:text="Blazon"
             android:textStyle="bold"
             android:textColor="@android:color/black"
-            android:textSize="40sp"
-            android:fontFamily="sans-serif-thin"/>
+            android:textSize="40sp" />
 
         <TextView
+            android:id="@+id/slogan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="Come Together.\n Voice the Movement"
-            android:fontFamily="sans-serif-light"
             android:textSize="20sp"/>
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
@@ -63,33 +62,30 @@
         android:layout_marginRight="30dp"
         android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageButton
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:id="@+id/facebook_button"
-            android:src="@drawable/facebook"
-            app:border_color="@color/accent"
-            app:border_width="2dp"/>
+            android:src="@drawable/fb"/>
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageButton
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/twitter_button"
-            android:src="@drawable/twitter"
-            app:border_color="@color/accent"
-            app:border_width="2dp"/>
+            android:src="@drawable/tw"
+            android:background="@android:color/transparent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageButton
             android:id="@+id/googleplus_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/google"
-            app:border_color="@color/accent"
-            app:border_width="2dp"/>
+            android:src="@drawable/gp"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 </LinearLayout>

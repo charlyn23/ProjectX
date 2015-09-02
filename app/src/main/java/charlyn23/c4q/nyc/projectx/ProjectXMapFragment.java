@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -88,12 +89,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             lgbtq_loc = new ArrayList<>(),
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
+    private Typeface questrial;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
         viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
+        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
@@ -104,6 +107,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         // Autocomplete Places setup
         search = (AutoCompleteTextView) view.findViewById(R.id.search);
+        search.setTypeface(questrial);
         search.setOnItemClickListener(mAutocompleteClickListener);
         mAdapter = new PlaceAutocompleteAdapter(view.getContext(), android.R.layout.simple_list_item_1,
                 client, BOUNDS, null);
@@ -122,6 +126,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         filter = (Button) view.findViewById(R.id.filter);
+        filter.setTypeface(questrial);
         filter.setOnClickListener(filterClick);
 
         return view;
