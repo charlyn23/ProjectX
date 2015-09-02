@@ -20,7 +20,7 @@
             android:layout_height="159dp"
             android:layout_gravity="center"
             android:layout_marginTop="60dp"
-            android:src="@drawable/blazonogo"/>
+            android:src="@drawable/profile"/>
 
         <TextView
             android:layout_width="match_parent"

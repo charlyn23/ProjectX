@@ -170,16 +170,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-//    @Override
-//    public void onConnected(Bundle bundle) {
-//        Log.d(TAG, "onConnected: " + bundle);
-//        shouldResolve = false;
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//
-//    }
 
     @Override
     public void onClick(View v) {
@@ -197,25 +187,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    @Override
-//    public void onConnectionFailed(ConnectionResult connectionResult) {
-//        Log.d(TAG, "onConnectionFailed: " + connectionResult);
-//
-//        if (!isResolving && shouldResolve) {
-//            if (connectionResult.hasResolution()) {
-//                try {
-//                    connectionResult.startResolutionForResult(getActivity(), RC_SIGN_IN);
-//                    isResolving = true;
-//                } catch (IntentSender.SendIntentException e) {
-//                    Log.e(TAG, "Could not resolve ConnectionResult.", e);
-//                    isResolving = false;
-//                    googleApiClient.connect();
-//                }
-//            } else {
-//                Toast.makeText(view.getContext(), getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
-//            }
-//        }
-//    }
+
 
 //    private void onSignInClicked() {
 //        shouldResolve = true;
