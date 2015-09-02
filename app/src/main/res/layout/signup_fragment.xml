@@ -16,28 +16,31 @@
 
         <ImageView
             android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="159dp"
+            android:layout_height="159dp"
             android:layout_gravity="center"
             android:layout_marginTop="60dp"
-            android:src="@drawable/logo"/>
+            android:src="@drawable/blazonogo"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:gravity="center"
-            android:text="Shamer"
-            android:textSize="40sp"/>
+            android:text="Blazon"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="40sp"
+            android:fontFamily="sans-serif-thin"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_margin="10dp"
             android:gravity="center"
-            android:text="Place a Shame to make a Change"
+            android:text="Come Together.\n Voice the Movement"
+            android:fontFamily="sans-serif-light"
             android:textSize="20sp"/>
 
     </LinearLayout>
@@ -48,6 +51,7 @@
         android:layout_weight="0.5"
         android:text="Log in with"
         android:gravity="center|bottom"
+        android:fontFamily="sans-serif-light"
         android:textSize="22sp"/>
 
     <LinearLayout
