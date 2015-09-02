@@ -96,7 +96,7 @@ public class ProfileFragment extends Fragment {
             profileImage.setImageBitmap(bm);
         } else {
             //TODO: put default profile image
-            profileImage.setImageResource(R.drawable.map);
+            profileImage.setImageResource(R.drawable.logo);
         }
     }
 
@@ -127,8 +127,9 @@ public class ProfileFragment extends Fragment {
             user.logOut();
 
             if (googleLogInClient.isConnected()) {
-                Log.d("LOG OUT PELASE", "CLIENT WAS CONNECTED");
+                Log.d("ProfileFragment", "Google Client log out");
                 Plus.AccountApi.clearDefaultAccount(googleLogInClient);
+                Plus.AccountApi.revokeAccessAndDisconnect(googleLogInClient);
                 googleLogInClient.disconnect();
             }
 
@@ -148,6 +149,7 @@ public class ProfileFragment extends Fragment {
         super.onStart();
         if (isLoggedIn_Google) {
             googleLogInClient.connect();
+            Log.d("ProfileFragment", "Connected onStart");
         }
     }
 
@@ -156,6 +158,7 @@ public class ProfileFragment extends Fragment {
         super.onStop();
         if (googleLogInClient.isConnected()) {
             googleLogInClient.disconnect();
+            Log.d("ProfileFragment", "Disconnected onStop");
         }
     }
 }

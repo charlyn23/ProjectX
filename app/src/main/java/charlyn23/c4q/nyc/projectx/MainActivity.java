@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("LOG OUT PELASE", "onConnected: Google+");
+        Log.d("MainActivity", "onConnected: Google+");
 
         if (Plus.PeopleApi.getCurrentPerson(googleLogInClient) != null && !isLoggedIn_google) {
             SharedPreferences.Editor editor = preferences.edit();
@@ -75,40 +75,43 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     }
 
     @Override
-    public void onConnectionSuspended ( int i){
-        Log.d("LOG OUT PELASE", "Connection suspended in mainactivity");
-        googleLogInClient.connect();
+    public void onConnectionSuspended(int i) {
+        Log.d("MainActivity", "Connection suspended in mainactivity");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("LOG OUT PELASE", "onConnectionFailed: " + connectionResult);
+        Log.d("MainActivity", "onConnectionFailed: " + connectionResult);
 
-            if (connectionResult.hasResolution()) {
-                try {
-                    connectionResult.startResolutionForResult(this, RC_SIGN_IN);
-                } catch (IntentSender.SendIntentException e) {
-                    Log.e(TAG, "Could not resolve ConnectionResult.", e);
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this, RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "Could not resolve ConnectionResult.", e);
             }
+        } else {
+            Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            googleLogInClient.connect();
+            if (resultCode != RESULT_OK) {
+                Log.d("MainActivity", "resultCode =! OKAY");
+            } else {
+                googleLogInClient.connect();
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGGED_IN, true).apply();
-            editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
-            Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(LOGGED_IN, true).apply();
+                editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+                Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
         }
     }
 
@@ -176,12 +179,12 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
     @Override
     public void onDataPass(double latitude, double longitude, String when, String who, String type) {
-        Log.d("onDataPass" , String.valueOf(latitude) + " " +  String.valueOf(longitude) +" " +  when +" " +   who +" " +  type);
+        Log.d("onDataPass", String.valueOf(latitude) + " " + String.valueOf(longitude) + " " + when + " " + who + " " + type);
         double shameLat = latitude;
         double shameLong = longitude;
         String shameDateTime = when;
         String shameGroup = who;
-        String shameType =  type;
+        String shameType = type;
 
         Intent intent = new Intent(MainActivity.this, ShameDetailActivity.class);
         intent.putExtra("when", when);
@@ -201,6 +204,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     protected void onStop() {
         super.onStop();
         googleLogInClient.disconnect();
-        Log.d("MainActivity ==", "Successfully logged out");
+        Log.d("MainActivity", "Client Disconnected onStop");
     }
 }

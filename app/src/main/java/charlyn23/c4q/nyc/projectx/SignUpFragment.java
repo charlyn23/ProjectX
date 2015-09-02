@@ -169,6 +169,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private void onSignInClicked() {
         googleLogInClient.connect();
+        Log.d("SignUpFragment", "Google+ login successful");
     }
 
     @Override
