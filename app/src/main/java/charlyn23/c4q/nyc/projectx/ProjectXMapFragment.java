@@ -167,7 +167,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         String shame_group = shame.getString("Group");
                         Log.i("Shames", String.valueOf(shame)); //pulling all shames - good
                         map.addMarker(new MarkerOptions().position(location));
-
                         if (shame_group != null) {
                             switch (shame_group) {
                                 case "woman":
@@ -258,9 +257,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             Log.e("shame", "not found");
                         else
                             Log.d("shame : ", String.valueOf(shame));
-                        Snackbar.make(view, String.valueOf(shame.getGroup()) + " on " + shame.getShameTime(), Snackbar.LENGTH_LONG)
-                                .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
-                                .show();
+                            Snackbar.make(view, shame.getGroup() + " on " + shame.getShameTime(), Snackbar.LENGTH_LONG)
+                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
+                                    .show();
                         Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
                         Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
                     }
