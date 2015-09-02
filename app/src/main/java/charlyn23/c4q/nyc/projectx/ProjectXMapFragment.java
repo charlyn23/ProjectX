@@ -253,21 +253,31 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 query.getFirstInBackground(new GetCallback<Shame>() {
                     @Override
                     public void done(Shame shame, ParseException e) {
-                        if (shame == null)
-                            Log.e("shame", "not found");
-                        else
-                            Log.d("shame : ", String.valueOf(shame));
-                            Snackbar.make(view, shame.getString("Group") + " on " + shame.getString("shameTime"), Snackbar.LENGTH_LONG)
+                        if (shame.getString("Group") != null && shame.getString("shameTime") != null) {
+                            String time = shame.getString("shameTime");
+                            String readableTime = convertToReadableTime(time);
+                            Snackbar.make(view, "A " + shame.getString("Group") + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
                                     .show();
-                        Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
-                        Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
+                            Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
+                            Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
+                        }
                     }
                 });
             }
             return true;
         }
     };
+
+    //converts timestamp to a readable format
+    private String convertToReadableTime(String time) {
+        String year = time.substring(0, 4);
+        String month = time.substring(5, 6);
+        String day = time.substring(7, 8);
+        String hour = time.substring(9, 11);
+        String minute = time.substring(11, 13);
+        return month + "/" + day + "/" + year + "  " + hour + ":" + minute;
+    }
 
     public class snackbarDetail implements View.OnClickListener {
         double lat, lon;
