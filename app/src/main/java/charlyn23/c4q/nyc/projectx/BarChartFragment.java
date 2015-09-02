@@ -182,6 +182,15 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                 if (numMinor == 0) {
                     yVals.add(new BarEntry(POCPerCent, 0));
                     xVals.add(POC);
+//                    yVals.add(new BarEntry(null, 0));
+//                    yVals.add(new BarEntry(POCPerCent, 1));
+//                    yVals.add(new BarEntry(null, 2));
+//                    yVals.add(new BarEntry(null, 3));
+//                    xVals.add("WOMAN");
+//                    xVals.add("POC");
+//                    xVals.add("LGBTQ");
+//                    xVals.add("MINOR");
+
                 }
                 else {
                     yVals.add(new BarEntry(POCPerCent, 0));

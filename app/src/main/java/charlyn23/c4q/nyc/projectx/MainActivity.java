@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

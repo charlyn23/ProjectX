@@ -3,125 +3,115 @@ package charlyn23.c4q.nyc.projectx.shames;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
-/**
- * Created by charlynbuchanan on 8/11/15.
- */
-
 @ParseClassName("Shame")
 public class Shame extends ParseObject {
-
-    public Shame(){
-        super();
-    }
+    private float latitude;
+    private float longitude;
+    private int shameType;
+    private int verbalShame;
+    private int physicalShame;
+    private int otherShame;
+    private int shameFeel;
+    private int shameDoing;
+    private long shameTime;
+    private String group;
 
     public Shame(float latitude, float longitude, int shameType, int verbalShame,
                  int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                 long shameTime, String group) {
-        super();
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setShameType(shameType);
-        setVerbalShame(verbalShame);
-        setPhysicalShame(physicalShame);
-        setOtherShame(otherShame);
-        setShameFeel(shameFeel);
-        setShameDoing(shameDoing);
-        setShameTime(shameTime);
-        setGroup(group);
+                 long shameTime, String group){
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.shameType = shameType;
+        this.verbalShame = verbalShame;
+        this.physicalShame = physicalShame;
+        this.otherShame = otherShame;
+        this.shameFeel = shameFeel;
+        this.shameDoing = shameDoing;
+        this.shameTime = shameTime;
+        this.group = group;
     }
 
-    public void reportShame(float latitude, float longitude, int shameType, int verbalShame,
-                         int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                         long shameTime, String group){
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setOtherShame(otherShame);       //shameType = other(three options)
-        setShameType(shameType); //shameType = physical (six options)
-        setShameDoing(shameDoing);       //what user was doing at time of shame (six options)
-        setShameFeel(shameFeel);         //how they felt (five options)
-        setShameTime(shameTime);         // time of incident
-        setPhysicalShame(physicalShame);     // verbal description (four options)
+    public Shame(){
+
     }
 
     public float getLatitude() {
-        return getLatitude();
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
     }
 
     public float getLongitude() {
-        return getLongitude();
-    }
-
-    public int getOtherShame() {
-        return getOtherShame();
-    }
-
-    public int getPhysicalShame() {
-        return getPhysicalShame();
-    }
-
-    public int getShameDoing() {
-        return getShameDoing();
-    }
-
-    public int getShameFeel() {
-        return getShameFeel();
-    }
-
-    public int getShameReason() {
-        return getShameReason();
-    }
-
-    public long getShameTime() {
-        return getShameTime();
-    }
-
-    public String getShameType() {
-        return getShameType();
-    }
-
-    public int getVerbalShame() {
-        return getVerbalShame();
-    }
-
-    public String getGroup() { return getGroup();}
-
-    public void setLatitude(float latitude) {
-        put("latitude", latitude);
+        return longitude;
     }
 
     public void setLongitude(float longitude) {
-        put("longitude", longitude);
+        this.longitude = longitude;
     }
 
-    public void setOtherShame(int otherShame) {
-        put("otherShame", otherShame);
-    }
-
-    public void setPhysicalShame(int physicalShame) {
-        put("physicalShame", physicalShame);
-    }
-
-    public void setShameDoing(int shameDoing) {
-        put("shameDoing", shameDoing);
-    }
-
-    public void setShameFeel(int shameFeel) {
-        put("shameFeel", shameFeel);
-    }
-
-    public void setShameTime(long shameTime) {
-        put("shameTime", shameTime);
+    public int getShameType() {
+        return shameType;
     }
 
     public void setShameType(int shameType) {
-        put("shameType", shameType);
+        this.shameType = shameType;
+    }
+
+    public int getVerbalShame() {
+        return verbalShame;
     }
 
     public void setVerbalShame(int verbalShame) {
-        put("verbalShame", verbalShame);
+        this.verbalShame = verbalShame;
+    }
+
+    public int getPhysicalShame() {
+        return physicalShame;
+    }
+
+    public void setPhysicalShame(int physicalShame) {
+        this.physicalShame = physicalShame;
+    }
+
+    public int getOtherShame() {
+        return otherShame;
+    }
+
+    public void setOtherShame(int otherShame) {
+        this.otherShame = otherShame;
+    }
+
+    public int getShameFeel() {
+        return shameFeel;
+    }
+
+    public void setShameFeel(int shameFeel) {
+        this.shameFeel = shameFeel;
+    }
+
+    public int getShameDoing() {
+        return shameDoing;
+    }
+
+    public void setShameDoing(int shameDoing) {
+        this.shameDoing = shameDoing;
+    }
+
+    public long getShameTime() {
+        return shameTime;
+    }
+
+    public void setShameTime(long shameTime) {
+        this.shameTime = shameTime;
+    }
+
+    public String getGroup() {
+        return group;
     }
 
     public void setGroup(String group) {
-        put("Group", group);
+        this.group = group;
     }
 }
