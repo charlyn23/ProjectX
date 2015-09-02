@@ -289,8 +289,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         @Override
         public void onClick(View v) {
-//            Intent intent = new Intent(getActivity(), ShameDetailActivity.class);
-//            startActivity(intent);
             ParseQuery<Shame> query = ParseQuery.getQuery("Shame");
             query.whereEqualTo("latitude", lat);
             query.whereEqualTo("longitude", lon);
@@ -515,18 +513,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void onStop() {
         super.onStop();
         client.disconnect();
-    }
-
-    private String getDate(String when) {
-
-        try {
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
-            return sdf2.format(sdf1.parse(when));
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public interface OnDataPass {

@@ -18,18 +18,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class ProfileFragment extends Fragment {
     private static final String TAG = "c4q.nyc.projectx";
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int RC_SIGN_IN = 0;
@@ -37,30 +34,33 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
     private static final String LOGGED_IN_GOOGLE = "isLoggedInGoogle";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
-    private GoogleApiClient googleApiClient;
     private boolean isResolving = false;
     private boolean shouldResolve = false;
     private View view;
     private CircleImageView profileImage;
-    private GoogleApiClient client;
-    private boolean isLoggedIn_Google;
+    private GoogleApiClient googleLogInClient;
+    private boolean isLoggedIn_Google = false;
     private SharedPreferences preferences;
 
-    public  ProfileFragment() {
+    public ProfileFragment(GoogleApiClient googleLogInClient) {
+        this.googleLogInClient = googleLogInClient;
     }
 
-    public ProfileFragment(GoogleApiClient client) {
-        this.client = client;
+    public ProfileFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
-        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        isLoggedIn_Google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
+        preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        isLoggedIn_Google = preferences.getBoolean(MainActivity.LOGGED_IN_GOOGLE, false);
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
+
+        if (isLoggedIn_Google) {
+            googleLogInClient.connect();
+        }
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,15 +74,6 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
 
         Button logout = (Button) view.findViewById(R.id.log_out);
         logout.setOnClickListener(logoutClick);
-
-
-        googleApiClient = new GoogleApiClient.Builder(view.getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(new Scope(Scopes.EMAIL))
-                .build();
-
         return view;
     }
 
@@ -121,60 +112,27 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
         }
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected: " + bundle);
-        shouldResolve = false;
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed: " + connectionResult);
-
-        if (!isResolving && shouldResolve) {
-            if (connectionResult.hasResolution()) {
-                try {
-                    connectionResult.startResolutionForResult(getActivity(), RC_SIGN_IN);
-                    isResolving = true;
-                } catch (IntentSender.SendIntentException e) {
-                    Log.e(TAG, "Could not resolve ConnectionResult.", e);
-                    isResolving = false;
-                    googleApiClient.connect();
-                }
-            } else {
-                Toast.makeText(view.getContext(), getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
-
     View.OnClickListener logoutClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             ParseUser user = ParseUser.getCurrentUser();
             user.logOut();
-//
-//            if (client.isConnected()) {
-//                    client.connect();
-//                    Plus.AccountApi.clearDefaultAccount(client);
-//                    preferences.edit().putBoolean(LOGGED_IN_GOOGLE, false).apply();
-//                    client.disconnect();
-//
-//            }
 
-            if (googleApiClient.isConnected()) {
-                Plus.AccountApi.clearDefaultAccount(googleApiClient);
-                googleApiClient.disconnect();
+            if (googleLogInClient.isConnected()) {
+                Plus.AccountApi.clearDefaultAccount(googleLogInClient);
+                googleLogInClient.disconnect();
             }
 
-            SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+            if (googleLogInClient.isConnected()) {
+                Log.d("LOG OUT PELASE", "CLIENT WAS CONNECTED");
+                Plus.AccountApi.clearDefaultAccount(googleLogInClient);
+                googleLogInClient.disconnect();
+            }
+
+            SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGGED_IN, false).apply();
+            editor.putBoolean(MainActivity.LOGGED_IN, false).apply();
+            editor.putBoolean(MainActivity.LOGGED_IN_GOOGLE, false).apply();
             Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             startActivity(intent);
@@ -182,7 +140,7 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
     };
 
     //saves profile image in the background
-    public static class PictureService extends IntentService{
+    public static class PictureService extends IntentService {
 
         public PictureService() {
             super("pictureService");
@@ -201,3 +159,4 @@ public class ProfileFragment extends Fragment implements GoogleApiClient.Connect
         }
     }
 }
+
