@@ -95,8 +95,10 @@ public class ShameDialogs {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
-                        new_marker.remove();
-                        addShame.setVisibility(View.INVISIBLE);
+                        if (new_marker != null) {
+                            new_marker.remove();
+                            addShame.setVisibility(View.INVISIBLE);
+                        }
                     }
                 })
                 .show();
@@ -514,6 +516,7 @@ public class ShameDialogs {
                         else {
                             dialog.cancel();
                             Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
+
                         }
                     }
 

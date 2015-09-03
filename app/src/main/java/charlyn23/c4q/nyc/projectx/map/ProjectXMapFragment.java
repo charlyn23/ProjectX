@@ -541,5 +541,4 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             throw new ClassCastException(activity.toString() + " must implement OnDataPass");
         }
     }
-
 }
