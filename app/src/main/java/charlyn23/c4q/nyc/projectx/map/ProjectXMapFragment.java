@@ -207,6 +207,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (isLoggedIn) {
                 ShameDialogs dialogs = new ShameDialogs();
                 //gets location coordinates of the last dropped pin
+                preferences.edit().putString("y", (new_marker.getPosition().latitude) + "").commit();
+                preferences.edit().putString("u", (new_marker.getPosition().longitude) + "").commit();
                 Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
                 dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
             } else {

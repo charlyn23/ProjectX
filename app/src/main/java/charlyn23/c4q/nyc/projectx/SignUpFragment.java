@@ -38,10 +38,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.signup_fragment, container, false);
         preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null)
-            latLng = extras.getParcelable(MainActivity.LAT_LONG);
-
         //initializes views
         ImageButton fb = (ImageButton) view.findViewById(R.id.facebook_button);
         ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);

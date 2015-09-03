@@ -24,11 +24,13 @@ import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
+import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = "c4q.nyc.projectx";
+    private static final String SHAME_REPORT = "shameReport";
     public static final String LAT_LONG = "latLong";
     public static final String LOGGED_IN = "isLoggedIn";
     public static final String LOGGED_IN_GOOGLE = "logIn_Google";
@@ -46,6 +48,19 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         setContentView(R.layout.activity_main);
 
         preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean b = extras.getBoolean(SHAME_REPORT);
+            if (b) {
+                preferences.getString("y", "");
+                preferences.getString("u", "");
+                double lat = Double.parseDouble(preferences.getString("y", ""));
+                double longi = Double.parseDouble(preferences.getString("u", ""));
+                ShameDialogs dialogs = new ShameDialogs();
+                //gets location coordinates of the last dropped pin
+                dialogs.initialDialog(this, lat, longi, null, null);
+            }
+        }
         isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
         isLoggedIn_google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
 
@@ -101,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode != RESULT_OK) {
