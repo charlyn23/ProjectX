@@ -362,8 +362,12 @@ public class ShameDialogs {
                             newShame.put("latitude", latitude);
                             newShame.put("longitude", longitude);
                             try {
+                                Log.d("before", latitude + " lat in dialog");
+                                Log.d("before", longitude + " long in dialog");
                                 String zipcode = getZipcode(context, latitude, longitude);
-                                newShame.put("zipCode", zipcode);
+                                if (zipcode != null) {
+                                    newShame.put("zipCode", zipcode);
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

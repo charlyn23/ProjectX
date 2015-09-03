@@ -48,21 +48,22 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         setContentView(R.layout.activity_main);
 
         preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            boolean b = extras.getBoolean(SHAME_REPORT);
-            if (b) {
-                preferences.getString("y", "");
-                preferences.getString("u", "");
-                double lat = Double.parseDouble(preferences.getString("y", ""));
-                double longi = Double.parseDouble(preferences.getString("u", ""));
-                ShameDialogs dialogs = new ShameDialogs();
-                //gets location coordinates of the last dropped pin
-                dialogs.initialDialog(this, lat, longi, null, null);
-            }
-        }
         isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
         isLoggedIn_google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
+
+//        Bundle extras = getIntent().getExtras();
+//        if (extras != null) {
+//            boolean b = extras.getBoolean(SHAME_REPORT);
+//            if (b) {
+//                long lat = preferences.getLong("y", 0);
+//                long longi = preferences.getLong("u", 0);
+//                double latitude = Double.longBitsToDouble(lat);
+//                double longitude = Double.longBitsToDouble(longi);
+//                ShameDialogs dialogs = new ShameDialogs();
+//
+//                dialogs.initialDialog(this, latitude, longitude, null, null);
+//            }
+//        }
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
@@ -212,9 +213,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         intent.putExtra("longitude", longitude);
         intent.putExtra("type", type);
         startActivity(intent);
-
-//        TextView group = (TextView) shameDetailActivity.findViewById(R.id.group);
-//        group.setText(who);
 
     }
 

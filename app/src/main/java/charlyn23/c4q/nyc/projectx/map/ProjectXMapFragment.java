@@ -207,8 +207,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (isLoggedIn) {
                 ShameDialogs dialogs = new ShameDialogs();
                 //gets location coordinates of the last dropped pin
-                preferences.edit().putString("y", (new_marker.getPosition().latitude) + "").commit();
-                preferences.edit().putString("u", (new_marker.getPosition().longitude) + "").commit();
                 Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
                 dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
             } else {
@@ -242,8 +240,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
             }
-//            dataPasser.onDataPass(point.latitude, point.longitude);
+            Log.d("before", new_marker.getPosition() + " BEFORE");
+            long lat  = Double.doubleToRawLongBits(new_marker.getPosition().latitude);
+            long longit  = Double.doubleToRawLongBits(new_marker.getPosition().longitude);
+            Log.d("before", lat + " in double");
+            Log.d("before", longit + " in double");
 
+            preferences.edit().putLong("y", lat).commit();
+            preferences.edit().putLong("u", longit).commit();
         }
     };
 
