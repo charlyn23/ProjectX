@@ -102,9 +102,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
         filter.setOnClickListener(filterClick);
-        geofenceList = new ArrayList<>();
+        geofenceList = populateGeofenceList();
         mGeofencePendingIntent = null;
-        populateGeofenceList();
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
@@ -131,43 +130,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         return view;
     }
-
-    public ArrayList<Geofence> populateGeofenceList() {
-        ArrayList<Geofence> landmarks = new ArrayList<>();
-
-        // TODO get landmarks from db
-        // TODO put landmarks into db (from new shames?)
-        // TODO save landmarks locally
-
-        for (Map.Entry<String, LatLng> entry : geofence_landmarks.entrySet()) {
-
-            mGeofenceList.add(new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
-                    .setRequestId(entry.getKey())
-
-                            // Set the circular region of this geofence.
-                    .setCircularRegion(
-                            entry.getValue().latitude,
-                            entry.getValue().longitude,
-                            Constants.GEOFENCE_RADIUS_IN_METERS
-                    )
-
-                            // Set the expiration duration of the geofence. This geofence gets automatically
-                            // removed after this period of time.
-                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-
-                            // Set the transition types of interest. Alerts are only generated for these
-                            // transition. We track entry and exit transitions in this sample.
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
-
-                            // Create the geofence.
-                    .build());
-        }
-    }
-
-
 
     // adds Google MapFragment to the existing xml and set listeners
     public void addMapFragment() {
@@ -543,6 +505,38 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         return p1;
+    }
+
+    public ArrayList<Geofence> populateGeofenceList() {
+        final ArrayList<Geofence> active_geofence = new ArrayList<>();
+
+        // get geofence  landmarks from db
+        // TODO save landmarks locally, query by current location
+        ParseQuery<ShameGeofence> db_geofences = ParseQuery.getQuery("Geofence");
+        db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
+            public void done(List<ShameGeofence> results, ParseException e) {
+                if (e == null) {
+
+                    for (ShameGeofence geo : results) {
+                        active_geofence.add(new Geofence.Builder()
+                                .setRequestId(geo.getString("stringID"))
+                                .setCircularRegion(
+                                        geo.getDouble("latitude"),
+                                        geo.getDouble("longitude"),
+                                        Constants.GEOFENCE_RADIUS // 1 mile
+                                )
+                                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                                .build());
+                    }
+                    Log.d("Active Geofence loc", "Retrieved " + results.size() + " Shames");
+                } else {
+                    Log.d("Active Geofence loc", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+        return active_geofence;
     }
 
     public void initializeViews() {
