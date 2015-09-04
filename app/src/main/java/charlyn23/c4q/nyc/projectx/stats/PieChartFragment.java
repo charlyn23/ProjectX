@@ -1,5 +1,6 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -33,15 +34,16 @@ public class PieChartFragment extends Fragment {
     private static final String PIE_CHART = "pieChart";
     private static final int BAR_CHART = 1;
 
-
     private PieChart pieChart;
     private int numVerbalShame;
     private int numPhysicalShame;
     private int numOtherShame;
+    private Typeface questrial;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
+        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         TextView next = (TextView) view.findViewById(R.id.next);
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         configPieChart(pieChart);
@@ -108,7 +110,8 @@ public class PieChartFragment extends Fragment {
         chart.setRotationEnabled(true);
         chart.setUsePercentValues(true);
         chart.setCenterText(getString(R.string.types_of_harassment));
-        chart.setCenterTextSize(15);
+        chart.setCenterTextTypeface(questrial);
+        chart.setCenterTextSize(17);
         return chart;
     }
 
@@ -124,6 +127,7 @@ public class PieChartFragment extends Fragment {
 
         PieData data = new PieData(xVals, pieChartSet);
         data.setValueTextSize(13);
+        data.setValueTypeface(questrial);
         chart.setData(data);
         chart.highlightValues(null);
         chart.animateY(2000);

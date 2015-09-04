@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,17 +35,20 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     private static final String GROUP = "Group";
     private static final int PIE_CHART = 0;
 
-
     private int numWomen;
     private int numPOC;
     private int numLGBTQ;
     private int numMinor;
-    protected BarChart barChart;
+    private BarChart barChart;
+    private Typeface questrial;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bar_chart_fragment, container, false);
         TextView next = (TextView) view.findViewById(R.id.back);
+        TextView description = (TextView) view.findViewById(R.id.description);
+        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        description.setTypeface(questrial);
         barChart = (BarChart) view.findViewById(R.id.bar_chart);
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -113,11 +117,13 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         xl.setPosition(XAxis.XAxisPosition.BOTTOM);
         xl.setTextColor(Color.BLACK);
         xl.setAdjustXLabels(true);
+        xl.setTypeface(questrial);
 
         YAxis yl = barChart.getAxisLeft();
         yl.setEnabled(false);
         yl.setDrawAxisLine(false);
         yl.setDrawGridLines(false);
+        yl.setTypeface(questrial);
 
         YAxis yr = barChart.getAxisRight();
         yr.setAxisMaxValue(100);
@@ -125,6 +131,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         yr.setDrawAxisLine(false);
         yr.setDrawGridLines(false);
         yr.setEnabled(false);
+        yr.setTypeface(questrial);
 
         Legend l = barChart.getLegend();
         l.setEnabled(false);
@@ -142,6 +149,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         dataSets.add(set);
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(13);
+        data.setValueTypeface(questrial);
         barChart.setData(data);
         barChart.animateY(2000);
     }
