@@ -13,13 +13,31 @@
         android:layout_marginTop="20dp"
         android:layout_weight="5"/>
 
-    <TextView
-        android:id="@+id/next"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="bottom"
-        android:layout_gravity="end"
-        android:text="Next"/>
+        android:layout_weight="0.7"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/instances"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/total_instances"
+            android:textSize="17sp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/text_black"/>
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/arrow_next"/>
+    </LinearLayout>
 
 </LinearLayout>

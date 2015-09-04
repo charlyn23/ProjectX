@@ -46,7 +46,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stats_fragment, container, false);
         Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        TextView overView = (TextView) view.findViewById(R.id.overview);
+        Button overView = (Button) view.findViewById(R.id.overview);
         zipCode = (EditText) view.findViewById(R.id.zipcode);
         zipCode.setTypeface(questrial);
         overView.setTypeface(questrial);

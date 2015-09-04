@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -45,10 +46,12 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bar_chart_fragment, container, false);
-        TextView next = (TextView) view.findViewById(R.id.back);
-        TextView description = (TextView) view.findViewById(R.id.description);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView description = (TextView) view.findViewById(R.id.description);
+        TextView numInstance = (TextView) view.findViewById(R.id.instances);
+        ImageView next = (ImageView) view.findViewById(R.id.back);
         description.setTypeface(questrial);
+        numInstance.setTypeface(questrial);
         barChart = (BarChart) view.findViewById(R.id.bar_chart);
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -192,15 +195,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                 if (numMinor == 0) {
                     yVals.add(new BarEntry(POCPerCent, 0));
                     xVals.add(POC);
-//                    yVals.add(new BarEntry(null, 0));
-//                    yVals.add(new BarEntry(POCPerCent, 1));
-//                    yVals.add(new BarEntry(null, 2));
-//                    yVals.add(new BarEntry(null, 3));
-//                    xVals.add("WOMAN");
-//                    xVals.add("POC");
-//                    xVals.add("LGBTQ");
-//                    xVals.add("MINOR");
-
                 }
                 else {
                     yVals.add(new BarEntry(POCPerCent, 0));

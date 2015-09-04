@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +45,10 @@ public class PieChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        TextView next = (TextView) view.findViewById(R.id.next);
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
+        ImageView next = (ImageView) view.findViewById(R.id.next);
+        TextView numInstance = (TextView) view.findViewById(R.id.instances);
+        numInstance.setTypeface(questrial);
         configPieChart(pieChart);
 
         //switches to the next stats fragment
