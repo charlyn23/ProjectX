@@ -64,7 +64,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
     private static final String MARKER_DROPPED = "markerDropped";
-    private static final String SHAME_REPORT = "shameReport";
+    private static final String SHOW_DIALOG = "showDialog";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private static final int LOG_IN_VIEW = 2;
@@ -112,7 +112,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         buildGoogleApiClient(view.getContext());
         addMapFragment();
 
-        // Autocompletes Places setup
+        // Autocomplete Places setup
         search = (AutoCompleteTextView) view.findViewById(R.id.search);
         search.setTypeface(questrial);
         search.setOnItemClickListener(mAutocompleteClickListener);
@@ -294,8 +294,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void setMarker(double latitude, double longitude) {
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude, longitude)));
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
     }
 
     public class snackbarDetail implements View.OnClickListener {
@@ -553,7 +552,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void addSubmittedMarker() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            boolean dialog = bundle.getBoolean(SHAME_REPORT);
+            boolean dialog = bundle.getBoolean(SHOW_DIALOG, false);
             if (dialog) {
                 long lat = preferences.getLong(LATITUDE, 0);
                 long longi = preferences.getLong(LONGITUDE, 0);
@@ -562,6 +561,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 ShameDialogs dialogs = new ShameDialogs();
                 dialogs.setListener(this);
                 dialogs.initialDialog(getActivity(), latitude, longitude, null, null);
+                bundle.clear();
             }
         }
     }

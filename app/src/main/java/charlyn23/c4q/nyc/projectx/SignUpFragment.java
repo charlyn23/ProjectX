@@ -22,7 +22,7 @@ import java.util.List;
 
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
-    private static final String SHAME_REPORT = "shameReport";
+    private static final String SHOW_DIALOG = "showDialog";
     private SharedPreferences.Editor editor;
     public GoogleApiClient googleLogInClient;
     private View view;
@@ -153,7 +153,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private void reportShame() {
         Intent intent = new Intent(view.getContext(), MainActivity.class);
-        intent.putExtra(SHAME_REPORT, true);
+        intent.putExtra(SHOW_DIALOG, true);
         startActivity(intent);
     }
 

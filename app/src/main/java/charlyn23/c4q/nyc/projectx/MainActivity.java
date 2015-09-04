@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,16 +21,13 @@ import com.google.android.gms.plus.Plus;
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
-import charlyn23.c4q.nyc.projectx.shames.MarkerListenr;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
-import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = "c4q.nyc.projectx";
-    private static final String SHAME_REPORT = "shameReport";
-    public static final String LAT_LONG = "latLong";
+    private static final String SHOW_DIALOG = "showDialog";
     public static final String LOGGED_IN = "isLoggedIn";
     public static final String LOGGED_IN_GOOGLE = "logIn_Google";
     public static final int RC_SIGN_IN = 0;
@@ -41,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
-    double latitude;
-    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+            startActivity(intent);
         }
     }
 
@@ -116,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
                 Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra(SHAME_REPORT, true);
+                intent.putExtra(SHOW_DIALOG, true);
                 startActivity(intent);
             }
         }
@@ -213,11 +207,11 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     private void getBundle() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            boolean isLoggedIn = extras.getBoolean(SHAME_REPORT);
+            boolean isLoggedIn = extras.getBoolean(SHOW_DIALOG);
             if (isLoggedIn) {
                 ProjectXMapFragment projectXMapFragment = (ProjectXMapFragment) viewPagerAdapter.getItem(0);
                 Bundle fragmentBundle = new Bundle();
-                fragmentBundle.putBoolean(SHAME_REPORT, true);
+                fragmentBundle.putBoolean(SHOW_DIALOG, true);
                 projectXMapFragment.setArguments(fragmentBundle);
             }
         }
