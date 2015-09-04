@@ -31,11 +31,12 @@
                 android:textColorHint="#363636" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
+        <TextView
             android:id="@+id/overview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:text="US General Overview"/>
 
     </LinearLayout>

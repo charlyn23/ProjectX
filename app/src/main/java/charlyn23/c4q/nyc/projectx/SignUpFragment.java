@@ -154,7 +154,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private void reportShame() {
         Intent intent = new Intent(view.getContext(), MainActivity.class);
         intent.putExtra(SHAME_REPORT, true);
-        intent.putExtra(MainActivity.LAT_LONG, latLng);
         startActivity(intent);
     }
 

@@ -18,22 +18,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.plus.Plus;
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
+import charlyn23.c4q.nyc.projectx.shames.MarkerListenr;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
-public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = "c4q.nyc.projectx";
     private static final String SHAME_REPORT = "shameReport";
     public static final String LAT_LONG = "latLong";
@@ -61,25 +56,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
         setUpActionBar();
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            boolean b = extras.getBoolean(SHAME_REPORT);
-            if (b) {
-                long lat = preferences.getLong("y", 0);
-                long longi = preferences.getLong("u", 0);
-                latitude = Double.longBitsToDouble(lat);
-                longitude = Double.longBitsToDouble(longi);
-                ShameDialogs dialogs = new ShameDialogs();
-                dialogs.initialDialog(this, latitude, longitude, null, null);
-                viewPagerAdapter.notifyDataSetChanged();
-
-//                ProjectXMapFragment projectXMapFragment =(ProjectXMapFragment) viewPagerAdapter.getItem(0);
-//                SupportMapFragment mapFragment = (SupportMapFragment) projectXMapFragment.getChildFragmentManager().findFragmentById(R.id.map);
-//                mapFragment.getMapAsync(this);
-//                map = mapFragment.getMap();
-            }
-        }
+        getBundle();
     }
 
     protected synchronized void buildGoogleApiClient(Context context) {
@@ -233,8 +210,16 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         Log.d("MainActivity", "Client Disconnected onStop");
     }
 
-    @Override
-    public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
+    private void getBundle() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean isLoggedIn = extras.getBoolean(SHAME_REPORT);
+            if (isLoggedIn) {
+                ProjectXMapFragment projectXMapFragment = (ProjectXMapFragment) viewPagerAdapter.getItem(0);
+                Bundle fragmentBundle = new Bundle();
+                fragmentBundle.putBoolean(SHAME_REPORT, true);
+                projectXMapFragment.setArguments(fragmentBundle);
+            }
+        }
     }
 }

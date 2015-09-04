@@ -2,6 +2,7 @@ package charlyn23.c4q.nyc.projectx.stats;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import charlyn23.c4q.nyc.projectx.R;
@@ -29,7 +31,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
     private static Fragment[] fragments;
     public static ViewPager innerViewPager;
 
-    //remember and animate the last viewed inner graph fragment
+    //remembers and animates the last viewed inner graph fragment
     public void pageSelected() {
         if (lastChildFragmentShown == 0) {
             ((PieChartFragment) fragments[0]).animateChart();
@@ -42,8 +44,11 @@ public class StatsFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stats_fragment, container, false);
-        Button overView = (Button) view.findViewById(R.id.overview);
+        Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        TextView overView = (TextView) view.findViewById(R.id.overview);
         zipCode = (EditText) view.findViewById(R.id.zipcode);
+        zipCode.setTypeface(questrial);
+        overView.setTypeface(questrial);
 
         //child fragments
         fragments= new Fragment[2];

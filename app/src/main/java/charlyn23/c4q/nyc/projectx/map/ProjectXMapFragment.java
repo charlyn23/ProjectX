@@ -54,15 +54,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.shames.MarkerListenr;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListenr {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";
     private static final String MARKER_DROPPED = "markerDropped";
+    private static final String SHAME_REPORT = "shameReport";
+    private static final String LATITUDE = "latitude";
+    private static final String LONGITUDE = "longitude";
     private static final int LOG_IN_VIEW = 2;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
@@ -80,9 +84,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private Button filter;
     private double latitude;
     private double longitude;
-    private String date;
-    private String who;
-    private String type;
     private ViewPager viewPager;
     private OnDataPass dataPasser;
     private List<LatLng> woman_loc = new ArrayList<>(),
@@ -96,17 +97,22 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.map_fragment, container, false);
-        viewPager =  (ViewPager) getActivity().findViewById(R.id.view_pager);
+        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
-        preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        addShame.setOnClickListener(addShameListener);
+        addShame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reportShame();
+            }
+        });
 
-        // Connect to Geolocation API to make current location request & load map
+        // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
         addMapFragment();
 
-        // Autocomplete Places setup
+        // Autocompletes Places setup
         search = (AutoCompleteTextView) view.findViewById(R.id.search);
         search.setTypeface(questrial);
         search.setOnItemClickListener(mAutocompleteClickListener);
@@ -130,6 +136,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         filter.setTypeface(questrial);
         filter.setOnClickListener(filterClick);
 
+        addSubmittedMarker();
         return view;
     }
 
@@ -198,23 +205,21 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
     }
 
-    //directs the user to SignUp Fragment if not logged in yet or to Map Fragment if logged in when FAB is clicked
-    private View.OnClickListener addShameListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
+    //directs the user to SignUp Fragment if not logged in or to Dialogs if logged in when FAB is clicked
+    public void reportShame() {
+        boolean isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
 
-            if (isLoggedIn) {
-                ShameDialogs dialogs = new ShameDialogs();
-                //gets location coordinates of the last dropped pin
-                Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
-                dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
-            } else {
-                viewPager.setCurrentItem(LOG_IN_VIEW);
-                Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
-            }
+        if (isLoggedIn) {
+            ShameDialogs dialogs = new ShameDialogs();
+            //gets location coordinates of the last dropped pin
+            Log.i(TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
+            dialogs.setListener(this);
+            dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
+        } else {
+            viewPager.setCurrentItem(LOG_IN_VIEW);
+            Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
         }
-    };
+    }
 
     //drops a marker in any place on the map
     private GoogleMap.OnMapClickListener mapClickListener = new GoogleMap.OnMapClickListener() {
@@ -240,14 +245,10 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (map != null) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
             }
-            Log.d("before", new_marker.getPosition() + " BEFORE");
             long lat  = Double.doubleToRawLongBits(new_marker.getPosition().latitude);
             long longit  = Double.doubleToRawLongBits(new_marker.getPosition().longitude);
-            Log.d("before", lat + " in double");
-            Log.d("before", longit + " in double");
-
-            preferences.edit().putLong("y", lat).commit();
-            preferences.edit().putLong("u", longit).commit();
+            preferences.edit().putLong(LATITUDE, lat).commit();
+            preferences.edit().putLong(LONGITUDE, longit).commit();
         }
     };
 
@@ -289,6 +290,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         String hour = time.substring(9, 11);
         String minute = time.substring(11, 13);
         return month + "/" + day + "/" + year + "  " + hour + ":" + minute;
+    }
+
+    @Override
+    public void setMarker(double latitude, double longitude) {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude)));
     }
 
     public class snackbarDetail implements View.OnClickListener {
@@ -539,6 +546,23 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             Log.i("datapasser", "works!");
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnDataPass");
+        }
+    }
+
+    //brings up a survey dialog group and saves a permanent marker on the map
+    public void addSubmittedMarker() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            boolean dialog = bundle.getBoolean(SHAME_REPORT);
+            if (dialog) {
+                long lat = preferences.getLong(LATITUDE, 0);
+                long longi = preferences.getLong(LONGITUDE, 0);
+                latitude = Double.longBitsToDouble(lat);
+                longitude = Double.longBitsToDouble(longi);
+                ShameDialogs dialogs = new ShameDialogs();
+                dialogs.setListener(this);
+                dialogs.initialDialog(getActivity(), latitude, longitude, null, null);
+            }
         }
     }
 }
