@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 longitude = Double.longBitsToDouble(longi);
                 ShameDialogs dialogs = new ShameDialogs();
                 dialogs.initialDialog(this, latitude, longitude, null, null);
+                viewPagerAdapter.notifyDataSetChanged();
+
 //                ProjectXMapFragment projectXMapFragment =(ProjectXMapFragment) viewPagerAdapter.getItem(0);
 //                SupportMapFragment mapFragment = (SupportMapFragment) projectXMapFragment.getChildFragmentManager().findFragmentById(R.id.map);
 //                mapFragment.getMapAsync(this);

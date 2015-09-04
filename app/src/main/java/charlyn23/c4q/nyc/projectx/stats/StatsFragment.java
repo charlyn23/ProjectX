@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,6 @@ public class StatsFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.stats_fragment, container, false);
-        Button update = (Button) view.findViewById(R.id.update);
         Button overView = (Button) view.findViewById(R.id.overview);
         zipCode = (EditText) view.findViewById(R.id.zipcode);
 
@@ -44,21 +45,6 @@ public class StatsFragment extends android.support.v4.app.Fragment {
         fragments= new Fragment[2];
         fragments[0] = new PieChartFragment();
         fragments[1] = new BarChartFragment();
-
-        //updates the graph based on the user's zipCode
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userInput = zipCode.getText().toString();
-                if (userInput.length() == 5) {
-                    ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
-                    ((BarChartFragment) fragments[1]).getCountGroups(userInput);
-                }
-                else {
-                    Toast.makeText(getActivity(), "Invalid zipCode", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
         //shows the general data collected
         overView.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +56,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        zipCode.addTextChangedListener(zipCodeWatcher);
         innerViewPager = (ViewPager) view.findViewById(R.id.inner_pager);
         InnerAdapter innerAdapter = new InnerAdapter(getChildFragmentManager());
         innerViewPager.setAdapter(innerAdapter);
@@ -96,6 +83,22 @@ public class StatsFragment extends android.support.v4.app.Fragment {
         });
         return view;
     }
+
+    private final TextWatcher zipCodeWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        public void afterTextChanged(Editable s) {
+            userInput = zipCode.getText().toString();
+            if (userInput.length() == 5) {
+                ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
+                ((BarChartFragment) fragments[1]).getCountGroups(userInput);
+            }
+        }
+    };
 
     //inner view pager adapter
    public static class InnerAdapter extends FragmentPagerAdapter {
