@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+                startActivity(intent);
         }
     }
 
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
                 Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(SHAME_REPORT, true);
                 startActivity(intent);
             }
         }
