@@ -40,6 +40,9 @@ public class ProfileFragment extends Fragment {
         this.googleLogInClient = googleLogInClient;
     }
 
+    public ProfileFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

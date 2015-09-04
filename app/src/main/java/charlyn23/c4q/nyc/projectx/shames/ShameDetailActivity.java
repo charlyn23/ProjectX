@@ -47,22 +47,35 @@ public class ShameDetailActivity extends Activity {
     }
 
         //Convert latlng to address
-        public String getAddress(){double lat = getIntent().getDoubleExtra("latitude", 0.0);
-        double longitude = getIntent().getDoubleExtra("longitude", 0.0);
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
+        public String getAddress(){
+            double lat = getIntent().getDoubleExtra("latitude", 0.0);
+            double longitude = getIntent().getDoubleExtra("longitude", 0.0);
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
 
-            String streetAddress = addresses.get(0).getAddressLine(0);
-            String city = addresses.get(0).getSubLocality();
-            String state = addresses.get(0).getAdminArea();
-            String zip = addresses.get(0).getPostalCode();
-            String country = addresses.get(0).getCountryName();
-            String address = streetAddress + " " + city + " " + state + " " + zip + " " + country;
-            return address;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                String streetAddress = addresses.get(0).getAddressLine(0);
+                String city = addresses.get(0).getSubLocality();
+                String state = addresses.get(0).getAdminArea();
+                String zip = addresses.get(0).getPostalCode();
+                String country = addresses.get(0).getCountryName();
+                if (zip == null) {
+                    zip = "";
+                }
+                if (city == null) {
+                    city = "";
+                }
+                if (streetAddress == null) {
+                    streetAddress = "";
+                }
+                if (state == null) {
+                    state = "";
+                }
+                String address = streetAddress + " " + city + " " + state + " " + zip + " " + country;
+                return address;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         return "";
     }
 
