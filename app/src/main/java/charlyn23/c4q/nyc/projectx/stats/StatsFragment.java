@@ -1,5 +1,7 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +12,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -96,6 +100,13 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             if (userInput.length() == 5) {
                 ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
                 ((BarChartFragment) fragments[1]).getCountGroups(userInput);
+                //hides the keyboard when the user finishes typing zipCode
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                View view = getActivity().getCurrentFocus();
+                if(view == null) {
+                    view = new View(getActivity());
+                }
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
     };
