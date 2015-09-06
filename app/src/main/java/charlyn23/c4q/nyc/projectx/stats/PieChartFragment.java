@@ -40,6 +40,7 @@ public class PieChartFragment extends Fragment {
     private int numPhysicalShame;
     private int numOtherShame;
     private Typeface questrial;
+    private TextView numInstances;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -47,8 +48,8 @@ public class PieChartFragment extends Fragment {
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         ImageView next = (ImageView) view.findViewById(R.id.next);
-        TextView numInstance = (TextView) view.findViewById(R.id.instances);
-        numInstance.setTypeface(questrial);
+        numInstances = (TextView) view.findViewById(R.id.instances);
+        numInstances.setTypeface(questrial);
         configPieChart(pieChart);
 
         //switches to the next stats fragment
@@ -90,13 +91,18 @@ public class PieChartFragment extends Fragment {
                     Log.d("yuliya", numVerbalShame + "");
                     Log.d("yuliya", numPhysicalShame + "");
                     Log.d("yuliya", numOtherShame + "");
+                    int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
+                    numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
 
                     //displays a toast when there are no cases reported in the area
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
                         Toast.makeText(getActivity(), "Cases of harassment have not been reported in your area!", Toast.LENGTH_LONG).show();
+                        numInstances.setText("");
                     }
-                    Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
-                    setDataPieChart(pieChart, data.getyValues(), data.getxValues());
+                    else {
+                        Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
+                        setDataPieChart(pieChart, data.getyValues(), data.getxValues());
+                    }
                 }
             }
         });
@@ -198,5 +204,9 @@ public class PieChartFragment extends Fragment {
         }
         Data data = new Data(PIE_CHART, yVals, xVals);
         return data;
+    }
+
+    public void setText(String text) {
+        numInstances.setText(text);
     }
 }

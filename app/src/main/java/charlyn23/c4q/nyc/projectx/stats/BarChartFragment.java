@@ -42,16 +42,18 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     private int numMinor;
     private BarChart barChart;
     private Typeface questrial;
+    private TextView numInstances;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bar_chart_fragment, container, false);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         TextView description = (TextView) view.findViewById(R.id.description);
-        TextView numInstance = (TextView) view.findViewById(R.id.instances);
         ImageView next = (ImageView) view.findViewById(R.id.back);
+        numInstances = (TextView) view.findViewById(R.id.instances);
+        numInstances.setTypeface(questrial);
         description.setTypeface(questrial);
-        numInstance.setTypeface(questrial);
+        numInstances.setTypeface(questrial);
         barChart = (BarChart) view.findViewById(R.id.bar_chart);
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -95,12 +97,17 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                     Log.d("yuliya", numWomen + "w ");
                     Log.d("yuliya", numPOC + " poc");
                     Log.d("yuliya", numLGBTQ + "lgbtq ");
+                    int totalInstances = numWomen + numPOC + numLGBTQ + numMinor;
+                    numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
 
-                    if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0 ) {
+                    if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
                         barChart.setNoDataText("Cases of harassment have not been reported in your area!");
+                        numInstances.setText("");
                     }
-                    Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
-                    setDataBarChart(data.getyVals(), data.getxValues());
+                    else {
+                        Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
+                        setDataBarChart(data.getyVals(), data.getxValues());
+                    }
                 }
             }
         });
@@ -287,5 +294,9 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
 
         Data data = new Data(yVals, xVals);
         return data;
+    }
+
+    public void setText(String text) {
+        numInstances.setText(text);
     }
 }

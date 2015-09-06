@@ -51,7 +51,7 @@ public class ShameDialogs {
     private Marker new_marker;
     private FloatingActionButton addShame;
     private String shameTime;
-    private MarkerListenr markerListenr;
+    private MarkerListener markerListener;
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
         ParseObject.registerSubclass(Shame.class);
@@ -517,8 +517,8 @@ public class ShameDialogs {
                         else {
                             dialog.cancel();
                             Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
-                            if (markerListenr != null) {
-                                markerListenr.setMarker(latitude, longitude);
+                            if (markerListener != null) {
+                                markerListener.setMarker(latitude, longitude);
                             }
                         }
                     }
@@ -542,7 +542,7 @@ public class ShameDialogs {
         return postalCode;
     }
 
-    public void setListener(MarkerListenr listener) {
-        markerListenr = listener;
+    public void setListener(MarkerListener listener) {
+        markerListener = listener;
     }
 }

@@ -54,12 +54,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.R;
-import charlyn23.c4q.nyc.projectx.shames.MarkerListenr;
+import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListenr {
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener {
     private static final String TAG = "c4q.nyc.projectx";
     private static final String SHARED_PREFERENCE = "sharedPreference";
     private static final String LOGGED_IN = "isLoggedIn";

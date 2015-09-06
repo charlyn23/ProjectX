@@ -94,5 +94,5 @@
     <string name="filter_content">Only show Shames effecting:</string>
     <string name="done">Done</string>
     <string name="groups">Groups of People (%)</string>
-    <string name="total_instances">Total number of instances: </string>
+    <string name="total_instances">Total number of instances:</string>
 </resources>
