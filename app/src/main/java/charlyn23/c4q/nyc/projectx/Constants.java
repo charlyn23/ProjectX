@@ -11,6 +11,7 @@ public class Constants {
     public static final String SHARED_PREFERENCE = "sharedPreference";
     public static final String LATITUDE_PREFERENCE = "latitudePreference";
     public static final String LONGITUDE_PREFERENCE = "longitudePreference";
+    public static final String IS_DROPPED = "isDropped";
     public static final int RC_SIGN_IN = 0;
     public static final int PICK_IMAGE_REQUEST = 1;
     public static final String PROFILE_IMAGE = "profileImage";

@@ -240,6 +240,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
             long lat  = Double.doubleToRawLongBits(new_marker.getPosition().latitude);
             long longit  = Double.doubleToRawLongBits(new_marker.getPosition().longitude);
+            preferences.edit().putBoolean(Constants.IS_DROPPED, true).commit();
             preferences.edit().putLong(Constants.LATITUDE_PREFERENCE, lat).commit();
             preferences.edit().putLong(Constants.LONGITUDE_PREFERENCE, longit).commit();
         }
@@ -546,7 +547,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         Bundle bundle = getArguments();
         if (bundle != null) {
             boolean dialog = bundle.getBoolean(Constants.SHOW_DIALOG, false);
-            if (dialog) {
+            boolean isDropped = preferences.getBoolean(Constants.IS_DROPPED, false);
+            if (dialog && isDropped) {
                 long lat = preferences.getLong(Constants.LATITUDE_PREFERENCE, 0);
                 long longi = preferences.getLong(Constants.LONGITUDE_PREFERENCE, 0);
                 latitude = Double.longBitsToDouble(lat);
