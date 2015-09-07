@@ -23,18 +23,12 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
 
 public class PieChartFragment extends Fragment {
-    private static final String SHAME = "Shame";
-    private static final String ZIPCODE = "zipCode";
-    private static final String VERBAL = "verbal";
-    private static final String PHYSICAL = "physical";
-    private static final String OTHER = "other";
-    private static final String SHAME_TYPE = "shameType";
     private static final String PIE_CHART = "pieChart";
     private static final int BAR_CHART = 1;
-
     private PieChart pieChart;
     private int numVerbalShame;
     private int numPhysicalShame;
@@ -56,7 +50,7 @@ public class PieChartFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StatsFragment.innerViewPager.setCurrentItem(BAR_CHART);
+                StatsFragment.innerViewPager.setCurrentItem(                                                                                BAR_CHART);
             }
         });
 
@@ -70,18 +64,18 @@ public class PieChartFragment extends Fragment {
         numPhysicalShame = 0;
         numOtherShame = 0;
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(SHAME);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(Constants.SHAME);
         if (zipCode.length() > 0) {
-            query.whereEqualTo(ZIPCODE, zipCode);
+            query.whereEqualTo(Constants.SHAME_ZIPCODE_COLUMN, zipCode);
         }
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null && objects != null) {
                     for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get(SHAME_TYPE) != null) {
-                            if (objects.get(i).get(SHAME_TYPE).equals(VERBAL)) {
+                        if (objects.get(i).get(Constants.SHAME_TYPE_COLUMN) != null) {
+                            if (objects.get(i).get(Constants.SHAME_TYPE_COLUMN).equals(Constants.VERBAL)) {
                                 numVerbalShame++;
-                            } else if (objects.get(i).get(SHAME_TYPE).equals(PHYSICAL)) {
+                            } else if (objects.get(i).get(Constants.SHAME_TYPE_COLUMN).equals(Constants.PHYSICAL)) {
                                 numPhysicalShame++;
                             } else {
                                 numOtherShame++;
@@ -96,13 +90,11 @@ public class PieChartFragment extends Fragment {
 
                     //displays a toast when there are no cases reported in the area
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                        Toast.makeText(getActivity(), "Cases of harassment have not been reported in your area!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_cases), Toast.LENGTH_LONG).show();
                         numInstances.setText("");
                     }
-                    else {
-                        Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
-                        setDataPieChart(pieChart, data.getyValues(), data.getxValues());
-                    }
+                    Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
+                    setDataPieChart(pieChart, data.getyValues(), data.getxValues());
                 }
             }
         });
@@ -161,46 +153,46 @@ public class PieChartFragment extends Fragment {
 
         if (numOtherShame == 0 && numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
-            xVals.add(VERBAL);
+            xVals.add(Constants.VERBAL);
         }
 
         else if (numOtherShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
-            xVals.add(PHYSICAL);
+            xVals.add(Constants.PHYSICAL);
         }
 
         else if (numPhysicalShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numOtherShame, 0));
-            xVals.add(OTHER);
+            xVals.add(Constants.OTHER);
         }
 
         else if (numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
-            xVals.add(PHYSICAL);
-            xVals.add(OTHER);
+            xVals.add(Constants.PHYSICAL);
+            xVals.add(Constants.OTHER);
         }
 
         else if (numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
-            xVals.add(VERBAL);
-            xVals.add(OTHER);
+            xVals.add(Constants.VERBAL);
+            xVals.add(Constants.OTHER);
         }
         else if (numOtherShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
-            xVals.add(VERBAL);
-            xVals.add(PHYSICAL);
+            xVals.add(Constants.VERBAL);
+            xVals.add(Constants.PHYSICAL);
         }
 
         else {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
             yVals.add(new Entry(numOtherShame, 2));
-            xVals.add(VERBAL);
-            xVals.add(PHYSICAL);
-            xVals.add(OTHER);
+            xVals.add(Constants.VERBAL);
+            xVals.add(Constants.PHYSICAL);
+            xVals.add(Constants.OTHER);
         }
         Data data = new Data(PIE_CHART, yVals, xVals);
         return data;

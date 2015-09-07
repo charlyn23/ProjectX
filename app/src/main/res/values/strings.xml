@@ -95,4 +95,6 @@
     <string name="done">Done</string>
     <string name="groups">Groups of People (%)</string>
     <string name="total_instances">Total number of instances:</string>
+    <string name="shame_submitted">Shame successfully submitted!</string>
+    <string name="no_cases">Cases of harassment have not been reported in your area!</string>
 </resources>
