@@ -29,8 +29,6 @@ import java.io.FileNotFoundException;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private static final String PROFILE_IMAGE = "profileImage";
     private View view;
     private CircleImageView profileImage;
     private GoogleApiClient googleLogInClient;
@@ -49,7 +47,7 @@ public class ProfileFragment extends Fragment {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
 
         SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        isLoggedIn_Google = preferences.getBoolean(MainActivity.LOGGED_IN_GOOGLE, false);
+        isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
 
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         setProfileImage();
@@ -99,14 +97,14 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == MainActivity.RESULT_OK && null != data) {
+        if (requestCode == Constants.PICK_IMAGE_REQUEST && resultCode == MainActivity.RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
             profileImage.setImageURI(selectedImage);
 
             //starts an intentService to save the new picture in a file
             String imagePath = selectedImage.toString();
             Intent intent = new Intent(getActivity(), PictureService.class);
-            intent.putExtra(PROFILE_IMAGE, imagePath);
+            intent.putExtra(Constants.PROFILE_IMAGE, imagePath);
             getActivity().startService(intent);
         }
     }
@@ -116,7 +114,7 @@ public class ProfileFragment extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), Constants.PICK_IMAGE_REQUEST);
     }
 
     //sets and ImageView of the profile picture to the previously saved image
@@ -139,12 +137,12 @@ public class ProfileFragment extends Fragment {
 
         @Override
         protected void onHandleIntent(Intent intent) {
-            String selectedImage = intent.getStringExtra(PROFILE_IMAGE);
+            String selectedImage = intent.getStringExtra(Constants.PROFILE_IMAGE);
             Bitmap bitmap = null;
             try {
                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(Uri.parse(selectedImage)));
             } catch (FileNotFoundException e) {
-                Log.d(MainActivity.TAG, "Image uri is not received or recognized");
+                Log.d(Constants.TAG, "Image uri is not received or recognized");
             }
             PictureUtil.saveToCacheFile(bitmap);
         }
@@ -165,8 +163,8 @@ public class ProfileFragment extends Fragment {
 
             SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(MainActivity.LOGGED_IN, false).apply();
-            editor.putBoolean(MainActivity.LOGGED_IN_GOOGLE, false).apply();
+            editor.putBoolean(Constants.LOGGED_IN, false).apply();
+            editor.putBoolean(Constants.LOGGED_IN_GOOGLE, false).apply();
             Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             startActivity(intent);

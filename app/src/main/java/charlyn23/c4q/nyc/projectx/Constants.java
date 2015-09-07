@@ -4,6 +4,17 @@ package charlyn23.c4q.nyc.projectx;
  * Created by July on 9/3/15.
  */
 public class Constants {
+    public static final String YOUR_APPLICATION_ID = "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O";
+    public static final String YOUR_CLIENT_KEY = "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq";
+    public static final String TWITTER_ID = "ouo6bc7Pw4aScPNRnsKJlvm2K";
+    public static final String TWITTER_KEY = "qRY7V1WbBMXogze0wC0m05cIgMpzl3bn8Kt9NpOpHkW7S5kKLk";
+
+    public static final int LOG_IN_VIEW = 2;
+    public static final int PICK_IMAGE_REQUEST = 1;
+    public static final int RC_SIGN_IN = 0;
+    public static final int PIE_CHART = 0;
+    public static final int BAR_CHART = 1;
+
     public static final String TAG = "c4q.nyc.projectx";
     public static final String LAT_LONG = "latLong";
     public static final String LOGGED_IN = "isLoggedIn";
@@ -12,15 +23,11 @@ public class Constants {
     public static final String LATITUDE_PREFERENCE = "latitudePreference";
     public static final String LONGITUDE_PREFERENCE = "longitudePreference";
     public static final String IS_DROPPED = "isDropped";
-    public static final int RC_SIGN_IN = 0;
-    public static final int PICK_IMAGE_REQUEST = 1;
     public static final String PROFILE_IMAGE = "profileImage";
-    public static final String SHAME_REPORT = "shameReport";
     public static final String MARKER_DROPPED = "markerDropped";
     public static final String ALLOW_GEOFENCE = "allowGeofence";
-    public static final int LOG_IN_VIEW = 2;
+    public static final String PIE_CHART_NAME = "pieChart";
 
-    //ShameDialogs Constants
     public static final String SHOW_DIALOG = "showDialog";
     public static final String SHAME = "Shame";
     public static final String GROUP_COLUMN = "Group";

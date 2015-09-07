@@ -63,7 +63,6 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener {
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
-
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
     private GoogleApiClient client;

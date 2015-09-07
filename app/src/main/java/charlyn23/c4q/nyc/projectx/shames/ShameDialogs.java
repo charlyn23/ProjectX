@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.design.widget.FloatingActionButton;
@@ -356,8 +357,6 @@ public class ShameDialogs {
                             newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
                             newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
                             try {
-                                Log.d("before", latitude + " lat in dialog");
-                                Log.d("before", longitude + " long in dialog");
                                 String zipcode = getZipcode(context, latitude, longitude);
                                 if (zipcode != null) {
                                     newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
@@ -511,6 +510,8 @@ public class ShameDialogs {
                             if (markerListener != null) {
                                 markerListener.setMarker(latitude, longitude);
                             }
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
                         }
                     }
 

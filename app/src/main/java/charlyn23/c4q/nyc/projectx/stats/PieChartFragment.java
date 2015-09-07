@@ -27,8 +27,6 @@ import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
 
 public class PieChartFragment extends Fragment {
-    private static final String PIE_CHART = "pieChart";
-    private static final int BAR_CHART = 1;
     private PieChart pieChart;
     private int numVerbalShame;
     private int numPhysicalShame;
@@ -50,7 +48,7 @@ public class PieChartFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StatsFragment.innerViewPager.setCurrentItem(                                                                                BAR_CHART);
+                StatsFragment.innerViewPager.setCurrentItem(Constants.BAR_CHART);
             }
         });
 
@@ -82,9 +80,6 @@ public class PieChartFragment extends Fragment {
                             }
                         }
                     }
-                    Log.d("yuliya", numVerbalShame + "");
-                    Log.d("yuliya", numPhysicalShame + "");
-                    Log.d("yuliya", numOtherShame + "");
                     int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
                     numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
 
@@ -194,7 +189,7 @@ public class PieChartFragment extends Fragment {
             xVals.add(Constants.PHYSICAL);
             xVals.add(Constants.OTHER);
         }
-        Data data = new Data(PIE_CHART, yVals, xVals);
+        Data data = new Data(Constants.PIE_CHART_NAME, yVals, xVals);
         return data;
     }
 

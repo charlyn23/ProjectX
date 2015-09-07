@@ -27,7 +27,6 @@ import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
 
 public class BarChartFragment extends android.support.v4.app.Fragment {
-    private static final int PIE_CHART = 0;
     private int numWomen;
     private int numPOC;
     private int numLGBTQ;
@@ -51,7 +50,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StatsFragment.innerViewPager.setCurrentItem(PIE_CHART);
+                StatsFragment.innerViewPager.setCurrentItem(Constants.PIE_CHART);
 
             }
         });
@@ -86,9 +85,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                             }
                         }
                     }
-                    Log.d("yuliya", numWomen + "w ");
-                    Log.d("yuliya", numPOC + " poc");
-                    Log.d("yuliya", numLGBTQ + "lgbtq ");
                     int totalInstances = numWomen + numPOC + numLGBTQ + numMinor;
                     numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
 

@@ -14,9 +14,6 @@ import java.util.Locale;
 
 import charlyn23.c4q.nyc.projectx.R;
 
-/**
- * Created by sufeizhao on 8/15/15.
- */
 public class ShameDetailActivity extends Activity {
 
     @Override
@@ -24,7 +21,7 @@ public class ShameDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shame_layout);
 
-        // set custom font
+        // sets custom font
         Typeface questrial = Typeface.createFromAsset(this.getAssets(), "questrial.ttf");
         TextView details = (TextView) findViewById(R.id.details_text);
         TextView group = (TextView) findViewById(R.id.who);
@@ -37,7 +34,7 @@ public class ShameDetailActivity extends Activity {
         when.setTypeface(questrial);
         shameDetail.setTypeface(questrial);
 
-        //Populate textfields
+        //Populates textfields
         group.setText(getIntent().getStringExtra("who"));
         when.setText(getDate());
         where.setText(getAddress());
@@ -46,7 +43,7 @@ public class ShameDetailActivity extends Activity {
 
     }
 
-        //Convert latlng to address
+        //Converts latlng to address
         public String getAddress(){
             double lat = getIntent().getDoubleExtra("latitude", 0.0);
             double longitude = getIntent().getDoubleExtra("longitude", 0.0);
@@ -79,7 +76,7 @@ public class ShameDetailActivity extends Activity {
         return "";
     }
 
-    //convert timestamp to familiar date/time format
+    //converts timestamp to familiar date/time format
     private String getDate(){
         String date = getIntent().getStringExtra("when");
         String year = date.substring(0, 4);

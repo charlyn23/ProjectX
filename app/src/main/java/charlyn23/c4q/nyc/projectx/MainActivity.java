@@ -26,10 +26,6 @@ import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    public static final String TAG = "c4q.nyc.projectx";
-    private static final String SHOW_DIALOG = "showDialog";
-    public static final String LOGGED_IN = "isLoggedIn";
-    public static final String LOGGED_IN_GOOGLE = "logIn_Google";
     public static final int RC_SIGN_IN = 0;
     public static final String SHARED_PREFERENCE = "sharedPreference";
     private NoSwipeViewPager viewPager;
@@ -44,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         setContentView(R.layout.activity_main);
 
         preferences = getSharedPreferences(SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        isLoggedIn = preferences.getBoolean(LOGGED_IN, false);
-        isLoggedIn_google = preferences.getBoolean(LOGGED_IN_GOOGLE, false);
+        isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
+        isLoggedIn_google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
@@ -70,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             editor.putBoolean(Constants.LOGGED_IN, true).apply();
             isLoggedIn_google = true;
             editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
-            Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -89,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             try {
                 connectionResult.startResolutionForResult(this, RC_SIGN_IN);
             } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Could not resolve ConnectionResult.", e);
+                Log.e(Constants.TAG, "Could not resolve ConnectionResult.", e);
             }
         } else {
             Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
@@ -108,9 +103,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(Constants.LOGGED_IN, true).apply();
                 editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
-                Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra(SHOW_DIALOG, true);
+                intent.putExtra(Constants.SHOW_DIALOG, true);
                 startActivity(intent);
             }
         }
@@ -207,11 +201,11 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     private void getBundle() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            boolean isLoggedIn = extras.getBoolean(SHOW_DIALOG);
+            boolean isLoggedIn = extras.getBoolean(Constants.SHOW_DIALOG);
             if (isLoggedIn) {
                 ProjectXMapFragment projectXMapFragment = (ProjectXMapFragment) viewPagerAdapter.getItem(0);
                 Bundle fragmentBundle = new Bundle();
-                fragmentBundle.putBoolean(SHOW_DIALOG, true);
+                fragmentBundle.putBoolean(Constants.SHOW_DIALOG, true);
                 projectXMapFragment.setArguments(fragmentBundle);
             }
         }

@@ -19,7 +19,6 @@ import charlyn23.c4q.nyc.projectx.R;
 
 public class StatsFragment extends android.support.v4.app.Fragment {
     private EditText zipCode;
-    private String userInput;
     private int lastChildFragmentShown = 0;
     private static Fragment[] fragments;
     public static ViewPager innerViewPager;
@@ -97,7 +96,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
         }
 
         public void afterTextChanged(Editable s) {
-            userInput = zipCode.getText().toString();
+            String userInput = zipCode.getText().toString();
             if (userInput.length() == 5) {
                 ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
                 ((PieChartFragment) fragments[0]).setText(getResources().getString(R.string.total_instances));

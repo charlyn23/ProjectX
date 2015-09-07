@@ -4,9 +4,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import java.util.ArrayList;
 
-/**
- * Created by July on 8/30/15.
- */
 public class Data {
     private ArrayList<Entry> yValues;
     private ArrayList<BarEntry> yVals;
