@@ -41,7 +41,7 @@ public class Constants {
     public static final String SHAME_LATITUDE_COLUMN = "latitude";
     public static final String SHAME_LONGITUDE_COLUMN = "longitude";
     public static final String SHAME_ZIPCODE_COLUMN = "zipCode";
-    public static final String VERBAL_CAPITAL = "Verbal";
+    public static final String VERBAL_CAPITAL = "Catcall";
     public static final String PHYSICAL_CAPITAL = "Physical";
     public static final String VERBAL = "verbal";
     public static final String PHYSICAL = "physical";
