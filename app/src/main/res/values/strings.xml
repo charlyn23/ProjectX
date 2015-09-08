@@ -9,7 +9,7 @@
 
     <string name="facebook_app_id">893481480722861</string>
     <string name="snackbar_action">View</string>
-    <string name="new_shame_type">What type of shame?</string>
+    <string name="new_shame_type">What type of harassment?</string>
     <string name="next">Next</string>
     <string name="cancel">Cancel</string>
     <string name="back">Back</string>
@@ -27,7 +27,7 @@
     <string name="types_of_harassment">Types of harassment(%)</string>
 
     <array name="shame_types">
-        <item>Verbal</item>
+        <item>Catcall</item>
         <item>Physical</item>
         <item>Other</item>
     </array>
@@ -77,6 +77,7 @@
         <item>Because I\'m a person of color</item>
         <item>Because I\'m LGBTQ</item>
         <item>Because I\'m a minor</item>
+        <item>Because I\'m something not listed here</item>
     </array>
 
     <array name="filter_types">

@@ -5,6 +5,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -51,6 +53,8 @@ public class ShameDialogs {
     private Marker new_marker;
     private FloatingActionButton addShame;
     private String shameTime;
+    Toast toast;
+
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
         ParseObject.registerSubclass(Shame.class);
@@ -59,7 +63,10 @@ public class ShameDialogs {
         this.new_marker = new_marker;
         this.addShame = addShame;
 
+
+
         new MaterialDialog.Builder(context)
+//                .typeface("questrial.ttf", "questrial")
                 .title(R.string.new_shame_type)
                 .items(R.array.shame_types)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
@@ -67,7 +74,7 @@ public class ShameDialogs {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         if (which < 0) {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
-                        } else if (text.equals("Verbal")) {
+                        } else if (text.equals("Catcall")) {
                             shameTypeDialog(context, "verbal");
                             shameType = "verbal";
                         } else if (text.equals("Physical")) {
@@ -101,6 +108,7 @@ public class ShameDialogs {
                 })
                 .show();
     }
+
 
     public void shameTypeDialog(final Context context, final String type) {
         int content, items;
@@ -356,6 +364,9 @@ public class ShameDialogs {
                             if (which == 3) {
                                 group = "minor";
                             }
+                            if (which == 4) {
+                                group = "other;";
+                            }
 
                             newShame = new Shame();
                             newShame.put("shameTime", timestamp);
@@ -509,7 +520,18 @@ public class ShameDialogs {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
                             dialog.cancel();
-                            Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
+
+                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                            View layout = inflater.inflate(R.layout.custom_toast, null);
+
+                            toast = new Toast(context);
+                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                            toast.setDuration(Toast.LENGTH_LONG);
+                            toast.setView(layout);
+                            toast.show();
+
+//                            Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
                             addShame.setVisibility(View.INVISIBLE);
                         }
                     }
