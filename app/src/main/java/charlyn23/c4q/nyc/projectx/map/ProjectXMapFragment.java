@@ -39,6 +39,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -84,6 +85,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
     private Typeface questrial;
+
+
 
     @Nullable
     @Override
@@ -154,6 +157,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
 
+
         //populates map with shames that occurred within the last two months
         ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
         Calendar cal = Calendar.getInstance();
@@ -171,7 +175,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString(Constants.GROUP_COLUMN);
                         Log.i("Shames", String.valueOf(shame)); //pulling all shames - good
-                        map.addMarker(new MarkerOptions().position(location));
+                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
                         if (shame_group != null) {
                             switch (shame_group) {
                                 case Constants.WOMAN:
@@ -200,7 +204,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     //directs the user to SignUp Fragment if not logged in or to Dialogs if logged in when FAB is clicked
     public void reportShame() {
         boolean isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
-
         if (isLoggedIn) {
             ShameDialogs dialogs = new ShameDialogs();
             //gets location coordinates of the last dropped pin
@@ -221,8 +224,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (!isDropped) {
                 new_marker = map.addMarker(new MarkerOptions()
                         .title(point.latitude + " : " + point.longitude)
-                        .position(point)
-                        .draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
                 preferences.edit().putBoolean(Constants.MARKER_DROPPED, true).apply();
@@ -230,8 +232,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
                         .title(point.latitude + " : " + point.longitude)
-                        .position(point)
-                        .draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
             }
             if (map != null) {
@@ -245,10 +246,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     };
 
-    private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
+    protected GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(final Marker marker) {
             if (marker.equals(new_marker)) {
+
                 Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
@@ -264,16 +266,21 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             String readableTime = convertToReadableTime(time);
                             Snackbar.make(view, "A " + shame.getString(Constants.GROUP_COLUMN) + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
+
                                     .show();
+
                             Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
                             Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
                         }
-                    }
+                    };
                 });
-            }
-            return true;
         }
+            return true;
+
+        };
     };
+
+
 
     //converts timestamp to a readable format
     private String convertToReadableTime(String time) {
@@ -381,32 +388,33 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void populateMap(String group) {
         if (group.equals(Constants.WOMAN)) {
             for (LatLng loc : woman_loc) {
-                woman_marker = map.addMarker(new MarkerOptions().position(loc));
+
+                woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
         } else if (group.equals(Constants.MINOR)) {
             for (LatLng loc : minor_loc) {
-                minor_marker = map.addMarker(new MarkerOptions().position(loc));
+                minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
         } else if (group.equals(Constants.LGBTQ)) {
             for (LatLng loc : lgbtq_loc) {
-                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc));
+                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
         } else if (group.equals(Constants.POC)) {
             for (LatLng loc : poc_loc) {
-                POC_marker = map.addMarker(new MarkerOptions().position(loc));
+                POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
         } else {
             for (LatLng loc : woman_loc) {
-                woman_marker = map.addMarker(new MarkerOptions().position(loc));
+                woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
             for (LatLng loc : minor_loc) {
-                minor_marker = map.addMarker(new MarkerOptions().position(loc));
+                minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
             for (LatLng loc : lgbtq_loc) {
-                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc));
+                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
             for (LatLng loc : poc_loc) {
-                POC_marker = map.addMarker(new MarkerOptions().position(loc));
+                POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
             }
         }
     }

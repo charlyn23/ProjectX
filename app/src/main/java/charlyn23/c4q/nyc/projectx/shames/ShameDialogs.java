@@ -6,6 +6,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -44,6 +46,9 @@ public class ShameDialogs {
     private Marker newMarker;
     private FloatingActionButton addShame;
     private MarkerListener markerListener;
+    private String shameTime;
+    private Toast toast;
+
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker newMarker, final FloatingActionButton addShame) {
         ParseObject.registerSubclass(Shame.class);
@@ -51,6 +56,8 @@ public class ShameDialogs {
         this.longitude = longitude;
         this.newMarker = newMarker;
         this.addShame = addShame;
+
+
 
         new MaterialDialog.Builder(context)
                 .title(R.string.new_shame_type)
@@ -96,6 +103,7 @@ public class ShameDialogs {
                 })
                 .show();
     }
+
 
     public void shameTypeDialog(final Context context, final String type) {
         int content, items;
@@ -351,6 +359,9 @@ public class ShameDialogs {
                             if (which == 3) {
                                 group = Constants.MINOR;
                             }
+                            if (which == 4) {
+                                group = Constants.OTHER;
+                            }
 
                             newShame = new Shame();
                             newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
@@ -491,6 +502,10 @@ public class ShameDialogs {
                                     newShame.put(Constants.GROUP_COLUMN, Constants.MINOR);
                                     newShame.saveInBackground();
                                     break;
+                                case Constants.OTHER:
+                                    newShame.put(Constants.GROUP_COLUMN, Constants.OTHER);
+                                    newShame.saveInBackground();
+                                    break;
                             }
                         }
                         return true;
@@ -512,6 +527,16 @@ public class ShameDialogs {
                             }
                             SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
                             preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
+                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                            View layout = inflater.inflate(R.layout.custom_toast, null);
+
+                            toast = new Toast(context);
+                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                            toast.setDuration(Toast.LENGTH_LONG);
+                            toast.setView(layout);
+                            toast.show();
+                            addShame.setVisibility(View.INVISIBLE);
                         }
                     }
 
