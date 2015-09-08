@@ -42,7 +42,6 @@ public class ShameDetailActivity extends Activity {
         when.setText(getDate());
         where.setText(getAddress());
         shameDetail.setText(getIntent().getStringExtra("type"));
-
         Log.i("date and time " , getDate());
 
     }
@@ -77,10 +76,5 @@ public class ShameDetailActivity extends Activity {
         String minute = date.substring(11, 13);
 
         return month + "/" + day + "/" + year + "  " + hour + ":" + minute;
-
-
-
-
-
     }
 }

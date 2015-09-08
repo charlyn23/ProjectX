@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,8 +19,6 @@ import com.parse.*;
 
 import java.util.Arrays;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
@@ -41,10 +38,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.signup_fragment, container, false);
         preferences = getActivity().getSharedPreferences(MainActivity.SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null)
-            latLng = extras.getParcelable(MainActivity.LAT_LONG);
-
         //initializes views
         ImageButton fb = (ImageButton) view.findViewById(R.id.facebook_button);
         ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
@@ -56,12 +49,17 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
 
-        // set custom font
+        //sets custom font
         Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         TextView blazon = (TextView) view.findViewById(R.id.blazon);
         blazon.setTypeface(questrial);
 
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
     private void logInViaFB(final List<String> permissions) {
@@ -168,7 +166,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 logInViaFB(permissions);
                 break;
             case R.id.googleplus_button:
-                onSignInClicked();
+                logInViaGooglePlus();
                 break;
             case R.id.twitter_button:
                 logInViaTwitter();
@@ -176,7 +174,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void onSignInClicked() {
+    private void logInViaGooglePlus() {
         googleLogInClient.connect();
         Log.d("SignUpFragment", "Google+ login successful");
     }

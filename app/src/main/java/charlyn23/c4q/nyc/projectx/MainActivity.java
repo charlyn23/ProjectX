@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -17,18 +18,24 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.plus.Plus;
-import com.parse.ParseFacebookUtils;
-
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
 import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
+import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
-public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
     public static final String TAG = "c4q.nyc.projectx";
+    private static final String SHAME_REPORT = "shameReport";
     public static final String LAT_LONG = "latLong";
     public static final String LOGGED_IN = "isLoggedIn";
     public static final String LOGGED_IN_GOOGLE = "logIn_Google";
@@ -39,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +61,23 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
         setUpActionBar();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean b = extras.getBoolean(SHAME_REPORT);
+            if (b) {
+                long lat = preferences.getLong("y", 0);
+                long longi = preferences.getLong("u", 0);
+                latitude = Double.longBitsToDouble(lat);
+                longitude = Double.longBitsToDouble(longi);
+                ShameDialogs dialogs = new ShameDialogs();
+                dialogs.initialDialog(this, latitude, longitude, null, null);
+//                ProjectXMapFragment projectXMapFragment =(ProjectXMapFragment) viewPagerAdapter.getItem(0);
+//                SupportMapFragment mapFragment = (SupportMapFragment) projectXMapFragment.getChildFragmentManager().findFragmentById(R.id.map);
+//                mapFragment.getMapAsync(this);
+//                map = mapFragment.getMap();
+            }
+        }
     }
 
     protected synchronized void buildGoogleApiClient(Context context) {
@@ -66,15 +92,14 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("MainActivity", "onConnected: Google+");
-
         if (Plus.PeopleApi.getCurrentPerson(googleLogInClient) != null && !isLoggedIn_google) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGGED_IN, true).apply();
+            editor.putBoolean(Constants.LOGGED_IN, true).apply();
             isLoggedIn_google = true;
-            editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+            editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+                startActivity(intent);
         }
     }
 
@@ -101,19 +126,18 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constants.RC_SIGN_IN) {
             if (resultCode != RESULT_OK) {
                 Log.d("MainActivity", "resultCode =! OKAY");
             } else {
                 googleLogInClient.connect();
-
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(LOGGED_IN, true).apply();
-                editor.putBoolean(LOGGED_IN_GOOGLE, true).apply();
+                editor.putBoolean(Constants.LOGGED_IN, true).apply();
+                editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
                 Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(SHAME_REPORT, true);
                 startActivity(intent);
             }
         }
@@ -198,10 +222,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         intent.putExtra("longitude", longitude);
         intent.putExtra("type", type);
         startActivity(intent);
-
-//        TextView group = (TextView) shameDetailActivity.findViewById(R.id.group);
-//        group.setText(who);
-
     }
 
     @Override
@@ -209,5 +229,10 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onStop();
         googleLogInClient.disconnect();
         Log.d("MainActivity", "Client Disconnected onStop");
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
     }
 }
