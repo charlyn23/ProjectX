@@ -567,7 +567,7 @@ public class ShameDialogs {
 
         // TODO count > 10 && no geofence yet
         if (count > 10) {
-            //TODO add geofence HOW TO FIND CENTER?
+            //TODO add geofence HOW TO FIND CENTER? replace latlng
             newGeofence = new ShameGeofence();
             newGeofence.put("latitude", latitude);
             newGeofence.put("longitude", longitude);
