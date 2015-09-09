@@ -14,9 +14,6 @@ import java.util.Locale;
 
 import charlyn23.c4q.nyc.projectx.R;
 
-/**
- * Created by sufeizhao on 8/15/15.
- */
 public class ShameDetailActivity extends Activity {
 
     @Override
@@ -24,7 +21,7 @@ public class ShameDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shame_layout);
 
-        // set custom font
+        // sets custom font
         Typeface questrial = Typeface.createFromAsset(this.getAssets(), "questrial.ttf");
         TextView details = (TextView) findViewById(R.id.details_text);
         TextView group = (TextView) findViewById(R.id.who);
@@ -37,37 +34,49 @@ public class ShameDetailActivity extends Activity {
         when.setTypeface(questrial);
         shameDetail.setTypeface(questrial);
 
-        //Populate textfields
+        //Populates textfields
         group.setText(getIntent().getStringExtra("who"));
         when.setText(getDate());
         where.setText(getAddress());
         shameDetail.setText(getIntent().getStringExtra("type"));
-
         Log.i("date and time " , getDate());
 
     }
 
-        //Convert latlng to address
-        public String getAddress(){double lat = getIntent().getDoubleExtra("latitude", 0.0);
-        double longitude = getIntent().getDoubleExtra("longitude", 0.0);
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
+        //Converts latlng to address
+        public String getAddress(){
+            double lat = getIntent().getDoubleExtra("latitude", 0.0);
+            double longitude = getIntent().getDoubleExtra("longitude", 0.0);
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
 
-            String streetAddress = addresses.get(0).getAddressLine(0);
-            String city = addresses.get(0).getSubLocality();
-            String state = addresses.get(0).getAdminArea();
-            String zip = addresses.get(0).getPostalCode();
-            String country = addresses.get(0).getCountryName();
-            String address = streetAddress + " " + city + " " + state + " " + zip + " " + country;
-            return address;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                String streetAddress = addresses.get(0).getAddressLine(0);
+                String city = addresses.get(0).getSubLocality();
+                String state = addresses.get(0).getAdminArea();
+                String zip = addresses.get(0).getPostalCode();
+                String country = addresses.get(0).getCountryName();
+                if (zip == null) {
+                    zip = "";
+                }
+                if (city == null) {
+                    city = "";
+                }
+                if (streetAddress == null) {
+                    streetAddress = "";
+                }
+                if (state == null) {
+                    state = "";
+                }
+                String address = streetAddress + " " + city + " " + state + " " + zip + " " + country;
+                return address;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         return "";
     }
 
-    //convert timestamp to familiar date/time format
+    //converts timestamp to familiar date/time format
     private String getDate(){
         String date = getIntent().getStringExtra("when");
         String year = date.substring(0, 4);
@@ -77,10 +86,5 @@ public class ShameDetailActivity extends Activity {
         String minute = date.substring(11, 13);
 
         return month + "/" + day + "/" + year + "  " + hour + ":" + minute;
-
-
-
-
-
     }
 }

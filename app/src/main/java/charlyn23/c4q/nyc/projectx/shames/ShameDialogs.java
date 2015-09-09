@@ -1,11 +1,14 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
@@ -31,15 +34,6 @@ import charlyn23.c4q.nyc.projectx.map.ShameGeofence;
 
 
 public class ShameDialogs {
-    private static final String GROUP_COLUMN = "Group";
-    private static final String SHAME_TYPE_COLUMN = "shameType";
-    private static final String SHAME_FEEL_COLUMN = "shameFeel";
-    private static final String SHAME_DOING_COLUMN = "shameDoing";
-    private static final String VERBAL_SHAME_COLUMN = "verbalShame";
-    private static final String PHYSICAL_SHAME_COLUMN = "physicalShame";
-    private static final String OTHER_SHAME_COLUMN = "otherShame";
-    private static final String SHAME_TIME_COLUMN = "shameTime";
-
     private String shameType;
     private String verbalShame;
     private String physicalShame;
@@ -51,17 +45,20 @@ public class ShameDialogs {
     private double latitude;
     private double longitude;
     private Shame newShame;
-    private Marker new_marker;
+    private Marker newMarker;
     private FloatingActionButton addShame;
+    private MarkerListener markerListener;
     private String shameTime;
     private ShameGeofence newGeofence;
     public List<Shame> active_shames;
+    private Toast toast;
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame, List<Shame> active_shames) {
+
         ParseObject.registerSubclass(Shame.class);
         this.latitude = latitude;
         this.longitude = longitude;
-        this.new_marker = new_marker;
+        this.newMarker = newMarker;
         this.addShame = addShame;
         this.active_shames = active_shames;
 
@@ -73,15 +70,15 @@ public class ShameDialogs {
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         if (which < 0) {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
-                        } else if (text.equals("Verbal")) {
-                            shameTypeDialog(context, "verbal");
-                            shameType = "verbal";
-                        } else if (text.equals("Physical")) {
-                            shameTypeDialog(context, "physical");
-                            shameType = "physical";
+                        } else if (text.equals(Constants.VERBAL_CAPITAL)) {
+                            shameTypeDialog(context, Constants.VERBAL);
+                            shameType = Constants.VERBAL;
+                        } else if (text.equals(Constants.PHYSICAL_CAPITAL)) {
+                            shameTypeDialog(context, Constants.PHYSICAL);
+                            shameType = Constants.PHYSICAL;
                         } else {
-                            shameTypeDialog(context, "other");
-                            shameType = "other";
+                            shameTypeDialog(context, Constants.OTHER);
+                            shameType = Constants.OTHER;
                         }
                         return true;
                     }
@@ -101,26 +98,29 @@ public class ShameDialogs {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         dialog.cancel();
-                        new_marker.remove();
-                        addShame.setVisibility(View.INVISIBLE);
+                        if (newMarker != null) {
+                            newMarker.remove();
+                            addShame.setVisibility(View.INVISIBLE);
+                        }
                     }
                 })
                 .show();
     }
 
+
     public void shameTypeDialog(final Context context, final String type) {
         int content, items;
 
         switch (type) {
-            case "verbal":
+            case Constants.VERBAL:
                 content = R.string.verbal_shame;
                 items = R.array.verbal_types;
                 break;
-            case "physical":
+            case Constants.PHYSICAL:
                 content = R.string.physical_shame;
                 items = R.array.physical_types;
                 break;
-            case "other":
+            case Constants.OTHER:
                 content = R.string.other_shame;
                 items = R.array.other_types;
                 break;
@@ -141,34 +141,34 @@ public class ShameDialogs {
                         } else {
                             feelDialog(context, type, type_choice.toString());
 
-                            if (type.equals("verbal") && which == 0)
-                                verbalShame = "body comment";
-                            else if (type.equals("verbal") && which == 1)
-                                verbalShame = "vulgar";
-                            else if (type.equals("verbal") && which == 2)
-                                verbalShame = "creepy";
-                            else if (type.equals("verbal") && which == 3)
-                                verbalShame = "threatened";
-                            else if (type.equals("physical") && which == 0)
-                                physicalShame = "touch";
-                            else if (type.equals("physical") && which == 1)
-                                physicalShame = "hit";
-                            else if (type.equals("physical") && which == 2)
-                                physicalShame = "throw something";
-                            else if (type.equals("physical") && which == 3)
-                                physicalShame = "spit";
-                            else if (type.equals("physical") && which == 4)
-                                physicalShame = "pull at clothing";
-                            else if (type.equals("physical") && which == 5)
-                                physicalShame = "sexual assaulted";
-                            else if (type.equals("other") && which == 0)
-                                otherShame = "follow";
-                            else if (type.equals("other") && which == 1)
-                                otherShame = "expose themselves";
-                            else if (type.equals("other") && which == 2)
-                                otherShame = "masturbate";
-                            else if (type.equals("other") && which == 3)
-                                otherShame = "other";
+                            if (type.equals(Constants.VERBAL) && which == 0)
+                                verbalShame = Constants.BODY_COMMENT;
+                            else if (type.equals(Constants.VERBAL) && which == 1)
+                                verbalShame = Constants.VULGAR;
+                            else if (type.equals(Constants.VERBAL) && which == 2)
+                                verbalShame = Constants.CREEPY;
+                            else if (type.equals(Constants.VERBAL) && which == 3)
+                                verbalShame = Constants.THREATENED;
+                            else if (type.equals(Constants.PHYSICAL) && which == 0)
+                                physicalShame = Constants.TOUCH;
+                            else if (type.equals(Constants.PHYSICAL) && which == 1)
+                                physicalShame = Constants.HIT;
+                            else if (type.equals(Constants.PHYSICAL) && which == 2)
+                                physicalShame = Constants.THROW_SOMETHING;
+                            else if (type.equals(Constants.PHYSICAL) && which == 3)
+                                physicalShame = Constants.SPIT;
+                            else if (type.equals(Constants.PHYSICAL) && which == 4)
+                                physicalShame = Constants.PULL_AT_CLOTHING;
+                            else if (type.equals(Constants.PHYSICAL) && which == 5)
+                                physicalShame = Constants.SEXUALLY_ASSAULTED;
+                            else if (type.equals(Constants.OTHER) && which == 0)
+                                otherShame = Constants.FOLLOW;
+                            else if (type.equals(Constants.OTHER) && which == 1)
+                                otherShame = Constants.EXPOSE_THEMSELVES;
+                            else if (type.equals(Constants.OTHER) && which == 2)
+                                otherShame = Constants.MASTURBATE;
+                            else if (type.equals(Constants.OTHER) && which == 3)
+                                otherShame = Constants.OTHER;
                         }
 
                         return true;
@@ -188,7 +188,7 @@ public class ShameDialogs {
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        initialDialog(context, latitude, longitude, new_marker, addShame);
+                        initialDialog(context, latitude, longitude, newMarker, addShame, active_shames);
                         dialog.cancel();
                     }
                 })
@@ -208,15 +208,15 @@ public class ShameDialogs {
                             doingDialog(context, type, type_choice, feel.toString());
 
                             if (which == 0)
-                                shameFeel = "barely noticed";
+                                shameFeel = Constants.BARELY_NOTICED;
                             else if (which == 1)
-                                shameFeel = "angry";
+                                shameFeel = Constants.ANGRY;
                             else if (which == 2)
-                                shameFeel = "annoyed";
+                                shameFeel = Constants.ANNOYED;
                             else if (which == 3)
-                                shameFeel = "uneasy";
+                                shameFeel = Constants.UNEASY;
                             else if (which == 4)
-                                shameFeel = "scared";
+                                shameFeel = Constants.SCARED;
                         }
                         return true;
                     }
@@ -255,22 +255,22 @@ public class ShameDialogs {
                             whenDialog(context, type, type_choice, feel, doing.toString());
 
                             if (which == 0) {
-                                shameDoing = "walking";
+                                shameDoing = Constants.WALKING;
                             }
                             if (which == 1) {
-                                shameDoing = "jogging";
+                                shameDoing = Constants.JOGGING;
                             }
                             if (which == 2) {
-                                shameDoing = "biking";
+                                shameDoing = Constants.BIKING;
                             }
                             if (which == 3) {
-                                shameDoing = "waiting";
+                                shameDoing = Constants.WAITING;
                             }
                             if (which == 4) {
-                                shameDoing = "driving";
+                                shameDoing = Constants.DRIVING;
                             }
                             if (which == 5) {
-                                shameDoing = "other";
+                                shameDoing = Constants.OTHER;
                             }
                         }
                         return true;
@@ -350,150 +350,163 @@ public class ShameDialogs {
                         if (dialog.getSelectedIndex() < 0)
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
-                            if (which == 0)
-                                group = "woman";
-                            if (which == 1)
-                                group = "POC";
-                            if (which == 2)
-                                group = "LGBTQ";
-                            if (which == 3)
-                                group = "minor";
+                            if (which == 0) {
+                                group = Constants.WOMAN;
+                            }
+                            if (which == 1) {
+                                group = Constants.POC;
+                            }
+                            if (which == 2) {
+                                group = Constants.LGBTQ;
+                            }
+                            if (which == 3) {
+                                group = Constants.MINOR;
+                            }
+                            if (which == 4) {
+                                group = Constants.OTHER;
+                            }
 
                             newShame = new Shame();
-                            newShame.put("shameTime", timestamp);
-                            newShame.put("latitude", latitude);
-                            newShame.put("longitude", longitude);
+                            newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
+                            newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
+                            newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
                             try {
                                 String zipcode = getZipcode(context, latitude, longitude);
-                                newShame.put("zipCode", zipcode);
+                                if (zipcode != null) {
+                                    newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
                             switch (shameType) {
-                                case "verbal":
-                                    newShame.put(SHAME_TYPE_COLUMN, "verbal");
+                                case Constants.VERBAL:
+                                    newShame.put(Constants.SHAME_TYPE_COLUMN, Constants.VERBAL);
                                     newShame.saveInBackground();
-                                    if (verbalShame.equals("body comment")) {
-                                        newShame.put(VERBAL_SHAME_COLUMN, "body comment");
+                                    if (verbalShame.equals(Constants.BODY_COMMENT)) {
+                                        newShame.put(Constants.VERBAL_SHAME_COLUMN, Constants.BODY_COMMENT);
                                         newShame.saveInBackground();
-                                    } else if (verbalShame.equals("vulgar")) {
-                                        newShame.put(VERBAL_SHAME_COLUMN, "vulgar");
+                                    } else if (verbalShame.equals(Constants.VULGAR)) {
+                                        newShame.put(Constants.VERBAL_SHAME_COLUMN, Constants.VULGAR);
                                         newShame.saveInBackground();
-                                    } else if (verbalShame.equals("creepy")) {
-                                        newShame.put(VERBAL_SHAME_COLUMN, "creepy");
+                                    } else if (verbalShame.equals(Constants.CREEPY)) {
+                                        newShame.put(Constants.VERBAL_SHAME_COLUMN, Constants.CREEPY);
                                         newShame.saveInBackground();
                                     } else {
-                                        newShame.put(VERBAL_SHAME_COLUMN, "threatened");
+                                        newShame.put(Constants.VERBAL_SHAME_COLUMN, Constants.THREATENED);
                                         newShame.saveInBackground();
                                     }
                                     break;
-                                case "physical":
-                                    newShame.put(SHAME_TYPE_COLUMN, "physical");
+                                case Constants.PHYSICAL:
+                                    newShame.put(Constants.SHAME_TYPE_COLUMN, Constants.PHYSICAL);
                                     newShame.saveInBackground();
-                                    if (physicalShame.equals("touch")) {
-                                        newShame.put(PHYSICAL_SHAME_COLUMN, "touch");
-                                    } else if (physicalShame.equals("hit")) {
-                                        newShame.put(PHYSICAL_SHAME_COLUMN, "hit");
+                                    if (physicalShame.equals(Constants.TOUCH)) {
+                                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, Constants.TOUCH);
+                                    } else if (physicalShame.equals(Constants.HIT)) {
+                                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, Constants.HIT);
                                         newShame.saveInBackground();
-                                    } else if (physicalShame.equals("throw something")) {
-                                        newShame.put(PHYSICAL_SHAME_COLUMN, "throw something");
+                                    } else if (physicalShame.equals(Constants.THROW_SOMETHING)) {
+                                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, Constants.THROW_SOMETHING);
                                         newShame.saveInBackground();
-                                    } else if (physicalShame.equals("spit")) {
-                                        newShame.put(PHYSICAL_SHAME_COLUMN, "spit");
+                                    } else if (physicalShame.equals(Constants.SPIT)) {
+                                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, Constants.SPIT);
                                         newShame.saveInBackground();
-                                    } else if (physicalShame.equals("pull at clothing")) {
-                                        newShame.put(PHYSICAL_SHAME_COLUMN, "pull at clothing");
+                                    } else if (physicalShame.equals(Constants.PULL_AT_CLOTHING)) {
+                                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, Constants.PULL_AT_CLOTHING);
                                         newShame.saveInBackground();
                                     } else {
-                                        newShame.put(PHYSICAL_SHAME_COLUMN, "sexual assaulted");
+                                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, Constants.SEXUALLY_ASSAULTED);
                                         newShame.saveInBackground();
                                     }
                                     break;
-                                case "other":
-                                    newShame.put(SHAME_TYPE_COLUMN, "other");
+                                case Constants.OTHER:
+                                    newShame.put(Constants.SHAME_TYPE_COLUMN, Constants.OTHER);
                                     newShame.saveInBackground();
-                                    if (otherShame.equals("follow")) {
-                                        newShame.put(OTHER_SHAME_COLUMN, "follow");
+                                    if (otherShame.equals(Constants.FOLLOW)) {
+                                        newShame.put(Constants.OTHER_SHAME_COLUMN, Constants.FOLLOW);
                                         newShame.saveInBackground();
-                                    } else if (otherShame.equals("expose themselves")) {
-                                        newShame.put(OTHER_SHAME_COLUMN, "expose themselves");
+                                    } else if (otherShame.equals(Constants.EXPOSE_THEMSELVES)) {
+                                        newShame.put(Constants.OTHER_SHAME_COLUMN, Constants.EXPOSE_THEMSELVES);
                                         newShame.saveInBackground();
-                                    } else if (otherShame.equals("masturbate")) {
-                                        newShame.put(OTHER_SHAME_COLUMN, "masturbate");
+                                    } else if (otherShame.equals(Constants.MASTURBATE)) {
+                                        newShame.put(Constants.OTHER_SHAME_COLUMN, Constants.MASTURBATE);
                                         newShame.saveInBackground();
                                     } else {
-                                        newShame.put(OTHER_SHAME_COLUMN, "other");
+                                        newShame.put(Constants.OTHER_SHAME_COLUMN, Constants.OTHER);
                                         newShame.saveInBackground();
                                     }
                                     break;
                             }
 
                             switch (shameFeel) {
-                                case "barely noticed":
-                                    newShame.put(SHAME_FEEL_COLUMN, "barely noticed");
+                                case Constants.BARELY_NOTICED:
+                                    newShame.put(Constants.SHAME_FEEL_COLUMN, Constants.BARELY_NOTICED);
                                     newShame.saveInBackground();
                                     break;
-                                case "angry":
-                                    newShame.put(SHAME_FEEL_COLUMN, "angry");
+                                case Constants.ANGRY:
+                                    newShame.put(Constants.SHAME_FEEL_COLUMN, Constants.ANGRY);
                                     newShame.saveInBackground();
                                     break;
-                                case "annoyed":
-                                    newShame.put(SHAME_FEEL_COLUMN, "annoyed");
+                                case Constants.ANNOYED:
+                                    newShame.put(Constants.SHAME_FEEL_COLUMN, Constants.ANNOYED);
                                     newShame.saveInBackground();
                                     break;
-                                case "uneasy":
-                                    newShame.put(SHAME_FEEL_COLUMN, "uneasy");
+                                case Constants.UNEASY:
+                                    newShame.put(Constants.SHAME_FEEL_COLUMN, Constants.UNEASY);
                                     newShame.saveInBackground();
                                     break;
-                                case "scared":
-                                    newShame.put(SHAME_FEEL_COLUMN, "scared");
+                                case Constants.SCARED:
+                                    newShame.put(Constants.SHAME_FEEL_COLUMN, Constants.SCARED);
                                     newShame.saveInBackground();
                                     break;
                             }
 
                             switch (shameDoing) {
-                                case "walking":
-                                    newShame.put(SHAME_DOING_COLUMN, "walking");
+                                case Constants.WALKING:
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, Constants.WALKING);
                                     newShame.saveInBackground();
                                     break;
-                                case "jogging":
-                                    newShame.put(SHAME_DOING_COLUMN, "jogging");
+                                case Constants.JOGGING:
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, Constants.JOGGING);
                                     newShame.saveInBackground();
                                     break;
-                                case "biking":
-                                    newShame.put(SHAME_DOING_COLUMN, "biking");
+                                case Constants.BIKING:
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, Constants.BIKING);
                                     newShame.saveInBackground();
                                     break;
-                                case "waiting":
-                                    newShame.put(SHAME_DOING_COLUMN, "waiting");
+                                case Constants.WAITING:
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, Constants.WAITING);
                                     newShame.saveInBackground();
                                     break;
-                                case "driving":
-                                    newShame.put(SHAME_DOING_COLUMN, "driving");
+                                case Constants.DRIVING:
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, Constants.DRIVING);
                                     newShame.saveInBackground();
                                     break;
-                                case "other":
-                                    newShame.put(SHAME_DOING_COLUMN, "other");
+                                case Constants.OTHER:
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, Constants.OTHER);
                                     newShame.saveInBackground();
                                     break;
                             }
 
                             switch (group) {
-                                case "woman":
-                                    newShame.put(GROUP_COLUMN, "woman");
+                                case Constants.WOMAN:
+                                    newShame.put(Constants.GROUP_COLUMN, Constants.WOMAN);
                                     newShame.saveInBackground();
                                     break;
-                                case "POC":
-                                    newShame.put(GROUP_COLUMN, "POC");
+                                case Constants.POC:
+                                    newShame.put(Constants.GROUP_COLUMN, Constants.POC);
                                     newShame.saveInBackground();
                                     break;
-                                case "LGBTQ":
-                                    newShame.put(GROUP_COLUMN, "LGBTQ");
+                                case Constants.LGBTQ:
+                                    newShame.put(Constants.GROUP_COLUMN, Constants.LGBTQ);
                                     newShame.saveInBackground();
                                     break;
-                                case "minor":
-                                    newShame.put(GROUP_COLUMN, "minor");
+                                case Constants.MINOR:
+                                    newShame.put(Constants.GROUP_COLUMN, Constants.MINOR);
+                                    newShame.saveInBackground();
+                                    break;
+                                case Constants.OTHER:
+                                    newShame.put(Constants.GROUP_COLUMN, Constants.OTHER);
                                     newShame.saveInBackground();
                                     break;
                             }
@@ -511,7 +524,21 @@ public class ShameDialogs {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
                             dialog.cancel();
-                            Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, context.getString(R.string.shame_submitted), Toast.LENGTH_LONG).show();
+                            if (markerListener != null) {
+                                markerListener.setMarker(latitude, longitude);
+                            }
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
+                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                            View layout = inflater.inflate(R.layout.custom_toast, null);
+
+                            toast = new Toast(context);
+                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                            toast.setDuration(Toast.LENGTH_LONG);
+                            toast.setView(layout);
+                            toast.show();
                             addShame.setVisibility(View.INVISIBLE);
                             checkIfGeofenceIsNeeded();
                         }
@@ -558,5 +585,9 @@ public class ShameDialogs {
         addresses = geocoder.getFromLocation(latitude, longitude, 1);
         String postalCode = addresses.get(0).getPostalCode();
         return postalCode;
+    }
+
+    public void setListener(MarkerListener listener) {
+        markerListener = listener;
     }
 }

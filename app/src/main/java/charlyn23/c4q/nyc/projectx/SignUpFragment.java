@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -27,7 +26,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     public GoogleApiClient googleLogInClient;
     private View view;
     private SharedPreferences preferences = null;
-    private LatLng latLng;
 
     public SignUpFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
@@ -37,10 +35,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.signup_fragment, container, false);
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null)
-            latLng = extras.getParcelable(Constants.LAT_LONG);
 
         //initializes views
         ImageButton fb = (ImageButton) view.findViewById(R.id.facebook_button);
@@ -53,12 +47,17 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
 
-        // set custom font
+        //sets custom font
         Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         TextView blazon = (TextView) view.findViewById(R.id.blazon);
         blazon.setTypeface(questrial);
 
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
     }
 
     private void logInViaFB(final List<String> permissions) {
@@ -152,8 +151,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private void reportShame() {
         Intent intent = new Intent(view.getContext(), MainActivity.class);
-        intent.putExtra(Constants.SHAME_REPORT, true);
-        intent.putExtra(Constants.LAT_LONG, latLng);
+        intent.putExtra(Constants.SHOW_DIALOG, true);
         startActivity(intent);
     }
 
@@ -165,7 +163,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 logInViaFB(permissions);
                 break;
             case R.id.googleplus_button:
-                onSignInClicked();
+                logInViaGooglePlus();
                 break;
             case R.id.twitter_button:
                 logInViaTwitter();
@@ -173,7 +171,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void onSignInClicked() {
+    private void logInViaGooglePlus() {
         googleLogInClient.connect();
         Log.d("SignUpFragment", "Google+ login successful");
     }

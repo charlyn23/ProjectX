@@ -3,7 +3,9 @@ package charlyn23.c4q.nyc.projectx.shames;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
-@ParseClassName("Shame")
+import charlyn23.c4q.nyc.projectx.Constants;
+
+@ParseClassName(Constants.SHAME)
 public class Shame extends ParseObject {
     private float latitude;
     private float longitude;

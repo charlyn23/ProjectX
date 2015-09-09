@@ -28,7 +28,7 @@
                 app:border_width="2dp" />
 
             <TextView
-                android:id="@id/profile_text"
+                android:id="@+id/profile_text"
                 android:layout_width="0dp"
                 android:textColor="@color/text_white"
                 android:layout_height="match_parent"

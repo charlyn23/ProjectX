@@ -1,8 +1,5 @@
 package charlyn23.c4q.nyc.projectx.map;
 
-/**
- * Created by sufeizhao on 8/11/15.
- */
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;

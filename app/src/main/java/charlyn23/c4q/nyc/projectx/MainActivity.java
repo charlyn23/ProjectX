@@ -18,8 +18,6 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
-import com.parse.ParseFacebookUtils;
-
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
@@ -28,6 +26,7 @@ import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
 public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     private NoSwipeViewPager viewPager;
     private PagerAdapter viewPagerAdapter;
     public GoogleApiClient googleLogInClient;
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
         setUpActionBar();
+        getBundle();
     }
 
     protected synchronized void buildGoogleApiClient(Context context) {
@@ -60,13 +60,13 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("MainActivity", "onConnected: Google+");
-
         if (Plus.PeopleApi.getCurrentPerson(googleLogInClient) != null && !isLoggedIn_google) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(Constants.LOGGED_IN, true).apply();
             isLoggedIn_google = true;
             editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
             Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -95,19 +95,20 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constants.RC_SIGN_IN) {
             if (resultCode != RESULT_OK) {
                 Log.d("MainActivity", "resultCode =! OKAY");
             } else {
                 googleLogInClient.connect();
-
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean(Constants.LOGGED_IN, true).apply();
                 editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
+
                 Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+
                 Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(Constants.SHOW_DIALOG, true);
                 startActivity(intent);
             }
         }
@@ -192,10 +193,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         intent.putExtra("longitude", longitude);
         intent.putExtra("type", type);
         startActivity(intent);
-
-//        TextView group = (TextView) shameDetailActivity.findViewById(R.id.group);
-//        group.setText(who);
-
     }
 
     @Override
@@ -203,5 +200,18 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onStop();
         googleLogInClient.disconnect();
         Log.d("MainActivity", "Client Disconnected onStop");
+    }
+
+    private void getBundle() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean isLoggedIn = extras.getBoolean(Constants.SHOW_DIALOG);
+            if (isLoggedIn) {
+                ProjectXMapFragment projectXMapFragment = (ProjectXMapFragment) viewPagerAdapter.getItem(0);
+                Bundle fragmentBundle = new Bundle();
+                fragmentBundle.putBoolean(Constants.SHOW_DIALOG, true);
+                projectXMapFragment.setArguments(fragmentBundle);
+            }
+        }
     }
 }

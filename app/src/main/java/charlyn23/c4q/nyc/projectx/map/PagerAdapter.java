@@ -1,14 +1,9 @@
 package charlyn23.c4q.nyc.projectx.map;
 
-/**
- * Created by sufeizhao on 8/11/15.
- */
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-
 import com.google.android.gms.common.api.GoogleApiClient;
-
 import charlyn23.c4q.nyc.projectx.ProfileFragment;
 import charlyn23.c4q.nyc.projectx.SignUpFragment;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
@@ -53,5 +48,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return mNumOfTabs;
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 }
