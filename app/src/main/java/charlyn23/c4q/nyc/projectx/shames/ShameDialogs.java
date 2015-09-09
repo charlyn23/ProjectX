@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx.shames;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.map.ShameGeofence;
 
 
 public class ShameDialogs {
@@ -51,13 +54,16 @@ public class ShameDialogs {
     private Marker new_marker;
     private FloatingActionButton addShame;
     private String shameTime;
+    private ShameGeofence newGeofence;
+    public List<Shame> active_shames;
 
-    public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
+    public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame, List<Shame> active_shames) {
         ParseObject.registerSubclass(Shame.class);
         this.latitude = latitude;
         this.longitude = longitude;
         this.new_marker = new_marker;
         this.addShame = addShame;
+        this.active_shames = active_shames;
 
         new MaterialDialog.Builder(context)
                 .title(R.string.new_shame_type)
@@ -344,18 +350,14 @@ public class ShameDialogs {
                         if (dialog.getSelectedIndex() < 0)
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
-                            if (which == 0) {
+                            if (which == 0)
                                 group = "woman";
-                            }
-                            if (which == 1) {
+                            if (which == 1)
                                 group = "POC";
-                            }
-                            if (which == 2) {
+                            if (which == 2)
                                 group = "LGBTQ";
-                            }
-                            if (which == 3) {
+                            if (which == 3)
                                 group = "minor";
-                            }
 
                             newShame = new Shame();
                             newShame.put("shameTime", timestamp);
@@ -511,6 +513,7 @@ public class ShameDialogs {
                             dialog.cancel();
                             Toast.makeText(context, "Shame successfully submitted!", Toast.LENGTH_LONG).show();
                             addShame.setVisibility(View.INVISIBLE);
+                            checkIfGeofenceIsNeeded();
                         }
                     }
 
@@ -521,6 +524,30 @@ public class ShameDialogs {
                     }
                 })
                 .show();
+    }
+
+    public boolean checkIfGeofenceIsNeeded() {
+        float[] distance = new float[1];
+        int count = 0;
+
+        // todo create sql
+        // todo query only zipcode +- 2?
+        for (Shame shame : active_shames) {
+            Location.distanceBetween(latitude, longitude, shame.getLatitude(), shame.getLongitude(), distance);
+            if (distance[0] > Constants.GEOFENCE_RADIUS)
+                count++;
+        }
+
+        // TODO count > 10 && no geofence yet
+        if (count > 10) {
+            //TODO add geofence HOW TO FIND CENTER?
+            newGeofence = new ShameGeofence();
+            newGeofence.put("latitude", latitude);
+            newGeofence.put("longitude", longitude);
+            newGeofence.saveInBackground(); //what does this do?
+        }
+
+        return true;
     }
 
     private String getZipcode (Context context, double latitude, double longitude) throws IOException {

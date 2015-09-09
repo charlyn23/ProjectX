@@ -74,13 +74,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private boolean isDropped;
     private View view;
     private GoogleMap map;
-    private Marker new_marker, woman_marker, LGBTQ_marker, minor_marker, POC_marker;
+    private Marker new_marker;
     private FloatingActionButton addShame;
     private AutoCompleteTextView search;
     private LatLng searchLocation;
     private Button filter;
-    private double latitude, longitude;
-    private String date, who, type;
     private ViewPager viewPager;
     private OnDataPass dataPasser;
     private List<LatLng> woman_loc = new ArrayList<>(),
@@ -88,9 +86,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             lgbtq_loc = new ArrayList<>(),
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
-    private ArrayList<Geofence> geofenceList = new ArrayList<>();
+    public List<Shame> active_shames;
     public HashMap<String, LatLng> geofence_landmarks = new HashMap<>();
-    private PendingIntent mGeofencePendingIntent;
 
     @Nullable
     @Override
@@ -102,8 +99,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
         filter.setOnClickListener(filterClick);
-        geofenceList = populateGeofenceList();
-        mGeofencePendingIntent = null;
+        ArrayList<Geofence> geofenceList = populateGeofenceList();
+        PendingIntent mGeofencePendingIntent = null;
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
@@ -165,6 +162,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 if (e == null) {
 
                     for (Shame shame : shames) {
+                        active_shames = shames;
                         double latitude = shame.getDouble("latitude");
                         double longitude = shame.getDouble("longitude");
                         LatLng location = new LatLng(latitude, longitude);
@@ -206,7 +204,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 ShameDialogs dialogs = new ShameDialogs();
                 //gets location coordinates of the last dropped pin
                 Log.i(Constants.TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
-                dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
+                dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame, active_shames);
             } else {
                 viewPager.setCurrentItem(Constants.LOG_IN_VIEW);
                 Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
@@ -372,6 +370,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     };
 
     public void populateMap(String group) {
+        Marker woman_marker, LGBTQ_marker, minor_marker, POC_marker;
         if (group.equals("woman")) {
             for (LatLng loc : woman_loc) {
                 woman_marker = map.addMarker(new MarkerOptions().position(loc));
@@ -516,10 +515,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
             public void done(List<ShameGeofence> results, ParseException e) {
                 if (e == null) {
-
                     for (ShameGeofence geo : results) {
                         active_geofence.add(new Geofence.Builder()
-                                .setRequestId(geo.getString("stringID"))
+                                .setRequestId(geo.getString("objectId"))
                                 .setCircularRegion(
                                         geo.getDouble("latitude"),
                                         geo.getDouble("longitude"),
