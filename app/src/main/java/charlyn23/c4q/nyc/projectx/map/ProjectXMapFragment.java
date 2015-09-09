@@ -246,7 +246,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (!isDropped) {
                 new_marker = map.addMarker(new MarkerOptions()
                         .title(point.latitude + " : " + point.longitude)
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
                 preferences.edit().putBoolean(Constants.MARKER_DROPPED, true).apply();
@@ -254,7 +254,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
                         .title(point.latitude + " : " + point.longitude)
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
             }
             if (map != null) {

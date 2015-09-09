@@ -10,6 +10,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
 
+import charlyn23.c4q.nyc.projectx.map.ShameGeofence;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 /**
@@ -29,6 +30,7 @@ public class ProjectX extends Application {
 
         // Register Shame object
         ParseObject.registerSubclass(Shame.class);
+        ParseObject.registerSubclass(ShameGeofence.class);
 
         // initialization Parse, Twitter and Facebook keys
         Parse.initialize(this, Constants.YOUR_APPLICATION_ID, Constants.YOUR_CLIENT_KEY);
