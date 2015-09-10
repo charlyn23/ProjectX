@@ -68,7 +68,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
     private GoogleApiClient client;
-    private boolean isDropped;
+    private boolean isDropped, geofenceEnabled;
     private View view;
     private GoogleMap map;
     private Marker new_marker;
@@ -95,15 +95,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         setCustomFont();
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
         filter.setOnClickListener(filterClick);
-        ArrayList<Geofence> geofenceList = populateGeofenceList();
-        PendingIntent mGeofencePendingIntent = null;
         addShame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reportShame();
             }
         });
+
+        ArrayList<Geofence> geofenceList = new ArrayList<>();
+        if (geofenceEnabled)
+            geofenceList = populateGeofenceList();
+        PendingIntent mGeofencePendingIntent = null;
 
         // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());

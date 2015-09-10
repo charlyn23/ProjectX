@@ -42,16 +42,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Location"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
+                    style="@style/detail_title"/>
 
                 <TextView
                     android:id="@+id/where"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:text="Here"/>
+                    style="@style/detail_info"/>
             </LinearLayout>
 
             <LinearLayout
@@ -68,16 +65,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Time"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
+                    style="@style/detail_title"/>
 
                 <TextView
                     android:id="@+id/when"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:text="Here"/>
+                    style="@style/detail_info"/>
             </LinearLayout>
 
             <LinearLayout
@@ -94,16 +88,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Group Effected"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
+                    style="@style/detail_title"/>
 
                 <TextView
                     android:id="@+id/who"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:text="Here"/>
+                    style="@style/detail_info"/>
             </LinearLayout>
 
             <LinearLayout
@@ -120,16 +111,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="What Happened"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
+                    style="@style/detail_title"/>
 
                 <TextView
                     android:id="@+id/what"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:text="Here"/>
+                    style="@style/detail_info"/>
             </LinearLayout>
 
         </LinearLayout>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/banner"
+    android:background="@drawable/gradient"
     tools:context="charlyn23.c4q.nyc.projectx.SignUpFragment">
 
     <LinearLayout
@@ -19,7 +19,7 @@
             android:layout_height="159dp"
             android:layout_gravity="center"
             android:layout_marginBottom="25dp"
-            android:src="@drawable/marker"/>
+            android:src="@drawable/logo_large"/>
 
         <TextView
             android:id="@+id/blazon"
@@ -49,6 +49,7 @@
         android:layout_weight="0.5"
         android:text="Log in with"
         android:gravity="center|bottom"
+        android:textColor="@color/text_white"
         android:fontFamily="sans-serif-light"
         android:textSize="22sp"/>
 
