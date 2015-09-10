@@ -102,8 +102,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         addShame.setOnClickListener(addShameListener);
         filter.setOnClickListener(filterClick);
-        ArrayList<Geofence> geofenceList = populateGeofenceList();
-        PendingIntent mGeofencePendingIntent = null;
+        //ArrayList<Geofence> geofenceList = populateGeofenceList();
+        //PendingIntent mGeofencePendingIntent = null;
 
         addShame.setOnClickListener(new View.OnClickListener() {
             @Override

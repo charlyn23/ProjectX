@@ -1,5 +1,6 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -124,6 +125,7 @@ public class PieChartFragment extends Fragment {
         PieData data = new PieData(xVals, pieChartSet);
         data.setValueTextSize(13);
         data.setValueTypeface(questrial);
+        data.setValueTextColor(Color.WHITE);
         chart.setData(data);
         chart.highlightValues(null);
         chart.animateY(2000);

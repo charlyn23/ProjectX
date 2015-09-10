@@ -119,6 +119,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         yl.setDrawAxisLine(false);
         yl.setDrawGridLines(false);
         yl.setTypeface(questrial);
+        yl.setTextColor(Color.WHITE);
 
         YAxis yr = barChart.getAxisRight();
         yr.setAxisMaxValue(100);
@@ -127,6 +128,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         yr.setDrawGridLines(false);
         yr.setEnabled(false);
         yr.setTypeface(questrial);
+        yr.setTextColor(Color.WHITE);
 
         Legend l = barChart.getLegend();
         l.setEnabled(false);
@@ -145,6 +147,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(13);
         data.setValueTypeface(questrial);
+        data.setValueTextColor(Color.WHITE);
         barChart.setData(data);
         barChart.animateY(2000);
     }
