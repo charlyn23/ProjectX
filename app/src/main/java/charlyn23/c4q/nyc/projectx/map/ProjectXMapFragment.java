@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx.map;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -57,6 +58,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
+import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -86,6 +88,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
     public List<Shame> active_shames;
+    private PendingIntent mGeofencePendingIntent = null;
 
     @Nullable
     @Override
@@ -107,7 +110,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         ArrayList<Geofence> geofenceList = new ArrayList<>();
         if (geofenceEnabled)
             geofenceList = populateGeofenceList();
-        PendingIntent mGeofencePendingIntent = null;
+
 
         // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
@@ -534,6 +537,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         return active_geofence;
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(getActivity(), GeofenceIntentService.class);
+        return PendingIntent.getService(view.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public void initializeViews() {

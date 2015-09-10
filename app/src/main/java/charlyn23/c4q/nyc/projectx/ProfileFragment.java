@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
+
 import java.io.FileNotFoundException;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
@@ -61,17 +68,13 @@ public class ProfileFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        year = preferences.getInt(Constants.YEAR, 0);
         allow_geofence.setChecked(geofenceEnabled);
         allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    geofenceEnabled = true;
-                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
-                } else {
-                    geofenceEnabled = false;
-                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, false).apply();
-                }
+                geofenceEnabled = isChecked;
+                preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, isChecked).apply();
             }
         });
 
@@ -81,6 +84,27 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 changeProfileImage();
+            }
+        });
+
+        // set age
+        age.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() != 4) {
+                    YoYo.with(Techniques.Shake).playOn(age);
+                    age.setTextColor(getResources().getColor(R.color.primary));
+                }
             }
         });
 
@@ -196,6 +220,40 @@ public class ProfileFragment extends Fragment {
         queer.setTypeface(questrial);
         logout.setTypeface(questrial);
         allow_geofence.setTypeface(questrial);
+    }
+
+    public void setUpToggleButtons() {
+        man.setChecked(preferences.getBoolean(Constants.MAN, false));
+        woman.setChecked(preferences.getBoolean(Constants.WOMAN, false));
+        lesbian.setChecked(preferences.getBoolean(Constants.LESBIAN, false));
+        poc.setChecked(preferences.getBoolean(Constants.POC, false));
+        trans.setChecked(preferences.getBoolean(Constants.TRANS, false));
+        gay.setChecked(preferences.getBoolean(Constants.GAY, false));
+        bisexual.setChecked(preferences.getBoolean(Constants.BISEXUAL, false));
+        minor.setChecked(preferences.getBoolean(Constants.MINOR, false));
+        queer.setChecked(preferences.getBoolean(Constants.QUEER, false));
+        man.setOnCheckedChangeListener(new toggleListener(Constants.MAN));
+        woman.setOnCheckedChangeListener(new toggleListener(Constants.WOMAN));
+        lesbian.setOnCheckedChangeListener(new toggleListener(Constants.LESBIAN));
+        poc.setOnCheckedChangeListener(new toggleListener(Constants.POC));
+        trans.setOnCheckedChangeListener(new toggleListener(Constants.TRANS));
+        gay.setOnCheckedChangeListener(new toggleListener(Constants.GAY));
+        bisexual.setOnCheckedChangeListener(new toggleListener(Constants.BISEXUAL));
+        minor.setOnCheckedChangeListener(new toggleListener(Constants.MINOR));
+        queer.setOnCheckedChangeListener(new toggleListener(Constants.QUEER));
+    }
+
+    public class toggleListener implements CompoundButton.OnCheckedChangeListener {
+        String button;
+
+        public toggleListener(String button) {
+            this.button = button;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            preferences.edit().putBoolean(button, isChecked).apply();
+        }
     }
 
     @Override
