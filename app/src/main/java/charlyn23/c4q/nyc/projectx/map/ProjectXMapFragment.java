@@ -282,7 +282,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void setMarker(double latitude, double longitude) {
-        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
     }
 
     public class snackbarDetail implements View.OnClickListener {
