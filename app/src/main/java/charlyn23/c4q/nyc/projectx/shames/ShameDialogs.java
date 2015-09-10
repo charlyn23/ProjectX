@@ -532,15 +532,15 @@ public class ShameDialogs {
                             preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                            View layout = inflater.inflate(R.layout.custom_toast, null);
-
-                            toast = new Toast(context);
-                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            toast.setView(layout);
-                            toast.show();
-                            addShame.setVisibility(View.INVISIBLE);
-                            checkIfGeofenceIsNeeded();
+//                            View layout = inflater.inflate(R.layout.custom_toast, null);
+//
+//                            toast = new Toast(context);
+//                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+//                            toast.setDuration(Toast.LENGTH_LONG);
+//                            toast.setView(layout);
+//                            toast.show();
+//                            addShame.setVisibility(View.INVISIBLE);
+                            //checkIfGeofenceIsNeeded();
                         }
                     }
 

@@ -21,6 +21,9 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+
+import net.steamcrafted.materialiconlib.MaterialIconView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class PieChartFragment extends Fragment {
         View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
-        ImageView next = (ImageView) view.findViewById(R.id.next);
+        MaterialIconView next = (MaterialIconView) view.findViewById(R.id.next);
         numInstances = (TextView) view.findViewById(R.id.instances);
         numInstances.setTypeface(questrial);
         configPieChart(pieChart);
@@ -103,7 +106,7 @@ public class PieChartFragment extends Fragment {
         chart.setDrawCenterText(true);
         chart.setDrawHoleEnabled(true);
         chart.setDescription("");
-        chart.setRotationAngle(0);
+        chart.setRotationAngle(90);
         chart.setRotationEnabled(true);
         chart.setUsePercentValues(true);
         chart.setCenterText(getString(R.string.types_of_harassment));

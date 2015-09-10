@@ -287,7 +287,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             String readableTime = convertToReadableTime(time);
                             Snackbar.make(view, "A " + shame.getString(Constants.GROUP_COLUMN) + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
-
                                     .show();
 
                             Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
@@ -313,7 +312,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void setMarker(double latitude, double longitude) {
         map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-        new_marker.remove();
+        if (new_marker != null) {
+            new_marker.remove();
+        }
     }
 
     public class snackbarDetail implements View.OnClickListener {
