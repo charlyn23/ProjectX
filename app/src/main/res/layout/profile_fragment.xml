@@ -23,7 +23,7 @@
                 android:layout_height="200dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/logo"
+                android:src="@drawable/marker"
                 app:border_color="@color/accent"
                 app:border_width="2dp" />
 

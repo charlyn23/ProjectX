@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -118,8 +117,7 @@ public class ProfileFragment extends Fragment {
         if (bm != null) {
             profileImage.setImageBitmap(bm);
         } else {
-            //TODO: put default profile image
-            profileImage.setImageResource(R.drawable.logo);
+            profileImage.setImageResource(R.drawable.logo_large);
         }
     }
 
