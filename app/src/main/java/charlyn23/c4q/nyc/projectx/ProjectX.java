@@ -43,6 +43,5 @@ public class ProjectX extends Application {
         // Optionally to enable public read access.
         defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
-
     }
 }

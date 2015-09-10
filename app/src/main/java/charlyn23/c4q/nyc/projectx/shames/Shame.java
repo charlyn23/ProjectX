@@ -16,11 +16,12 @@ public class Shame extends ParseObject {
     private int shameFeel;
     private int shameDoing;
     private long shameTime;
+    private String user;
     private String group;
 
     public Shame(float latitude, float longitude, int shameType, int verbalShame,
                  int physicalShame, int otherShame, int shameFeel, int shameDoing,
-                 long shameTime, String group){
+                 long shameTime, String group, String user){
         this.latitude = latitude;
         this.longitude = longitude;
         this.shameType = shameType;
@@ -31,6 +32,7 @@ public class Shame extends ParseObject {
         this.shameDoing = shameDoing;
         this.shameTime = shameTime;
         this.group = group;
+        this.user = user;
     }
 
     public Shame(){
@@ -115,5 +117,13 @@ public class Shame extends ParseObject {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

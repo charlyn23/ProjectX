@@ -51,13 +51,10 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
@@ -89,8 +86,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
     public List<Shame> active_shames;
-    public HashMap<String, LatLng> geofence_landmarks = new HashMap<>();
-
 
     @Nullable
     @Override
@@ -100,11 +95,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         setCustomFont();
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        addShame.setOnClickListener(addShameListener);
         filter.setOnClickListener(filterClick);
-        //ArrayList<Geofence> geofenceList = populateGeofenceList();
-        //PendingIntent mGeofencePendingIntent = null;
-
+        ArrayList<Geofence> geofenceList = populateGeofenceList();
+        PendingIntent mGeofencePendingIntent = null;
         addShame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +127,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-
         addSubmittedMarker();
         return view;
     }
@@ -157,10 +149,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.getUiSettings().setRotateGesturesEnabled(true);
         map.setMyLocationEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         map.setOnMapClickListener(mapClickListener);
         map.setOnMarkerClickListener(markerClickListener);
-
 
         //populates map with shames that occurred within the last two months
         ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
@@ -178,8 +168,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         double longitude = shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN);
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString(Constants.GROUP_COLUMN);
-                        Log.i("Shames", String.valueOf(shame)); //pulling all shames - good
-                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                         if (shame_group != null) {
                             switch (shame_group) {
                                 case Constants.WOMAN:
@@ -205,30 +194,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
     }
 
-    //directs the user to SignUp Fragment if not logged in yet or to Map Fragment if logged in when FAB is clicked
-    private View.OnClickListener addShameListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            boolean isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
-
-            if (isLoggedIn) {
-                ShameDialogs dialogs = new ShameDialogs();
-                //gets location coordinates of the last dropped pin
-                Log.i(Constants.TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
-                dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame, active_shames);
-            } else {
-                viewPager.setCurrentItem(Constants.LOG_IN_VIEW);
-                Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-
     //directs the user to SignUp Fragment if not logged in or to Dialogs if logged in when FAB is clicked
     public void reportShame() {
         boolean isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
         if (isLoggedIn) {
             ShameDialogs dialogs = new ShameDialogs();
-            //gets location coordinates of the last dropped pin
             Log.i(Constants.TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
             dialogs.setListener(this);
             dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame, active_shames);
@@ -245,26 +215,24 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             map.setOnMyLocationChangeListener(null);
             if (!isDropped) {
                 new_marker = map.addMarker(new MarkerOptions()
-                        .title(point.latitude + " : " + point.longitude)
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
                 preferences.edit().putBoolean(Constants.MARKER_DROPPED, true).apply();
             } else {
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
-                        .title(point.latitude + " : " + point.longitude)
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
             }
-            if (map != null) {
+
+            if (map != null)
                 map.animateCamera(CameraUpdateFactory.newLatLng(point));
-            }
             long lat = Double.doubleToRawLongBits(new_marker.getPosition().latitude);
             long longit = Double.doubleToRawLongBits(new_marker.getPosition().longitude);
-            preferences.edit().putBoolean(Constants.IS_DROPPED, true).commit();
-            preferences.edit().putLong(Constants.LATITUDE_PREFERENCE, lat).commit();
-            preferences.edit().putLong(Constants.LONGITUDE_PREFERENCE, longit).commit();
+            preferences.edit().putBoolean(Constants.IS_DROPPED, true).apply();
+            preferences.edit().putLong(Constants.LATITUDE_PREFERENCE, lat).apply();
+            preferences.edit().putLong(Constants.LONGITUDE_PREFERENCE, longit).apply();
         }
     };
 
@@ -272,7 +240,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public boolean onMarkerClick(final Marker marker) {
             if (marker.equals(new_marker)) {
-                Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Click \"+\" to report new activity", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
             } else {
@@ -285,8 +253,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         if (shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
                             String time = shame.getString(Constants.SHAME_TIME_COLUMN);
                             String readableTime = convertToReadableTime(time);
+                            String when = shame.getString(Constants.SHAME_TIME_COLUMN);
+                            String who = shame.getString(Constants.GROUP_COLUMN);
+                            String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
                             Snackbar.make(view, "A " + shame.getString(Constants.GROUP_COLUMN) + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
-                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
+                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude, type, who, when))
                                     .show();
 
                             Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
@@ -311,42 +282,28 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void setMarker(double latitude, double longitude) {
-        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-        if (new_marker != null) {
-            new_marker.remove();
-        }
+//        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
+//        if (new_marker != null) {
+//            new_marker.remove();
+//        }
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
     }
 
     public class snackbarDetail implements View.OnClickListener {
         double lat, lon;
+        String type, who, when;
 
-        public snackbarDetail(double lat, double lon) {
+        public snackbarDetail(double lat, double lon, String type, String who, String when) {
             this.lat = lat;
             this.lon = lon;
+            this.type = type;
+            this.who = who;
+            this.when = when;
         }
 
         @Override
         public void onClick(View v) {
-            ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
-            query.whereEqualTo(Constants.SHAME_LATITUDE_COLUMN, lat);
-            query.whereEqualTo(Constants.SHAME_LONGITUDE_COLUMN, lon);
-            query.getFirstInBackground(new GetCallback<Shame>() {
-                @Override
-                public void done(Shame shame, ParseException e) {
-                    if (shame == null) {
-                        Log.e("shame", "not found");
-                    } else {
-                        Log.d("shame : ", String.valueOf(shame));
-                        String when = shame.getString(Constants.SHAME_TIME_COLUMN);
-
-                        String who = shame.getString(Constants.GROUP_COLUMN);
-                        String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
-
-                        Log.i("shame data", lat + " " + lon + " " + when + " " + who + " " + type);
-                        dataPasser.onDataPass(lat, lon, when, who, type);
-                    }
-                }
-            });
+            dataPasser.onDataPass(lat, lon, when, who, type);
         }
     }
 
@@ -400,43 +357,48 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         public void onNegative(MaterialDialog dialog) {
                             dialog.cancel();
                         }
-                    })
-                    .show();
+                    }).show();
         }
     };
 
     public void populateMap(String group) {
         Marker woman_marker, LGBTQ_marker, minor_marker, POC_marker;
 
-        if (group.equals(Constants.WOMAN)) {
-            for (LatLng loc : woman_loc) {
-                woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-        } else if (group.equals(Constants.MINOR)) {
-            for (LatLng loc : minor_loc) {
-                minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-        } else if (group.equals(Constants.LGBTQ)) {
-            for (LatLng loc : lgbtq_loc) {
-                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-        } else if (group.equals(Constants.POC)) {
-            for (LatLng loc : poc_loc) {
-                POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-        } else {
-            for (LatLng loc : woman_loc) {
-                woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-            for (LatLng loc : minor_loc) {
-                minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-            for (LatLng loc : lgbtq_loc) {
-                LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
-            for (LatLng loc : poc_loc) {
-                POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-            }
+        switch (group) {
+            case Constants.WOMAN:
+                for (LatLng loc : woman_loc) {
+                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                break;
+            case Constants.MINOR:
+                for (LatLng loc : minor_loc) {
+                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                break;
+            case Constants.LGBTQ:
+                for (LatLng loc : lgbtq_loc) {
+                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                break;
+            case Constants.POC:
+                for (LatLng loc : poc_loc) {
+                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                break;
+            default:
+                for (LatLng loc : woman_loc) {
+                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                for (LatLng loc : minor_loc) {
+                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                for (LatLng loc : lgbtq_loc) {
+                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                for (LatLng loc : poc_loc) {
+                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                }
+                break;
         }
     }
 
@@ -508,10 +470,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setViewToLocation(LatLng latLng) {
-        if (map != null) {
-            // Sets initial view to current location
+        if (map != null)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
-        }
     }
 
     // Called when the Activity could not connect to Google Play services and the auto manager
@@ -528,9 +488,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         try {
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
+            if (address == null)
                 return null;
-            }
+
             Address location = address.get(0);
             location.getLatitude();
             location.getLongitude();
@@ -546,18 +506,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public ArrayList<Geofence> populateGeofenceList() {
         final ArrayList<Geofence> active_geofence = new ArrayList<>();
 
-        // get geofence  landmarks from db
+        // get geofence landmarks from db
         // TODO save landmarks locally, query by current location
-        ParseQuery<ShameGeofence> db_geofences = ParseQuery.getQuery("Geofence");
+        ParseQuery<ShameGeofence> db_geofences = ParseQuery.getQuery(Constants.GEOFENCE_NAME);
         db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
             public void done(List<ShameGeofence> results, ParseException e) {
                 if (e == null) {
                     for (ShameGeofence geo : results) {
                         active_geofence.add(new Geofence.Builder()
-                                .setRequestId(geo.getString("objectId"))
+                                .setRequestId(geo.getObjectId())
                                 .setCircularRegion(
-                                        geo.getDouble("latitude"),
-                                        geo.getDouble("longitude"),
+                                        geo.getDouble(Constants.SHAME_LATITUDE_COLUMN),
+                                        geo.getDouble(Constants.SHAME_LONGITUDE_COLUMN),
                                         Constants.GEOFENCE_RADIUS // 1 mile
                                 )
                                 .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)

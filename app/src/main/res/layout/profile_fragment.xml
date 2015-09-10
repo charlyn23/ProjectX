@@ -23,7 +23,7 @@
                 android:layout_height="200dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/logo"
+                android:src="@drawable/marker"
                 app:border_color="@color/accent"
                 app:border_width="2dp" />
 
@@ -37,29 +37,6 @@
                 android:gravity="bottom|right"
                 android:text="Profile"
                 android:textSize="40sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:padding="28dp"
-            android:layout_height="0dp"
-            android:layout_weight="2">
-
-            <TextView
-                android:id="@id/profile_text"
-                style="@style/profile_text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Submitted Shames" />
-
-            <ListView
-                android:id="@+id/shame_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
 
         </LinearLayout>
 
@@ -132,7 +109,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/profile_text"
+                android:id="@id/profile_text"
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
