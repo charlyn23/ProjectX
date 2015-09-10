@@ -16,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,6 +136,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         addSubmittedMarker();
+
+        if (view != null) {
+            ViewGroup parent = (ViewGroup)view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.map_fragment, container, false);
+        }
+        catch (InflateException e) {
+            //map is already there, just return view as it is
+        }
         return view;
     }
 
@@ -279,7 +292,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     };
 
-    //converts timestamp to a readable format
+    //converts timestamp to a readable format for snackbar display
     private String convertToReadableTime(String time) {
         String year = time.substring(0, 4);
         String month = time.substring(5, 6);
@@ -309,6 +322,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public void onClick(View v) {
             dataPasser.onDataPass(lat, lon, when, who, type);
+
+
         }
     }
 
