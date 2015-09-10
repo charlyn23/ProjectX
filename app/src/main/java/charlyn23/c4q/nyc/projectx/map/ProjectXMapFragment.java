@@ -272,7 +272,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public boolean onMarkerClick(final Marker marker) {
             if (marker.equals(new_marker)) {
-
                 Snackbar.make(view, "Click the \"+\" to report new shame", Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
@@ -313,7 +312,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void setMarker(double latitude, double longitude) {
-        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
+        new_marker.remove();
     }
 
     public class snackbarDetail implements View.OnClickListener {
