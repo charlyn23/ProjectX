@@ -179,11 +179,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     @Override
     public void onDataPass(double latitude, double longitude, String when, String who, String type) {
         Log.d("onDataPass", String.valueOf(latitude) + " " + String.valueOf(longitude) + " " + when + " " + who + " " + type);
-        double shameLat = latitude;
-        double shameLong = longitude;
-        String shameDateTime = when;
-        String shameGroup = who;
-        String shameType = type;
 
         Intent intent = new Intent(MainActivity.this, ShameDetailActivity.class);
         intent.putExtra("when", when);

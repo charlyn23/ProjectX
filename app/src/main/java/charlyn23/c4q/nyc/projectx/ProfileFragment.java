@@ -39,7 +39,6 @@ public class ProfileFragment extends Fragment {
     private TextView profile;
     private ToggleButton man, woman, lesbian, poc, gay, trans, bisexual, minor, queer;
     private EditText age;
-    private ListView shame_list;
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
     private int year;
@@ -63,6 +62,19 @@ public class ProfileFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        allow_geofence.setChecked(geofenceEnabled);
+        allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    geofenceEnabled = true;
+                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
+                } else {
+                    geofenceEnabled = false;
+                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, false).apply();
+                }
+            }
+        });
 
         // set profile image
         setProfileImage();
@@ -72,22 +84,6 @@ public class ProfileFragment extends Fragment {
                 changeProfileImage();
             }
         });
-
-        allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    geofenceEnabled = true;
-                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
-                } else {
-                    geofenceEnabled = true;
-                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
-                }
-            }
-        });
-
-        // TODO populate listview of shames
-        // IF list == 0, print "You haven't submitted any shames yet!"
 
         return view;
     }
@@ -184,7 +180,6 @@ public class ProfileFragment extends Fragment {
         age = (EditText) view.findViewById(R.id.year);
         allow_geofence = (CheckBox) view.findViewById(R.id.enable_geofence);
         logout = (Button) view.findViewById(R.id.log_out);
-        shame_list = (ListView) view.findViewById(R.id.shame_list);
         profileImage = (CircleImageView) view.findViewById(R.id.profile_image);
     }
 
