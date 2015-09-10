@@ -168,7 +168,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         double longitude = shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN);
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString(Constants.GROUP_COLUMN);
-                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                         if (shame_group != null) {
                             switch (shame_group) {
                                 case Constants.WOMAN:
@@ -215,14 +215,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             map.setOnMyLocationChangeListener(null);
             if (!isDropped) {
                 new_marker = map.addMarker(new MarkerOptions()
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
                 preferences.edit().putBoolean(Constants.MARKER_DROPPED, true).apply();
             } else {
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
             }
 
@@ -253,8 +253,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         if (shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
                             String time = shame.getString(Constants.SHAME_TIME_COLUMN);
                             String readableTime = convertToReadableTime(time);
+                            String when = shame.getString(Constants.SHAME_TIME_COLUMN);
+                            String who = shame.getString(Constants.GROUP_COLUMN);
+                            String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
                             Snackbar.make(view, "A " + shame.getString(Constants.GROUP_COLUMN) + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
-                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude))
+                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude, type, who, when))
                                     .show();
 
                             Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
@@ -284,33 +287,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     public class snackbarDetail implements View.OnClickListener {
         double lat, lon;
+        String type, who, when;
 
-        public snackbarDetail(double lat, double lon) {
+        public snackbarDetail(double lat, double lon, String type, String who, String when) {
             this.lat = lat;
             this.lon = lon;
+            this.type = type;
+            this.who = who;
+            this.when = when;
         }
 
         @Override
         public void onClick(View v) {
-            ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
-            query.whereEqualTo(Constants.SHAME_LATITUDE_COLUMN, lat);
-            query.whereEqualTo(Constants.SHAME_LONGITUDE_COLUMN, lon);
-            query.getFirstInBackground(new GetCallback<Shame>() {
-                @Override
-                public void done(Shame shame, ParseException e) {
-                    if (shame == null) {
-                        Log.e("shame", "not found");
-                    } else {
-                        Log.d("shame : ", String.valueOf(shame));
-                        String when = shame.getString(Constants.SHAME_TIME_COLUMN);
-                        String who = shame.getString(Constants.GROUP_COLUMN);
-                        String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
-
-                        Log.i("shame data", lat + " " + lon + " " + when + " " + who + " " + type);
-                        dataPasser.onDataPass(lat, lon, when, who, type);
-                    }
-                }
-            });
+            dataPasser.onDataPass(lat, lon, when, who, type);
         }
     }
 
@@ -374,36 +363,36 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         switch (group) {
             case Constants.WOMAN:
                 for (LatLng loc : woman_loc) {
-                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 break;
             case Constants.MINOR:
                 for (LatLng loc : minor_loc) {
-                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 break;
             case Constants.LGBTQ:
                 for (LatLng loc : lgbtq_loc) {
-                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 break;
             case Constants.POC:
                 for (LatLng loc : poc_loc) {
-                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 break;
             default:
                 for (LatLng loc : woman_loc) {
-                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 for (LatLng loc : minor_loc) {
-                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 for (LatLng loc : lgbtq_loc) {
-                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 for (LatLng loc : poc_loc) {
-                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.logo)));
+                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                 }
                 break;
         }
