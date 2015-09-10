@@ -251,12 +251,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     @Override
                     public void done(Shame shame, ParseException e) {
                         if (shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
-                            String time = shame.getString(Constants.SHAME_TIME_COLUMN);
-                            String readableTime = convertToReadableTime(time);
+                            String readableTime = convertToReadableTime(shame.getString(Constants.SHAME_TIME_COLUMN));
                             String when = shame.getString(Constants.SHAME_TIME_COLUMN);
                             String who = shame.getString(Constants.GROUP_COLUMN);
                             String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
-                            Snackbar.make(view, "A " + shame.getString(Constants.GROUP_COLUMN) + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
+                            String group = shame.getString(Constants.GROUP_COLUMN);
+                            if (group.equals(Constants.OTHER))
+                                group = Constants.PERSON;
+                            Snackbar.make(view, "A " + group + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude, type, who, when))
                                     .show();
 

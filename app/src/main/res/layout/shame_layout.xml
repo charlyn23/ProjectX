@@ -14,7 +14,7 @@
         android:textSize="35dp"
         android:gravity="right|bottom"
         android:padding="20dp"
-        android:background="@drawable/banner" />
+        android:background="@drawable/polygons" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -55,5 +55,5 @@ public class Constants {
     public static final String POC = "POC";
     public static final String LGBTQ = "LGBTQ";
     public static final String MINOR = "Minor";
-    public static final String USER_COLUMN = "user";
+    public static final String PERSON = "person";
 }
