@@ -19,8 +19,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.maps.model.Marker;
-import com.parse.ParseException;
-import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -336,7 +334,7 @@ public class ShameDialogs {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
                             dialog.cancel();
-                            Toast.makeText(context, context.getString(R.string.shame_submitted), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(context, context.getString(R.string.shame_submitted), Toast.LENGTH_LONG).show();
                             if (markerListener != null)
                                 markerListener.setMarker(latitude, longitude);
 
