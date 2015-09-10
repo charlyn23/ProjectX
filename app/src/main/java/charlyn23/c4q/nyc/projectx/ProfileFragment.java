@@ -158,6 +158,7 @@ public class ProfileFragment extends Fragment {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(Constants.LOGGED_IN, false).apply();
             editor.putBoolean(Constants.LOGGED_IN_GOOGLE, false).apply();
+            editor.putBoolean(Constants.IS_DROPPED, false).apply();
             Toast.makeText(view.getContext(), getString(R.string.log_out_toast), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             startActivity(intent);

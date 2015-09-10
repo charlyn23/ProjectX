@@ -350,7 +350,7 @@ public class ShameDialogs {
                             toast.setView(layout);
                             toast.show();
                             addShame.setVisibility(View.INVISIBLE);
-                            checkIfGeofenceIsNeeded();
+                            //checkIfGeofenceIsNeeded();
                         }
                     }
 
