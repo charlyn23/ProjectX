@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,12 +17,15 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -33,6 +38,7 @@ import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
+import java.util.Calendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,7 +74,7 @@ public class ProfileFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
-        year = preferences.getInt(Constants.YEAR, 0);
+        setUpToggleButtons();
         allow_geofence.setChecked(geofenceEnabled);
         allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -88,22 +94,24 @@ public class ProfileFragment extends Fragment {
         });
 
         // set age
-        age.addTextChangedListener(new TextWatcher() {
+        year = preferences.getInt(Constants.YEAR, 0);
+        if (year != 0)
+            age.setText(year);
+        age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() != 4) {
-                    YoYo.with(Techniques.Shake).playOn(age);
-                    age.setTextColor(getResources().getColor(R.color.primary));
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    Calendar cal = Calendar.getInstance();
+                    if (age.getText().toString().equals("")) ;
+                    else if (Integer.valueOf(age.getText().toString()) < 1900 ||
+                            Integer.valueOf(age.getText().toString()) > cal.get(Calendar.YEAR)) {
+                        YoYo.with(Techniques.Shake).playOn(age);
+                        age.setTextColor(Color.RED);
+                        age.setError("Invalid Birth Year", getResources().getDrawable(R.drawable.what));
+                    } else {
+                        preferences.edit().putInt(Constants.YEAR, Integer.valueOf(age.getText().toString())).apply();
+                        age.setTextColor(Color.BLACK);
+                    }
                 }
             }
         });
