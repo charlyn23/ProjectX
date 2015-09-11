@@ -40,9 +40,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
-    private ViewGroup rootView;
-    private TabLayout tabs;
-
     Scene firstScene;
     Scene secondScene;
     Fade fadeTransition;
@@ -51,15 +48,13 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        rootView = (ViewGroup) findViewById(R.id.scene_root);
-        TabLayout tabs = (TabLayout)findViewById(R.id.tabs);
-        NoSwipeViewPager viewPager = (NoSwipeViewPager)findViewById(R.id.view_pager);
+        setUpActionBar();
+
         ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.scene_root);
         fadeTransition = new Fade();
 
         firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
         secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.shame_layout, this);
-
 
         preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
@@ -67,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
-        setUpActionBar();
         getBundle();
     }
 
