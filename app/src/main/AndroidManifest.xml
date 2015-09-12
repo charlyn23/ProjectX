@@ -24,6 +24,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:uiOptions="splitActionBarWhenNarrow"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,9 +39,11 @@
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="landscape"
             android:label="@string/app_name" />
 
         <activity android:name=".shames.ShameDetailActivity"
+            android:screenOrientation="landscape"
             android:label="@string/shame_activity"/>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"

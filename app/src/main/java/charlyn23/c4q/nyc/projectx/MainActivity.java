@@ -69,10 +69,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.shame_layout, this);
 
         getBundle();
-
-
-
-
     }
 
 

@@ -151,10 +151,10 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
         Calendar cal = Calendar.getInstance();
         Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        float distance = currentLocation.distanceTo(lastFetchLocation);
-        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
-                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
-            fetchGeofenceFromParse(cal);
+//        float distance = currentLocation.distanceTo(lastFetchLocation);
+//        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
+//                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
+//            fetchGeofenceFromParse(cal);
 
         addSubmittedMarker();
         if (view != null) {
