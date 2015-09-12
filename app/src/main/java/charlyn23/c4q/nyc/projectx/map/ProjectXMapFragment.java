@@ -208,21 +208,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                                 map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
                             }
 
-
                             switch (shame_group) {
                                 case Constants.WOMAN:
-
-
-//                                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
-
                                     woman_loc.add(location);
 
                                     break;
                                 case Constants.MINOR:
-//                                    map.addMarker(new MarkerOptionsrkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
-
                                     minor_loc.add(location);
-
                                     break;
                                 case Constants.POC:
                                     poc_loc.add(location);
