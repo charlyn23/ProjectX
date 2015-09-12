@@ -68,7 +68,8 @@ public class ShameDialogs {
                             shameTypeDialog(context);
                         }
                         return true;
-                    }})
+                    }
+                })
                 .positiveText(R.string.next)
                 .negativeText(R.string.cancel)
                 .autoDismiss(false)
@@ -171,7 +172,8 @@ public class ShameDialogs {
                             doingDialog(context);
                         }
                         return true;
-                    }})
+                    }
+                })
                 .autoDismiss(false)
                 .positiveText(R.string.next)
                 .negativeText(R.string.back)
@@ -340,7 +342,6 @@ public class ShameDialogs {
                             SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
                             preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
                             View layout = inflater.inflate(R.layout.custom_toast, null);
 
                             toast = new Toast(context);
@@ -348,13 +349,17 @@ public class ShameDialogs {
                             toast.setDuration(Toast.LENGTH_LONG);
                             toast.setView(layout);
                             toast.show();
+
                             if (addShame != null) {
                                 addShame.setVisibility(View.INVISIBLE);
                             } else {
                                 Log.e("error", "foo");
                             }
-                            checkIfGeofenceIsNeeded();
-                            }
+
+                            // only check geofence checkbox has been checked
+//                            if (enableGeofence)
+//                                checkIfGeofenceIsNeeded();
+                        }
                     }
 
                     @Override
@@ -365,11 +370,10 @@ public class ShameDialogs {
                 }).show();
     }
 
-    public boolean checkIfGeofenceIsNeeded() {
+    public void checkIfGeofenceIsNeeded() {
         float[] distance = new float[1];
         int count = 0;
 
-        // todo create sql
         // todo query only zipcode +- 2?
 //        for (Shame shame : active_shames) {
 //            Location.distanceBetween(latitude, longitude, shame.getLatitude(), shame.getLongitude(), distance);
@@ -377,15 +381,14 @@ public class ShameDialogs {
 //                count++;
 //        }
 
-        // TODO count > 10 && no geofence yet
+        // TODO && no geofence yet
         if (count > 10) {
             ShameGeofence newGeofence = new ShameGeofence();
-            newGeofence.put("latitude", latitude);
-            newGeofence.put("longitude", longitude);
-            newGeofence.saveInBackground(); //what does this do?
+            newGeofence.put(Constants.GROUP_COLUMN, group);
+            newGeofence.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
+            newGeofence.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
+            newGeofence.saveInBackground();
         }
-
-        return true;
     }
 
     private String getZipcode(Context context, double latitude, double longitude) throws IOException {
