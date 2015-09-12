@@ -192,21 +192,21 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         Log.i("groups", String.valueOf(shame_group)); //good
 //                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                         if (shame_group != null) {
-//                            if (shame_group.equals("woman")) {
-//                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
-//                            }
-//                            if (shame_group.equals("minor")) {
-//                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
-//                            }
-//                            if (shame_group.equals("LGBTQ")) {
-//                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
-//                            }
-//                            if (shame_group.equals("POC")) {
-//                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
-//                            }
-//                            if (shame_group.equals("Other")) {
-//                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
-//                            }
+                            if (shame_group.equals("woman")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
+                            }
+                            if (shame_group.equals("minor")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
+                            }
+                            if (shame_group.equals("LGBTQ")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
+                            }
+                            if (shame_group.equals("POC")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
+                            }
+                            if (shame_group.equals("Other")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
+                            }
 
 
                             switch (shame_group) {
