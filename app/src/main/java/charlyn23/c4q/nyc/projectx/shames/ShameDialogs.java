@@ -349,7 +349,9 @@ public class ShameDialogs {
                             toast.setDuration(Toast.LENGTH_LONG);
                             toast.setView(layout);
                             toast.show();
-                            addShame.setVisibility(View.INVISIBLE);
+                            if (addShame != null) {
+                                addShame.setVisibility(View.INVISIBLE);
+                            }
                             //checkIfGeofenceIsNeeded();
                         }
                     }

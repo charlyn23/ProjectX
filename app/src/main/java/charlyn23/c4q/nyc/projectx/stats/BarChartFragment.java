@@ -1,12 +1,16 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
@@ -34,16 +38,19 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     private BarChart barChart;
     private Typeface questrial;
     private TextView numInstances;
+    private TextView header;
+    private CardView card;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bar_chart_fragment, container, false);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        TextView description = (TextView) view.findViewById(R.id.description);
+        card = (CardView) view.findViewById(R.id.card_view);
+        header = (TextView) view.findViewById(R.id.chart_header);
         ImageView next = (ImageView) view.findViewById(R.id.back);
         numInstances = (TextView) view.findViewById(R.id.instances);
         numInstances.setTypeface(questrial);
-        description.setTypeface(questrial);
+        header.setTypeface(questrial);
         numInstances.setTypeface(questrial);
         barChart = (BarChart) view.findViewById(R.id.bar_chart);
 
@@ -89,7 +96,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                     numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
 
                     if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
-                        numInstances.setText("");
+                        setAlert();
                     }
                     Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
                     setDataBarChart(data.getyVals(), data.getxValues());
@@ -104,6 +111,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         barChart.setDrawValueAboveBar(false);
         barChart.setDescription("");
         barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
 
         XAxis xl = barChart.getXAxis();
         xl.setTextSize(13);
@@ -147,7 +155,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(13);
         data.setValueTypeface(questrial);
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
         barChart.setData(data);
         barChart.animateY(2000);
     }
@@ -291,7 +299,28 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         return data;
     }
 
-    public void setText(String text) {
+    //sets the default card style
+    public void configureCardStyle(String text)
+    {
         numInstances.setText(text);
+        header.setText(getString(R.string.groups));
+        header.setGravity(Gravity.TOP);
+        header.setGravity(Gravity.CENTER);
+        header.setPadding(0, 0, 0, 0);
+        header.setTextColor(getResources().getColor(R.color.text_black));
+        barChart.setVisibility(View.VISIBLE);
+    }
+
+    //changes the card style when harassment is not reported in the area
+    private void setAlert() {
+        barChart.setVisibility(View.GONE);
+        card.setCardBackgroundColor(Color.parseColor("#ffffff"));
+        card.setRadius(10);
+        header.setText("NO instances of harassment have been reported in this area");
+        header.setTextColor(getResources().getColor(R.color.primary_dark));
+        header.setTextSize(17);
+        header.setGravity(Gravity.CENTER);
+        header.setPadding(55, 200, 55, 0);
+        numInstances.setText("");
     }
 }

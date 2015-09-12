@@ -1,14 +1,17 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +27,15 @@ import com.parse.ParseQuery;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
+
+import static android.view.Gravity.*;
 
 public class PieChartFragment extends Fragment {
     private PieChart pieChart;
@@ -37,13 +44,18 @@ public class PieChartFragment extends Fragment {
     private int numOtherShame;
     private Typeface questrial;
     private TextView numInstances;
+    private LinearLayout parent;
+    private TextView header;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        parent = (LinearLayout) view.findViewById(R.id.parent_layout);
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         MaterialIconView next = (MaterialIconView) view.findViewById(R.id.next);
+        header = (TextView) view.findViewById(R.id.chart_header);
+        header.setTypeface(questrial);
         numInstances = (TextView) view.findViewById(R.id.instances);
         numInstances.setTypeface(questrial);
         configPieChart(pieChart);
@@ -87,10 +99,9 @@ public class PieChartFragment extends Fragment {
                     int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
                     numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
 
-                    //displays a toast when there are no cases reported in the area
+                    //displays a text when there are no cases reported in the area
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.no_cases), Toast.LENGTH_LONG).show();
-                        numInstances.setText("");
+                        setAlert();
                     }
                     Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
                     setDataPieChart(pieChart, data.getyValues(), data.getxValues());
@@ -109,9 +120,6 @@ public class PieChartFragment extends Fragment {
         chart.setRotationAngle(90);
         chart.setRotationEnabled(true);
         chart.setUsePercentValues(true);
-        chart.setCenterText(getString(R.string.types_of_harassment));
-        chart.setCenterTextTypeface(questrial);
-        chart.setCenterTextSize(17);
         return chart;
     }
 
@@ -198,7 +206,26 @@ public class PieChartFragment extends Fragment {
         return data;
     }
 
-    public void setText(String text) {
+    //sets the default card style
+    public void configureCardStyle(String text)
+    {
         numInstances.setText(text);
+        header.setText(getString(R.string.types_of_harassment));
+        header.setGravity(Gravity.TOP);
+        header.setGravity(Gravity.CENTER);
+        header.setPadding(0, 0, 0, 0);
+        header.setTextColor(getResources().getColor(R.color.text_black));
+        pieChart.setVisibility(View.VISIBLE);
+    }
+
+    //changes the card style when harassment is not reported in the area
+    private void setAlert() {
+        header.setText("NO instances of harassment have been reported in this area");
+        header.setTypeface(questrial);
+        header.setTextColor(getResources().getColor(R.color.primary_dark));
+        header.setTextSize(17);
+        header.setGravity(Gravity.CENTER);
+        header.setPadding(55, 200, 55, 0);
+        numInstances.setText("");
     }
 }

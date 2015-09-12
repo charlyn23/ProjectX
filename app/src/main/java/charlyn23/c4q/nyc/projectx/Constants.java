@@ -1,8 +1,6 @@
 package charlyn23.c4q.nyc.projectx;
 
-/**
- * Created by sufeizhao on 9/2/15.
- */
+
 public class Constants {
     public static final String YOUR_APPLICATION_ID = "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O";
     public static final String YOUR_CLIENT_KEY = "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq";
