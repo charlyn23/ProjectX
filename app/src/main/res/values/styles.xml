@@ -12,7 +12,7 @@
         <item name="md_negative_color">@color/primary_dark</item>
         <item name="md_widget_color">@color/primary</item>
         <item name="md_item_color">@color/secondary_text</item>
-        <item name="android:textColorSecondary">#BDBDBD</item>
+        <item name="android:textColorSecondary">#727272</item>
         <item name="colorAccent">@color/primary_dark</item>
         <item name="android:divider">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
