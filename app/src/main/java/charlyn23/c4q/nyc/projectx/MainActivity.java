@@ -41,14 +41,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
-    private ViewGroup rootView;
-    private TabLayout tabs;
-    private RefWatcher refWatcher;
-    private Application ProjectX;
-
-    Scene firstScene;
-    Scene secondScene;
-    Fade fadeTransition;
+    private Scene firstScene;
+    private Scene secondScene;
+    private Fade fadeTransition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,12 +211,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         intent.putExtra("type", type);
 
         startActivity(intent);
-    }
-
-    private static void toggleVisibility(View view) {
-               boolean isVisible = view.getVisibility() == View.VISIBLE;
-        view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
-
     }
 
     @Override
