@@ -56,7 +56,6 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -336,7 +335,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 //        if (new_marker != null) {
 //            new_marker.remove();
 //        }
-        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)).draggable(true));
     }
 
     @Override
