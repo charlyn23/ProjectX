@@ -28,7 +28,7 @@ public class ProjectX extends Application {
         super.onCreate();
 
         //LeakCanaray
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
 
 
         // Initialization of  Crash Reporting.
@@ -54,10 +54,10 @@ public class ProjectX extends Application {
         ParseACL.setDefaultACL(defaultACL, true);
     }
 
-    public static RefWatcher getRefWatcher(Context context) {
-        ProjectX application = (ProjectX) context.getApplicationContext();
-        return application.refWatcher;
-    }
+//    public static RefWatcher getRefWatcher(Context context) {
+//        ProjectX application = (ProjectX) context.getApplicationContext();
+//        return application.refWatcher;
+//    }
 
 
 }

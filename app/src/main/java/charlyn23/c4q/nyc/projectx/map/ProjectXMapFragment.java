@@ -66,7 +66,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
-import charlyn23.c4q.nyc.projectx.ProjectX;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -77,7 +76,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
     private GoogleApiClient client;
-    private boolean isDropped;
+    private boolean isDropped, geofenceEnabled;
     private View view;
     private GoogleMap map;
     private Marker new_marker;
@@ -105,7 +104,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         setCustomFont();
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        boolean geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
 
         identity = new HashMap<>();
         identity.put(Constants.MAN, preferences.getBoolean(Constants.MAN, false));
@@ -147,14 +146,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 return handled;
             }
         });
-
-        // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
-        Calendar cal = Calendar.getInstance();
-        Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-//        float distance = currentLocation.distanceTo(lastFetchLocation);
-//        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
-//                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
-//            fetchGeofenceFromParse(cal);
 
         addSubmittedMarker();
         if (view != null) {
@@ -537,6 +528,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             });
         else
             setViewToLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+
+        // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
+        Calendar cal = Calendar.getInstance();
+        Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+        float distance = currentLocation.distanceTo(lastFetchLocation);
+        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
+                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
+            fetchGeofenceFromParse(cal);
     }
 
     private LocationRequest createLocationRequest() {
@@ -720,12 +719,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public abstract class BaseFragment extends Fragment {
-
-        @Override public void onDestroy() {
-            super.onDestroy();
-            RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
-            refWatcher.watch(this);
-        }
-    }
+//    public abstract class BaseFragment extends Fragment {
+//
+//        @Override public void onDestroy() {
+//            super.onDestroy();
+//            RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+//            refWatcher.watch(this);
+//        }
+//    }
 }

@@ -285,9 +285,9 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    @Override public void onDestroy() {
-        super.onDestroy();
-        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
-        refWatcher.watch(this);
-    }
+//    @Override public void onDestroy() {
+//        super.onDestroy();
+//        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+//        refWatcher.watch(this);
+//    }
 }
