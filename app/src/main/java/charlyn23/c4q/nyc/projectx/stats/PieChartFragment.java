@@ -225,7 +225,7 @@ public class PieChartFragment extends Fragment {
         header.setTextColor(getResources().getColor(R.color.primary_dark));
         header.setTextSize(17);
         header.setGravity(Gravity.CENTER);
-        header.setPadding(55, 200, 55, 0);
+        header.setPadding(55, 290, 55, 0);
         numInstances.setText("");
     }
 }
