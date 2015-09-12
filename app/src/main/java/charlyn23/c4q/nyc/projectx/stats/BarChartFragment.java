@@ -157,7 +157,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         data.setValueTypeface(questrial);
         data.setValueTextColor(Color.BLACK);
         barChart.setData(data);
-        barChart.animateY(2000);
     }
 
     //animates the cart

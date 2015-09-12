@@ -139,7 +139,6 @@ public class PieChartFragment extends Fragment {
         data.setValueTextColor(Color.WHITE);
         chart.setData(data);
         chart.highlightValues(null);
-        chart.animateY(2000);
 
         //disables the legend
         Legend l = chart.getLegend();

@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
 
-    
+
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
     }
@@ -284,9 +284,9 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    @Override public void onDestroy() {
-        super.onDestroy();
-        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
-        refWatcher.watch(this);
-    }
+//    @Override public void onDestroy() {
+//        super.onDestroy();
+//        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+//        refWatcher.watch(this);
+//    }
 }
