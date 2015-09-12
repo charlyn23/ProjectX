@@ -69,7 +69,8 @@ public class ShameDialogs {
                             shameTypeDialog(context);
                         }
                         return true;
-                    }})
+                    }
+                })
                 .positiveText(R.string.next)
                 .negativeText(R.string.cancel)
                 .autoDismiss(false)
@@ -172,7 +173,8 @@ public class ShameDialogs {
                             doingDialog(context);
                         }
                         return true;
-                    }})
+                    }
+                })
                 .autoDismiss(false)
                 .positiveText(R.string.next)
                 .negativeText(R.string.back)
@@ -349,7 +351,10 @@ public class ShameDialogs {
                             toast.setView(layout);
                             toast.show();
                             addShame.setVisibility(View.INVISIBLE);
-                            checkIfGeofenceIsNeeded();
+
+                            // only check geofence checkbox has been checked
+                            if (enableGeofence)
+                                checkIfGeofenceIsNeeded();
                         }
                     }
 
@@ -361,7 +366,7 @@ public class ShameDialogs {
                 }).show();
     }
 
-    public boolean checkIfGeofenceIsNeeded() {
+    public void checkIfGeofenceIsNeeded() {
         float[] distance = new float[1];
         int count = 0;
 
@@ -378,10 +383,8 @@ public class ShameDialogs {
             ShameGeofence newGeofence = new ShameGeofence();
             newGeofence.put("latitude", latitude);
             newGeofence.put("longitude", longitude);
-            newGeofence.saveInBackground(); //what does this do?
+            newGeofence.saveInBackground(); 
         }
-
-        return true;
     }
 
     private String getZipcode(Context context, double latitude, double longitude) throws IOException {
