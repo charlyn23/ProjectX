@@ -25,12 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.io.FileNotFoundException;
 
@@ -48,6 +48,8 @@ public class ProfileFragment extends Fragment {
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
     private int year;
+
+
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
@@ -272,5 +274,11 @@ public class ProfileFragment extends Fragment {
             googleLogInClient.disconnect();
             Log.d("ProfileFragment", "Disconnected onStop");
         }
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 }

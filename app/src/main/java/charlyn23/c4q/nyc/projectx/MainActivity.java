@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.annotation.TargetApi;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -13,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.transition.Scene;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,6 +25,7 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
+import com.squareup.leakcanary.RefWatcher;
 
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     private SharedPreferences preferences;
     private ViewGroup rootView;
     private TabLayout tabs;
+    private RefWatcher refWatcher;
+    private Application ProjectX;
+
 
     Scene firstScene;
     Scene secondScene;
@@ -69,7 +73,12 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         buildGoogleApiClient(this);
         setUpActionBar();
         getBundle();
+
+
+
+
     }
+
 
     protected synchronized void buildGoogleApiClient(Context context) {
         googleLogInClient = new GoogleApiClient.Builder(context)
@@ -213,14 +222,13 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         intent.putExtra("latitude", latitude);
         intent.putExtra("longitude", longitude);
         intent.putExtra("type", type);
-        TransitionManager.go(firstScene, fadeTransition);
 
         startActivity(intent);
     }
 
     private static void toggleVisibility(View view) {
                boolean isVisible = view.getVisibility() == View.VISIBLE;
-               view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
+        view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
 
     }
 

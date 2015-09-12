@@ -52,6 +52,7 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
-import charlyn23.c4q.nyc.projectx.MainActivity;
+import charlyn23.c4q.nyc.projectx.ProjectX;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -188,22 +189,44 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         double longitude = shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN);
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString(Constants.GROUP_COLUMN);
-                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                        Log.i("groups", String.valueOf(shame_group)); //good
+//                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                         if (shame_group != null) {
-                            switch (shame_group) {
-                                case Constants.WOMAN:
-                                    woman_loc.add(location);
-                                    break;
-                                case Constants.MINOR:
-                                    minor_loc.add(location);
-                                    break;
-                                case Constants.POC:
-                                    poc_loc.add(location);
-                                    break;
-                                case Constants.LGBTQ:
-                                    lgbtq_loc.add(location);
-                                    break;
+                            if (shame_group.equals("woman")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
                             }
+                            if (shame_group.equals("minor")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
+                            }
+                            if (shame_group.equals("LGBTQ")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
+                            }
+                            if (shame_group.equals("POC")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
+                            }
+                            if (shame_group.equals("Other")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
+                            }
+
+
+//                            switch (shame_group) {
+//                                case Constants.WOMAN:
+//                                    map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
+//
+////                                    woman_loc.add(location);
+//
+//                                    break;
+//                                case Constants.MINOR:
+//                                    minor_loc.add(location);
+//
+//                                    break;
+//                                case Constants.POC:
+//                                    poc_loc.add(location);
+//                                    break;
+//                                case Constants.LGBTQ:
+//                                    lgbtq_loc.add(location);
+//                                    break;
+//                            }
                         }
                     }
                     Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
@@ -235,14 +258,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             map.setOnMyLocationChangeListener(null);
             if (!isDropped) {
                 new_marker = map.addMarker(new MarkerOptions()
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
                 preferences.edit().putBoolean(Constants.MARKER_DROPPED, true).apply();
             } else {
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
             }
 
@@ -356,7 +379,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                                     populateMap(Constants.POC);
                                 else if (which[i] == 2)
                                     populateMap(Constants.LGBTQ);
-                                else if (which[i] == 0)
+                                else if (which[i] == 3)
                                     populateMap(Constants.MINOR);
 
                                 filter_chosen[i] = which[i];
@@ -384,39 +407,40 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void populateMap(String group) {
         Marker woman_marker, LGBTQ_marker, minor_marker, POC_marker;
 
+
         switch (group) {
             case Constants.WOMAN:
                 for (LatLng loc : woman_loc) {
-                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
                 }
                 break;
             case Constants.MINOR:
                 for (LatLng loc : minor_loc) {
-                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
                 }
                 break;
             case Constants.LGBTQ:
                 for (LatLng loc : lgbtq_loc) {
-                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
                 }
                 break;
             case Constants.POC:
                 for (LatLng loc : poc_loc) {
-                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
                 }
                 break;
             default:
                 for (LatLng loc : woman_loc) {
-                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
                 }
                 for (LatLng loc : minor_loc) {
-                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
                 }
                 for (LatLng loc : lgbtq_loc) {
-                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
                 }
                 for (LatLng loc : poc_loc) {
-                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
                 }
                 break;
         }
@@ -618,6 +642,15 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 dialogs.initialDialog(getActivity(), latitude, longitude, null, null, active_shames);
                 bundle.clear();
             }
+        }
+    }
+
+    public abstract class BaseFragment extends Fragment {
+
+        @Override public void onDestroy() {
+            super.onDestroy();
+            RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+            refWatcher.watch(this);
         }
     }
 }
