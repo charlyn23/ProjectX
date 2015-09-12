@@ -54,9 +54,11 @@ public class StatsFragment extends android.support.v4.app.Fragment {
                 zipCode.setText("");
                 ((PieChartFragment) fragments[0]).getCountShameTypes("");
                 ((PieChartFragment) fragments[0]).configureCardStyle(getResources().getString(R.string.total_instances));
+                ((PieChartFragment) fragments[0]).animateChart();
 
                 ((BarChartFragment) fragments[1]).getCountGroups("");
                 ((BarChartFragment) fragments[1]).configureCardStyle(getResources().getString(R.string.total_instances));
+                ((BarChartFragment) fragments[1]).animateChart();
             }
         });
 

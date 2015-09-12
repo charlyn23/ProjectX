@@ -139,7 +139,6 @@ public class PieChartFragment extends Fragment {
         data.setValueTextColor(Color.WHITE);
         chart.setData(data);
         chart.highlightValues(null);
-        chart.animateY(2000);
 
         //disables the legend
         Legend l = chart.getLegend();
@@ -215,6 +214,7 @@ public class PieChartFragment extends Fragment {
         header.setGravity(Gravity.CENTER);
         header.setPadding(0, 0, 0, 0);
         header.setTextColor(getResources().getColor(R.color.text_black));
+        header.setPadding(0, 9, 0, 0);
         pieChart.setVisibility(View.VISIBLE);
     }
 
