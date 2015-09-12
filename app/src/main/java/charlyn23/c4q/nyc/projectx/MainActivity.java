@@ -48,20 +48,20 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Connect to Geolocation API to make current location request & load map
+        buildGoogleApiClient(this);
+        preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
+        isLoggedIn_google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         setUpActionBar();
 
-        ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.scene_root);
+        ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.scene_root);
         fadeTransition = new Fade();
 
         firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
         secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.shame_layout, this);
 
-        preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
-        isLoggedIn_google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
-
-        // Connect to Geolocation API to make current location request & load map
-        buildGoogleApiClient(this);
         getBundle();
     }
 
