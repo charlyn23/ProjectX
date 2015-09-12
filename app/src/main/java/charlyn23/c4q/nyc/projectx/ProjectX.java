@@ -1,14 +1,16 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseCrashReporting;
-import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import charlyn23.c4q.nyc.projectx.map.ShameGeofence;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -18,9 +20,16 @@ import charlyn23.c4q.nyc.projectx.shames.Shame;
  */
 public class ProjectX extends Application {
 
+    private RefWatcher refWatcher;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //LeakCanaray
+        LeakCanary.install(this);
+
 
         // Initialization of  Crash Reporting.
         ParseCrashReporting.enable(this);
@@ -44,4 +53,12 @@ public class ProjectX extends Application {
         defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
     }
+
+    public static RefWatcher getRefWatcher(Context context) {
+        ProjectX application = (ProjectX) context.getApplicationContext();
+        return application.refWatcher;
+    }
+
+
 }
+

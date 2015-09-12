@@ -1,16 +1,23 @@
 package charlyn23.c4q.nyc.projectx;
 
+import android.annotation.TargetApi;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Scene;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,6 +25,8 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
+import com.squareup.leakcanary.RefWatcher;
+
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
@@ -32,11 +41,26 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
+    private ViewGroup rootView;
+    private TabLayout tabs;
+    private RefWatcher refWatcher;
+    private Application ProjectX;
+
+    Scene firstScene;
+    Scene secondScene;
+    Fade fadeTransition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setUpActionBar();
+
+        ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.scene_root);
+        fadeTransition = new Fade();
+
+        firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
+        secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.shame_layout, this);
 
         preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
@@ -44,9 +68,13 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         // Connect to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
-        setUpActionBar();
         getBundle();
+
+
+
+
     }
+
 
     protected synchronized void buildGoogleApiClient(Context context) {
         googleLogInClient = new GoogleApiClient.Builder(context)
@@ -176,6 +204,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         }
     }
 
+    //receives shame details from dropped pin, pulls down to map fragment's parent activity (main),
+    //and passes data to shame details activity
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onDataPass(double latitude, double longitude, String when, String who, String type) {
         Log.d("onDataPass", String.valueOf(latitude) + " " + String.valueOf(longitude) + " " + when + " " + who + " " + type);
@@ -187,7 +218,14 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         intent.putExtra("latitude", latitude);
         intent.putExtra("longitude", longitude);
         intent.putExtra("type", type);
+
         startActivity(intent);
+    }
+
+    private static void toggleVisibility(View view) {
+               boolean isVisible = view.getVisibility() == View.VISIBLE;
+        view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
+
     }
 
     @Override

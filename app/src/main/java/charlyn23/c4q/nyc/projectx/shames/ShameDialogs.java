@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -351,9 +350,11 @@ public class ShameDialogs {
                             toast.show();
                             if (addShame != null) {
                                 addShame.setVisibility(View.INVISIBLE);
+                            } else {
+                                Log.e("error", "foo");
                             }
-                            //checkIfGeofenceIsNeeded();
-                        }
+                            checkIfGeofenceIsNeeded();
+                            }
                     }
 
                     @Override
@@ -370,11 +371,11 @@ public class ShameDialogs {
 
         // todo create sql
         // todo query only zipcode +- 2?
-        for (Shame shame : active_shames) {
-            Location.distanceBetween(latitude, longitude, shame.getLatitude(), shame.getLongitude(), distance);
-            if (distance[0] < Constants.GEOFENCE_RADIUS)
-                count++;
-        }
+//        for (Shame shame : active_shames) {
+//            Location.distanceBetween(latitude, longitude, shame.getLatitude(), shame.getLongitude(), distance);
+//            if (distance[0] < Constants.GEOFENCE_RADIUS)
+//                count++;
+//        }
 
         // TODO count > 10 && no geofence yet
         if (count > 10) {

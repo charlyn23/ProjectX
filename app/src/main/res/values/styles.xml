@@ -12,7 +12,7 @@
         <item name="md_negative_color">@color/primary_dark</item>
         <item name="md_widget_color">@color/primary</item>
         <item name="md_item_color">@color/secondary_text</item>
-        <item name="android:textColorSecondary">#363636</item>
+        <item name="android:textColorSecondary">#727272</item>
         <item name="colorAccent">@color/primary_dark</item>
         <item name="android:divider">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
@@ -68,6 +68,18 @@
         <item name="android:layout_weight">5</item>
         <item name="android:background">@color/text_white</item>
         <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="detail_title">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="detail_info">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textColor">#000000</item>
     </style>
 
 </resources>

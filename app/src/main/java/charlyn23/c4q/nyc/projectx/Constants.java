@@ -19,6 +19,7 @@ public class Constants {
     public static final int PICK_IMAGE_REQUEST = 1;
     public static final String PROFILE_IMAGE = "profileImage";
     public static final String MARKER_DROPPED = "markerDropped";
+    public static final String YEAR = "Year";
 
     // Geofence constants
     public static final String GEOFENCE_NAME = "Geofence";
@@ -53,5 +54,12 @@ public class Constants {
     public static final String POC = "POC";
     public static final String LGBTQ = "LGBTQ";
     public static final String MINOR = "Minor";
-    public static final String USER_COLUMN = "user";
+    public static final String PERSON = "person";
+    public static final String MAN = "Man";
+    public static final String LESBIAN = "Lesbian";
+    public static final String TRANS = "Trans";
+    public static final String GAY = "Gay";
+    public static final String BISEXUAL = "Bisexual";
+    public static final String QUEER = "Queer";
+
 }

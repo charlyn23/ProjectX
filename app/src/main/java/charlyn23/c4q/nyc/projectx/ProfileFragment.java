@@ -6,27 +6,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.parse.ParseUser;
+import com.squareup.leakcanary.RefWatcher;
+
 import java.io.FileNotFoundException;
+import java.util.Calendar;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
@@ -41,6 +54,8 @@ public class ProfileFragment extends Fragment {
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
     private int year;
+
+
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
@@ -61,17 +76,13 @@ public class ProfileFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        setUpToggleButtons();
         allow_geofence.setChecked(geofenceEnabled);
         allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    geofenceEnabled = true;
-                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, true).apply();
-                } else {
-                    geofenceEnabled = false;
-                    preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, false).apply();
-                }
+                geofenceEnabled = isChecked;
+                preferences.edit().putBoolean(Constants.ALLOW_GEOFENCE, isChecked).apply();
             }
         });
 
@@ -81,6 +92,29 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 changeProfileImage();
+            }
+        });
+
+        // set age
+        year = preferences.getInt(Constants.YEAR, 0);
+        if (year != 0)
+            age.setText(year);
+        age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    Calendar cal = Calendar.getInstance();
+                    if (age.getText().toString().equals("")) ;
+                    else if (Integer.valueOf(age.getText().toString()) < 1900 ||
+                            Integer.valueOf(age.getText().toString()) > cal.get(Calendar.YEAR)) {
+                        YoYo.with(Techniques.Shake).playOn(age);
+                        age.setTextColor(Color.RED);
+                        age.setError("Invalid Birth Year", getResources().getDrawable(R.drawable.what));
+                    } else {
+                        preferences.edit().putInt(Constants.YEAR, Integer.valueOf(age.getText().toString())).apply();
+                        age.setTextColor(Color.BLACK);
+                    }
+                }
             }
         });
 
@@ -199,6 +233,40 @@ public class ProfileFragment extends Fragment {
         allow_geofence.setTypeface(questrial);
     }
 
+    public void setUpToggleButtons() {
+        man.setChecked(preferences.getBoolean(Constants.MAN, false));
+        woman.setChecked(preferences.getBoolean(Constants.WOMAN, false));
+        lesbian.setChecked(preferences.getBoolean(Constants.LESBIAN, false));
+        poc.setChecked(preferences.getBoolean(Constants.POC, false));
+        trans.setChecked(preferences.getBoolean(Constants.TRANS, false));
+        gay.setChecked(preferences.getBoolean(Constants.GAY, false));
+        bisexual.setChecked(preferences.getBoolean(Constants.BISEXUAL, false));
+        minor.setChecked(preferences.getBoolean(Constants.MINOR, false));
+        queer.setChecked(preferences.getBoolean(Constants.QUEER, false));
+        man.setOnCheckedChangeListener(new toggleListener(Constants.MAN));
+        woman.setOnCheckedChangeListener(new toggleListener(Constants.WOMAN));
+        lesbian.setOnCheckedChangeListener(new toggleListener(Constants.LESBIAN));
+        poc.setOnCheckedChangeListener(new toggleListener(Constants.POC));
+        trans.setOnCheckedChangeListener(new toggleListener(Constants.TRANS));
+        gay.setOnCheckedChangeListener(new toggleListener(Constants.GAY));
+        bisexual.setOnCheckedChangeListener(new toggleListener(Constants.BISEXUAL));
+        minor.setOnCheckedChangeListener(new toggleListener(Constants.MINOR));
+        queer.setOnCheckedChangeListener(new toggleListener(Constants.QUEER));
+    }
+
+    public class toggleListener implements CompoundButton.OnCheckedChangeListener {
+        String button;
+
+        public toggleListener(String button) {
+            this.button = button;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            preferences.edit().putBoolean(button, isChecked).apply();
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -215,5 +283,11 @@ public class ProfileFragment extends Fragment {
             googleLogInClient.disconnect();
             Log.d("ProfileFragment", "Disconnected onStop");
         }
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 }

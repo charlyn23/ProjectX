@@ -6,14 +6,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/banner"
-            android:layout_weight="2"
+            android:background="@drawable/polygons"
+            android:layout_weight="3"
             android:padding="20dp"
             android:orientation="horizontal">
 
@@ -23,7 +24,7 @@
                 android:layout_height="200dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/marker"
+                android:src="@drawable/logo_white"
                 app:border_color="@color/accent"
                 app:border_width="2dp" />
 
@@ -46,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="28dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical">
 
             <TextView
@@ -68,7 +69,7 @@
                     android:hint="@string/birth_year"
                     android:inputType="number"
                     android:maxLength="4"
-                    android:textColor="@color/accent"
+                    android:textColor="#000000"
                     android:textColorHint="#363636" />
             </android.support.design.widget.TextInputLayout>
 
@@ -80,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="28dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical">
 
             <TextView
@@ -104,7 +105,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="4"
             android:padding="28dp"
             android:orientation="vertical">
 

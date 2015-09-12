@@ -69,27 +69,27 @@ public class GeofenceIntentService extends IntentService {
             return;
         }
 
-        // Get the transition type.
+        // Get the fade_transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
-        // Test that the reported transition was of interest.
+        // Test that the reported fade_transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
                 geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
-            // Send notification and log the transition details.
+            // Send notification and log the fade_transition details.
             sendNotification("Entering an area with high harassment activity.");
             Log.i(GEOFENCE_NAME, "Geofence Notification sent");
         } else {
             // Log the error.
-            Log.e(GEOFENCE_NAME, "Geofence transition error: invalid transition type %1$d");
+            Log.e(GEOFENCE_NAME, "Geofence fade_transition error: invalid fade_transition type %1$d");
         }
     }
 
     /**
-     * Posts a notification in the notification bar when a transition is detected.
+     * Posts a notification in the notification bar when a fade_transition is detected.
      * If the user clicks the notification, control goes to the MainActivity.
      */
     private void sendNotification(String notificationDetails) {

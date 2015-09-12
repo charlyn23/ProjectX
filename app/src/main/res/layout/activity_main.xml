@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/master_layout">
 
     <include
         android:id="@+id/tool_bar"
@@ -15,5 +16,13 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scene_root">
+        <include layout="@layout/map_fragment" />
+    </FrameLayout>
+
 
 </LinearLayout>

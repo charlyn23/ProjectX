@@ -3,6 +3,7 @@ package charlyn23.c4q.nyc.projectx.map;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -15,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +52,7 @@ import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
+import charlyn23.c4q.nyc.projectx.ProjectX;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -68,7 +72,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
     private GoogleApiClient client;
-    private boolean isDropped;
+    private boolean isDropped, geofenceEnabled;
     private View view;
     private GoogleMap map;
     private Marker new_marker;
@@ -86,6 +90,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
     public List<Shame> active_shames;
+    private PendingIntent mGeofencePendingIntent = null;
 
     @Nullable
     @Override
@@ -95,15 +100,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         setCustomFont();
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
         filter.setOnClickListener(filterClick);
-        ArrayList<Geofence> geofenceList = populateGeofenceList();
-        PendingIntent mGeofencePendingIntent = null;
         addShame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reportShame();
             }
         });
+
+        ArrayList<Geofence> geofenceList = new ArrayList<>();
+        if (geofenceEnabled)
+            geofenceList = populateGeofenceList();
+
 
         // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
@@ -128,6 +137,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         });
 
         addSubmittedMarker();
+
+        if (view != null) {
+            ViewGroup parent = (ViewGroup)view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.map_fragment, container, false);
+        }
+        catch (InflateException e) {
+            //map is already there, just return view as it is
+        }
         return view;
     }
 
@@ -168,14 +189,40 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         double longitude = shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN);
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString(Constants.GROUP_COLUMN);
-                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                        Log.i("groups", String.valueOf(shame_group)); //good
+//                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                         if (shame_group != null) {
+                            if (shame_group.equals("woman")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
+                            }
+                            if (shame_group.equals("minor")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
+                            }
+                            if (shame_group.equals("LGBTQ")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
+                            }
+                            if (shame_group.equals("POC")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
+                            }
+                            if (shame_group.equals("Other")) {
+                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
+                            }
+
+
                             switch (shame_group) {
                                 case Constants.WOMAN:
+
+
+//                                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
+
                                     woman_loc.add(location);
+
                                     break;
                                 case Constants.MINOR:
+//                                    map.addMarker(new MarkerOptionsrkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
+
                                     minor_loc.add(location);
+
                                     break;
                                 case Constants.POC:
                                     poc_loc.add(location);
@@ -215,14 +262,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             map.setOnMyLocationChangeListener(null);
             if (!isDropped) {
                 new_marker = map.addMarker(new MarkerOptions()
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
                 isDropped = true;
                 preferences.edit().putBoolean(Constants.MARKER_DROPPED, true).apply();
             } else {
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
-                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
+                        .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)).draggable(true));
                 addShame.setVisibility(View.VISIBLE);
             }
 
@@ -251,12 +298,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     @Override
                     public void done(Shame shame, ParseException e) {
                         if (shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
-                            String time = shame.getString(Constants.SHAME_TIME_COLUMN);
-                            String readableTime = convertToReadableTime(time);
+                            String readableTime = convertToReadableTime(shame.getString(Constants.SHAME_TIME_COLUMN));
                             String when = shame.getString(Constants.SHAME_TIME_COLUMN);
                             String who = shame.getString(Constants.GROUP_COLUMN);
                             String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
-                            Snackbar.make(view, "A " + shame.getString(Constants.GROUP_COLUMN) + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
+                            String group = shame.getString(Constants.GROUP_COLUMN);
+                            if (group.equals(Constants.OTHER))
+                                group = Constants.PERSON;
+                            Snackbar.make(view, "A " + group + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude, type, who, when))
                                     .show();
 
@@ -270,7 +319,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     };
 
-    //converts timestamp to a readable format
+    //converts timestamp to a readable format for snackbar display
     private String convertToReadableTime(String time) {
         String year = time.substring(0, 4);
         String month = time.substring(5, 6);
@@ -304,6 +353,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public void onClick(View v) {
             dataPasser.onDataPass(lat, lon, when, who, type);
+
+
         }
     }
 
@@ -336,7 +387,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                                     populateMap(Constants.POC);
                                 else if (which[i] == 2)
                                     populateMap(Constants.LGBTQ);
-                                else if (which[i] == 0)
+                                else if (which[i] == 3)
                                     populateMap(Constants.MINOR);
 
                                 filter_chosen[i] = which[i];
@@ -364,39 +415,40 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void populateMap(String group) {
         Marker woman_marker, LGBTQ_marker, minor_marker, POC_marker;
 
+
         switch (group) {
             case Constants.WOMAN:
                 for (LatLng loc : woman_loc) {
-                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
                 }
                 break;
             case Constants.MINOR:
                 for (LatLng loc : minor_loc) {
-                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
                 }
                 break;
             case Constants.LGBTQ:
                 for (LatLng loc : lgbtq_loc) {
-                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
                 }
                 break;
             case Constants.POC:
                 for (LatLng loc : poc_loc) {
-                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
                 }
                 break;
             default:
                 for (LatLng loc : woman_loc) {
-                    woman_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
                 }
                 for (LatLng loc : minor_loc) {
-                    minor_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
                 }
                 for (LatLng loc : lgbtq_loc) {
-                    LGBTQ_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
                 }
                 for (LatLng loc : poc_loc) {
-                    POC_marker = map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
                 }
                 break;
         }
@@ -534,6 +586,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         return active_geofence;
     }
 
+    private PendingIntent getGeofencePendingIntent() {
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(getActivity(), GeofenceIntentService.class);
+        return PendingIntent.getService(view.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
     public void initializeViews() {
         viewPager = (ViewPager) getActivity().findViewById(R.id.view_pager);
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
@@ -590,6 +650,15 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 dialogs.initialDialog(getActivity(), latitude, longitude, null, null, active_shames);
                 bundle.clear();
             }
+        }
+    }
+
+    public abstract class BaseFragment extends Fragment {
+
+        @Override public void onDestroy() {
+            super.onDestroy();
+            RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
+            refWatcher.watch(this);
         }
     }
 }
