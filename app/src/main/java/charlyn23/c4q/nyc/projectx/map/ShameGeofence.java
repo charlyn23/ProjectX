@@ -10,10 +10,12 @@ import com.parse.ParseObject;
 public class ShameGeofence extends ParseObject {
     private float latitude;
     private float longitude;
+    private String group;
 
-    public ShameGeofence(float latitude, float longitude, String stringID){
+    public ShameGeofence(float latitude, float longitude, String group){
         this.latitude = latitude;
         this.longitude = longitude;
+        this.group = group;
     }
 
     public ShameGeofence(){
@@ -33,5 +35,13 @@ public class ShameGeofence extends ParseObject {
 
     public void setLongitude(float longitude) {
         this.longitude = longitude;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }

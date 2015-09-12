@@ -39,6 +39,7 @@ import com.squareup.leakcanary.RefWatcher;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,7 +54,6 @@ public class ProfileFragment extends Fragment {
     private EditText age;
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
-    private int year;
 
 
 
@@ -96,9 +96,9 @@ public class ProfileFragment extends Fragment {
         });
 
         // set age
-        year = preferences.getInt(Constants.YEAR, 0);
+        int year = preferences.getInt(Constants.YEAR, 0);
         if (year != 0)
-            age.setText(year);
+            age.setText(String.valueOf(year));
         age.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

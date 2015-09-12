@@ -2,6 +2,7 @@ package charlyn23.c4q.nyc.projectx.map;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +34,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofenceStatusCodes;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -51,12 +55,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.squareup.leakcanary.RefWatcher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
@@ -66,22 +72,20 @@ import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener {
-    private static final LatLngBounds BOUNDS = new LatLngBounds(
-            new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status>  {
+    private static final LatLngBounds BOUNDS = new LatLngBounds(new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
     private GoogleApiClient client;
-    private boolean isDropped, geofenceEnabled;
+    private boolean isDropped;
     private View view;
     private GoogleMap map;
     private Marker new_marker;
+    private Location currentLocation;
     private FloatingActionButton addShame;
     private AutoCompleteTextView search;
     private LatLng searchLocation;
     private Button filter;
-    private double latitude;
-    private double longitude;
     private ViewPager viewPager;
     private OnDataPass dataPasser;
     private List<LatLng> woman_loc = new ArrayList<>(),
@@ -91,6 +95,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
     public List<Shame> active_shames;
     private PendingIntent mGeofencePendingIntent = null;
+    private HashMap<String, Boolean> identity;
 
     @Nullable
     @Override
@@ -100,7 +105,19 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         setCustomFont();
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        boolean geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+
+        identity = new HashMap<>();
+        identity.put(Constants.MAN, preferences.getBoolean(Constants.MAN, false));
+        identity.put(Constants.WOMAN, preferences.getBoolean(Constants.WOMAN, false));
+        identity.put(Constants.LESBIAN, preferences.getBoolean(Constants.LESBIAN, false));
+        identity.put(Constants.POC, preferences.getBoolean(Constants.POC, false));
+        identity.put(Constants.TRANS, preferences.getBoolean(Constants.TRANS, false));
+        identity.put(Constants.GAY, preferences.getBoolean(Constants.GAY, false));
+        identity.put(Constants.BISEXUAL, preferences.getBoolean(Constants.BISEXUAL, false));
+        identity.put(Constants.MINOR, preferences.getBoolean(Constants.MINOR, false));
+        identity.put(Constants.QUEER, preferences.getBoolean(Constants.QUEER, false));
+
         filter.setOnClickListener(filterClick);
         addShame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,11 +125,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 reportShame();
             }
         });
-
-        ArrayList<Geofence> geofenceList = new ArrayList<>();
-        if (geofenceEnabled)
-            geofenceList = populateGeofenceList();
-
 
         // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(view.getContext());
@@ -136,17 +148,23 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        addSubmittedMarker();
+        // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
+        Calendar cal = Calendar.getInstance();
+        Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+        float distance = currentLocation.distanceTo(lastFetchLocation);
+        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
+                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
+            fetchGeofenceFromParse(cal);
 
+        addSubmittedMarker();
         if (view != null) {
-            ViewGroup parent = (ViewGroup)view.getParent();
+            ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
                 parent.removeView(view);
         }
         try {
             view = inflater.inflate(R.layout.map_fragment, container, false);
-        }
-        catch (InflateException e) {
+        } catch (InflateException e) {
             //map is already there, just return view as it is
         }
         return view;
@@ -338,6 +356,27 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
     }
 
+    @Override
+    public void onResult(Status status) {
+        if (status.isSuccess()) {
+            Log.d("MapFragment - Geofence", "Geofence successfully added");
+        } else {
+            String errorMessage;
+            switch (status.getStatusCode()) {
+                case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:
+                    errorMessage = "Geofence service is not available now";
+                case GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES:
+                    errorMessage = "Your app has registered too many geofences";
+                case GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS:
+                    errorMessage = "You have provided too many PendingIntents to the addGeofences() call";
+                default:
+                    errorMessage = "Unknown error";
+            }
+
+            Log.e("MapFragment - Geofence", errorMessage);
+        }
+    }
+
     public class snackbarDetail implements View.OnClickListener {
         double lat, lon;
         String type, who, when;
@@ -488,8 +527,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(client);
-        if (location == null)
+        currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+        if (currentLocation == null)
             LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -497,7 +536,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 }
             });
         else
-            setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+            setViewToLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
     }
 
     private LocationRequest createLocationRequest() {
@@ -555,26 +594,30 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         return p1;
     }
 
-    public ArrayList<Geofence> populateGeofenceList() {
-        final ArrayList<Geofence> active_geofence = new ArrayList<>();
-
-        // get geofence landmarks from db
-        // TODO save landmarks locally, query by current location
+    // get geofence landmarks from parse db & save to local
+    public void fetchGeofenceFromParse(Calendar cal) {
         ParseQuery<ShameGeofence> db_geofences = ParseQuery.getQuery(Constants.GEOFENCE_NAME);
+        db_geofences.whereGreaterThanOrEqualTo(Constants.CREATED_AT, cal.getTimeInMillis() - Constants.MILLI_24HOURS);
+        db_geofences.whereWithinMiles(Constants.LOCATION, new ParseGeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude()), 50);
         db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
             public void done(List<ShameGeofence> results, ParseException e) {
                 if (e == null) {
                     for (ShameGeofence geo : results) {
-                        active_geofence.add(new Geofence.Builder()
-                                .setRequestId(geo.getObjectId())
-                                .setCircularRegion(
-                                        geo.getDouble(Constants.SHAME_LATITUDE_COLUMN),
-                                        geo.getDouble(Constants.SHAME_LONGITUDE_COLUMN),
-                                        Constants.GEOFENCE_RADIUS // 1 mile
-                                )
-                                .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                                .build());
+                        ArrayList<Geofence> active_geofence = new ArrayList<>();
+                        String group = geo.getString(Constants.GROUP_COLUMN);
+                        if (identity.get(group)) {
+                            active_geofence.add(new Geofence.Builder()
+                                    .setRequestId(geo.getObjectId())
+                                    .setCircularRegion(
+                                            geo.getDouble(Constants.SHAME_LATITUDE_COLUMN),
+                                            geo.getDouble(Constants.SHAME_LONGITUDE_COLUMN),
+                                            Constants.GEOFENCE_RADIUS) // 1 mile
+                                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS) // 24 hours
+                                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                                    .build());
+                        }
+
+                        setUpGeofence(active_geofence);
                     }
                     Log.d("Active Geofence loc", "Retrieved " + results.size() + " Shames");
                 } else {
@@ -582,8 +625,32 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
+        preferences.edit().putLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()).apply();
+    }
 
-        return active_geofence;
+    public void setUpGeofence(ArrayList<Geofence> active_geofence) {
+        if (!client.isConnected()) {
+            Log.d("MapFragment - Geofence", "GoogleAPIClient Not connected");
+            return;
+        }
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    client,
+                    getGeofencingRequest(active_geofence),
+                    getGeofencePendingIntent()
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            Log.d("MapFragment - Geofence", "Error on ACCESS_FINE_LOCATION", securityException);
+        }
+    }
+
+    private GeofencingRequest getGeofencingRequest(ArrayList<Geofence> active_geofence) {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(active_geofence);
+
+        return builder.build();
     }
 
     private PendingIntent getGeofencePendingIntent() {
@@ -643,8 +710,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             if (dialog && isDropped) {
                 long lat = preferences.getLong(Constants.LATITUDE_PREFERENCE, 0);
                 long longi = preferences.getLong(Constants.LONGITUDE_PREFERENCE, 0);
-                latitude = Double.longBitsToDouble(lat);
-                longitude = Double.longBitsToDouble(longi);
+                double latitude = Double.longBitsToDouble(lat);
+                double longitude = Double.longBitsToDouble(longi);
                 ShameDialogs dialogs = new ShameDialogs();
                 dialogs.setListener(this);
                 dialogs.initialDialog(getActivity(), latitude, longitude, null, null, active_shames);
