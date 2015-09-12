@@ -1,20 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/a"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pie_chart"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_weight="5"/>
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        style="@style/card"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/chart_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/types_of_harassment"
+            android:textSize="17sp"
+            android:textColor="#000000"
+            android:paddingTop="5dp"
+            android:gravity="center"
+            android:layout_alignParentTop="true"/>
 
 
-    <LinearLayout
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <RelativeLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7"
@@ -22,22 +48,24 @@
 
         <TextView
             android:id="@+id/instances"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/total_instances"
-            android:textSize="17sp"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:textColor="@color/text_black"/>
-
-        <ImageView
-            android:id="@+id/next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/arrow_next"/>
-    </LinearLayout>
+            android:text="@string/total_instances"
+            android:textSize="17sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/text_black"/>
+
+        <net.steamcrafted.materialiconlib.MaterialIconView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:materialIcon="arrow_right_bold"
+            app:materialIconColor="#D32F2F"
+            android:id="@+id/next"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"/>
+    </RelativeLayout>
 
 </LinearLayout>
