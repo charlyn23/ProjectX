@@ -30,7 +30,6 @@ public class ProjectX extends Application {
         //LeakCanaray
         LeakCanary.install(this);
 
-
         // Initialization of  Crash Reporting.
         ParseCrashReporting.enable(this);
 
@@ -58,7 +57,5 @@ public class ProjectX extends Application {
         ProjectX application = (ProjectX) context.getApplicationContext();
         return application.refWatcher;
     }
-
-
 }
 

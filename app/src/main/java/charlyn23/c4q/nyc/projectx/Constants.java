@@ -67,5 +67,7 @@ public class Constants {
     public static final String GAY = "Gay";
     public static final String BISEXUAL = "Bisexual";
     public static final String QUEER = "Queer";
+    public static  final String WHEN = "when";
+    public static  final String WHO = "who";
 
 }

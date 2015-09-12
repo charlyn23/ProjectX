@@ -215,6 +215,7 @@ public class PieChartFragment extends Fragment {
         header.setGravity(Gravity.CENTER);
         header.setPadding(0, 0, 0, 0);
         header.setTextColor(getResources().getColor(R.color.text_black));
+        header.setPadding(0, 9, 0, 0);
         pieChart.setVisibility(View.VISIBLE);
     }
 

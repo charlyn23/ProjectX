@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
 
 public class ShameDetailActivity extends AppCompatActivity {
@@ -26,18 +27,18 @@ public class ShameDetailActivity extends AppCompatActivity {
         setCustomFont();
 
         //Populates textfields
-        group.setText(getIntent().getStringExtra("who"));
+        group.setText(getIntent().getStringExtra(Constants.WHO));
         when.setText(getDate());
         where.setText(getAddress());
-        shameDetail.setText(getIntent().getStringExtra("type"));
+        shameDetail.setText(getIntent().getStringExtra(Constants.SHAME_TYPE_COLUMN));
         Log.i("date and time ", getDate());
 
     }
 
     //Converts latlng to address
     public String getAddress() {
-        double lat = getIntent().getDoubleExtra("latitude", 0.0);
-        double longitude = getIntent().getDoubleExtra("longitude", 0.0);
+        double lat = getIntent().getDoubleExtra(Constants.SHAME_LATITUDE_COLUMN, 0.0);
+        double longitude = getIntent().getDoubleExtra(Constants.SHAME_LONGITUDE_COLUMN, 0.0);
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
@@ -65,7 +66,7 @@ public class ShameDetailActivity extends AppCompatActivity {
 
     //converts timestamp to familiar date/time format
     private String getDate() {
-        String date = getIntent().getStringExtra("when");
+        String date = getIntent().getStringExtra(Constants.WHEN);
         String year = date.substring(0, 4);
         String month = date.substring(5, 6);
         String day = date.substring(7, 8);

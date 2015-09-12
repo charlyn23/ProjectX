@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Connect to Geolocation API to make current location request & load map
+        // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
         preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
@@ -84,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             editor.putBoolean(Constants.LOGGED_IN, true).apply();
             isLoggedIn_google = true;
             editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
-            Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
-
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 editor.putBoolean(Constants.LOGGED_IN, true).apply();
                 editor.putBoolean(Constants.LOGGED_IN_GOOGLE, true).apply();
 
-                Toast.makeText(this, "Signing in", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.signing_in), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra(Constants.SHOW_DIALOG, true);
@@ -203,12 +201,12 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         Log.d("onDataPass", String.valueOf(latitude) + " " + String.valueOf(longitude) + " " + when + " " + who + " " + type);
 
         Intent intent = new Intent(MainActivity.this, ShameDetailActivity.class);
-        intent.putExtra("when", when);
+        intent.putExtra(Constants.WHEN, when);
         Log.i("date intent has ", String.valueOf(when));
-        intent.putExtra("who", who);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
-        intent.putExtra("type", type);
+        intent.putExtra(Constants.WHO, who);
+        intent.putExtra(Constants.SHAME_LATITUDE_COLUMN, latitude);
+        intent.putExtra(Constants.SHAME_LONGITUDE_COLUMN, longitude);
+        intent.putExtra(Constants.SHAME_TYPE_COLUMN, type);
 
         startActivity(intent);
     }

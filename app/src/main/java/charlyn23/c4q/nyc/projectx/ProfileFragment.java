@@ -55,8 +55,7 @@ public class ProfileFragment extends Fragment {
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled;
 
-
-
+    
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
     }
