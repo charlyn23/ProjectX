@@ -2,7 +2,6 @@ package charlyn23.c4q.nyc.projectx.map;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -321,6 +320,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
                             Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
                             Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
+                            Log.i("current shame date : ", String.valueOf(readableTime));
                         }
                     }
                 });
@@ -332,8 +332,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     //converts timestamp to a readable format for snackbar display
     private String convertToReadableTime(String time) {
         String year = time.substring(0, 4);
-        String month = time.substring(5, 6);
-        String day = time.substring(7, 8);
+        String month = time.substring(4, 6);
+        String day = time.substring(6, 8);
         String hour = time.substring(9, 11);
         String minute = time.substring(11, 13);
         return month + "/" + day + "/" + year + "  " + hour + ":" + minute;
