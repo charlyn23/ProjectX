@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
@@ -121,6 +122,10 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(
                 DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_TIMESTAMP + " > ?", time, null, null, null);
 
+        if (cursor.getCount() > 1000) {
+            removeSomeData();
+        }
+
         while (cursor.moveToNext()) {
             incidents.add(new Shame(
                     cursor.getDouble(cursor.getColumnIndex(DataEntry.COLUMN_LATITUDE)),
@@ -138,5 +143,15 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return incidents;
+    }
+
+    public void removeSomeData() {
+        SQLiteDatabase db = getWritableDatabase();
+        String selectQuery = "DELETE FROM " + DataEntry.TABLE_NAME + " WHERE _id IN " +
+                "(SELECT _id FROM "+ DataEntry.TABLE_NAME + " ORDER BY _id ASC LIMIT 500)";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        cursor.close();
+        Log.i("SQLite Delete", "Removed 500 incidences from Database");
     }
 }

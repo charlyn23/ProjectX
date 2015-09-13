@@ -190,7 +190,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 if (e == null) {
                     if (results.size() > 0)
                         insertDatatoSQLite(results);
-                    
+
                     new AsyncTask<Void, Void, String>() {
                         @Override
                         protected String doInBackground(Void[] params) {
