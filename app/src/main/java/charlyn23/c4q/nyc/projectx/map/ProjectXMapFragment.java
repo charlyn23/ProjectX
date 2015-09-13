@@ -586,7 +586,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                                     .setCircularRegion(
                                             geo.getDouble(Constants.SHAME_LATITUDE_COLUMN),
                                             geo.getDouble(Constants.SHAME_LONGITUDE_COLUMN),
-                                            Constants.GEOFENCE_RADIUS_IN_METER) // 1 mile
+                                            Constants.GEOFENCE_RADIUS_IN_METER) // 1/2 mile
                                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS) // 24 hours
                                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                                     .build());

@@ -29,7 +29,7 @@ public class Constants {
     public static final long MILLI_24HOURS = 86400000;
     public static final long MILLI_48HOURS = 172800000;
     public static final float FIFTY_METERS = 80467.2f;
-    public static final float GEOFENCE_RADIUS_IN_METER = 804.672f; // 1 mile, 1.6 km
+    public static final float GEOFENCE_RADIUS_IN_METER = 804.672f; // 1/2 mile
     public static final long GEOFENCE_EXPIRATION_IN_HOURS = 24;
     public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS = GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
     public static final String LATITUDE_PREFERENCE = "latitudePreference";
