@@ -3,7 +3,6 @@ package charlyn23.c4q.nyc.projectx.stats;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -49,8 +46,9 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         numInstances = (TextView) view.findViewById(R.id.instances);
 
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        numInstances.setTypeface(questrial);
         header.setTypeface(questrial);
+        noHarassmentMessage.setTypeface(questrial);
+        numInstances.setTypeface(questrial);
         numInstances.setTypeface(questrial);
 
         configBarChart();

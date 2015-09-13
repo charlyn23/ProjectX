@@ -21,22 +21,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/no_harassment"
-                android:textColor="@color/primary_dark"
-                android:textSize="17sp"
-                android:gravity="center"
-                android:layout_centerInParent="true"
-                android:padding="40dp"/>
+                style="@style/no_harassment_message" />
 
             <TextView
                 android:id="@+id/chart_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
                 android:text="@string/types_of_harassment"
-                android:textColor="#000000"
-                android:textSize="17sp" />
+                style="@style/chart_header"/>
+
 
 
             <com.github.mikephil.charting.charts.PieChart
