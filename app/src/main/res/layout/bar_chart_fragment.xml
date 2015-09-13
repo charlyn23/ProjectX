@@ -28,13 +28,9 @@
                 android:id="@+id/chart_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:background="#FFFFFF"
-                android:gravity="center"
-                android:paddingTop="5dp"
                 android:text="@string/groups"
-                android:textColor="#000000"
-                android:textSize="17sp" />
+                style="@style/chart_header" />
+
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/bar_chart"
