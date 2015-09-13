@@ -317,7 +317,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         barChart.setVisibility(View.GONE);
         card.setCardBackgroundColor(Color.parseColor("#ffffff"));
         card.setRadius(10);
-        header.setText("NO instances of harassment have been reported in this area");
+        header.setText(getResources().getString(R.string.no_harassment));
         header.setTextColor(getResources().getColor(R.color.primary_dark));
         header.setTextSize(17);
         header.setGravity(Gravity.CENTER);

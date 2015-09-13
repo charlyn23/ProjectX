@@ -511,23 +511,25 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        if (currentLocation == null)
+        if (currentLocation == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
                     setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
                 }
             });
-        else
+        }
+        else {
             setViewToLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
 
-        // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
-        Calendar cal = Calendar.getInstance();
-        Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        float distance = currentLocation.distanceTo(lastFetchLocation);
-        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
-                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
-            fetchGeofenceFromParse(cal);
+            // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
+            Calendar cal = Calendar.getInstance();
+            Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+            float distance = currentLocation.distanceTo(lastFetchLocation);
+            if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
+                    preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
+                fetchGeofenceFromParse(cal);
+        }
     }
 
     private LocationRequest createLocationRequest() {

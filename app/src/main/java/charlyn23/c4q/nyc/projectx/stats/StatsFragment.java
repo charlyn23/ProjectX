@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -100,10 +101,11 @@ public class StatsFragment extends android.support.v4.app.Fragment {
                 ((BarChartFragment) fragments[1]).getCountGroups(userInput);
 
                 //hides the keyboard when the user finishes typing zipCode
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                View view = getActivity().getCurrentFocus();
+                Activity context = getActivity();
+                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                View view = context.getCurrentFocus();
                 if(view == null) {
-                    view = new View(getActivity());
+                    view = new View(context);
                 }
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }

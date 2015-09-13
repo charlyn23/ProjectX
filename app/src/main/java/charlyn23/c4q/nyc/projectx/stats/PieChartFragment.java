@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.AnimationEasing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -53,7 +54,6 @@ public class PieChartFragment extends Fragment {
         header.setTypeface(questrial);
         numInstances = (TextView) view.findViewById(R.id.instances);
         numInstances.setTypeface(questrial);
-        configPieChart(pieChart);
 
         //switches to the next stats fragment
         next.setOnClickListener(new View.OnClickListener() {
@@ -91,15 +91,17 @@ public class PieChartFragment extends Fragment {
                             }
                         }
                     }
+
                     int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
-                    numInstances.setText(getResources().getString(R.string.total_instances) + " " + totalInstances);
+                    numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
                     Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
                     setDataPieChart(pieChart, data.getyValues(), data.getxValues());
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                        setNoHarassmentStyleCard();
-                    }
-                    else {
-                        configureDefaultCardStyle();
+                        updateNoHarassmentStyleCard();
+                        pieChart.invalidate();
+                    } else {
+                        configPieChart();
+                        updateHeaderStyle();
                         animateChart();
                     }
                 }
@@ -108,16 +110,15 @@ public class PieChartFragment extends Fragment {
     }
 
     //configures the characteristics of the chart
-    private PieChart configPieChart(PieChart chart) {
-        chart.setHoleColorTransparent(true);
-        chart.setHoleRadius(60);
-        chart.setDrawCenterText(true);
-        chart.setDrawHoleEnabled(true);
-        chart.setDescription("");
-        chart.setRotationAngle(90);
-        chart.setRotationEnabled(true);
-        chart.setUsePercentValues(true);
-        return chart;
+    private void configPieChart() {
+        pieChart.setHoleColorTransparent(true);
+        pieChart.setHoleRadius(60);
+        pieChart.setDrawCenterText(true);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setDescription("");
+        pieChart.setRotationAngle(90);
+        pieChart.setRotationEnabled(true);
+        pieChart.setUsePercentValues(true);
     }
 
     //sets the data on the configured chart
@@ -134,7 +135,7 @@ public class PieChartFragment extends Fragment {
         data.setValueTypeface(questrial);
         data.setValueTextColor(Color.WHITE);
         chart.setData(data);
-        chart.highlightValues(null);
+        //chart.highlightValues(null);
 
         //disables the legend
         Legend l = chart.getLegend();
@@ -143,9 +144,6 @@ public class PieChartFragment extends Fragment {
     }
 
     public void animateChart() {
-        if (pieChart == null) {
-            return;
-        }
         pieChart.animateY(2000);
     }
 
@@ -157,38 +155,28 @@ public class PieChartFragment extends Fragment {
         if (numOtherShame == 0 && numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             xVals.add(Constants.VERBAL);
-        }
-
-        else if (numOtherShame == 0 && numVerbalShame == 0) {
+        } else if (numOtherShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
             xVals.add(Constants.PHYSICAL);
-        }
-
-        else if (numPhysicalShame == 0 && numVerbalShame == 0) {
+        } else if (numPhysicalShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numOtherShame, 0));
             xVals.add(Constants.OTHER);
-        }
-
-        else if (numVerbalShame == 0) {
+        } else if (numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
             xVals.add(Constants.PHYSICAL);
             xVals.add(Constants.OTHER);
-        }
-
-        else if (numPhysicalShame == 0) {
+        } else if (numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
             xVals.add(Constants.VERBAL);
             xVals.add(Constants.OTHER);
-        }
-        else if (numOtherShame == 0) {
+        } else if (numOtherShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
             xVals.add(Constants.VERBAL);
             xVals.add(Constants.PHYSICAL);
-        }
-        else {
+        } else {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
             yVals.add(new Entry(numOtherShame, 2));
@@ -196,17 +184,11 @@ public class PieChartFragment extends Fragment {
             xVals.add(Constants.PHYSICAL);
             xVals.add(Constants.OTHER);
         }
-        Data data = new Data(Constants.PIE_CHART_NAME, yVals, xVals);
-        return data;
-    }
-
-    public void setInstancesTotal(String text) {
-        numInstances.setText(text);
+        return new Data(Constants.PIE_CHART_NAME, yVals, xVals);
     }
 
     //sets the default card style
-    public void configureDefaultCardStyle()
-    {
+    public void updateHeaderStyle() {
         header.setText(getString(R.string.types_of_harassment));
         header.setGravity(Gravity.TOP);
         header.setGravity(Gravity.CENTER);
@@ -216,8 +198,8 @@ public class PieChartFragment extends Fragment {
     }
 
     //changes the card style when harassment is not reported in the area
-    private void setNoHarassmentStyleCard() {
-        header.setText("NO instances of harassment have been reported in this area");
+    private void updateNoHarassmentStyleCard() {
+        header.setText(getResources().getString(R.string.no_harassment));
         header.setTypeface(questrial);
         header.setTextColor(getResources().getColor(R.color.primary_dark));
         header.setTextSize(17);
