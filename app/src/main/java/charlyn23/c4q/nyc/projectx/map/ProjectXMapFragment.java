@@ -92,7 +92,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             lgbtq_loc = new ArrayList<>(),
             poc_loc = new ArrayList<>();
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3};
-    public List<Shame> active_shames;
     private PendingIntent mGeofencePendingIntent = null;
     private HashMap<String, Boolean> identity;
 
@@ -109,13 +108,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         identity = new HashMap<>();
         identity.put(Constants.MAN, preferences.getBoolean(Constants.MAN, false));
         identity.put(Constants.WOMAN, preferences.getBoolean(Constants.WOMAN, false));
-        identity.put(Constants.LESBIAN, preferences.getBoolean(Constants.LESBIAN, false));
         identity.put(Constants.POC, preferences.getBoolean(Constants.POC, false));
-        identity.put(Constants.TRANS, preferences.getBoolean(Constants.TRANS, false));
-        identity.put(Constants.GAY, preferences.getBoolean(Constants.GAY, false));
-        identity.put(Constants.BISEXUAL, preferences.getBoolean(Constants.BISEXUAL, false));
         identity.put(Constants.MINOR, preferences.getBoolean(Constants.MINOR, false));
-        identity.put(Constants.QUEER, preferences.getBoolean(Constants.QUEER, false));
+        boolean lgbtq_check = (preferences.getBoolean(Constants.TRANS, false) || preferences.getBoolean(Constants.GAY, false) ||
+                preferences.getBoolean(Constants.BISEXUAL, false) || preferences.getBoolean(Constants.QUEER, false) ||
+                preferences.getBoolean(Constants.LESBIAN, false));
+            identity.put(Constants.LGBTQ, lgbtq_check);
 
         filter.setOnClickListener(filterClick);
         addShame.setOnClickListener(new View.OnClickListener() {
@@ -192,46 +190,18 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         query.findInBackground(new FindCallback<Shame>() {
             public void done(List<Shame> shames, ParseException e) {
                 if (e == null) {
-                    active_shames = shames;
                     for (Shame shame : shames) {
                         double latitude = shame.getDouble(Constants.SHAME_LATITUDE_COLUMN);
                         double longitude = shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN);
                         LatLng location = new LatLng(latitude, longitude);
                         String shame_group = shame.getString(Constants.GROUP_COLUMN);
-                        Log.i("groups", String.valueOf(shame_group)); //good
-//                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                         if (shame_group != null) {
-                            if (shame_group.equals("woman")) {
-                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
-                            }
-                            if (shame_group.equals("minor")) {
-                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
-                            }
-                            if (shame_group.equals("LGBTQ")) {
-                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallgaylogo)));
-                            }
-                            if (shame_group.equals("POC")) {
-                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
-                            }
-                            if (shame_group.equals("Other")) {
-                                map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
-                            }
-
-
                             switch (shame_group) {
                                 case Constants.WOMAN:
-
-
-//                                        map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)));
-
                                     woman_loc.add(location);
-
                                     break;
                                 case Constants.MINOR:
-//                                    map.addMarker(new MarkerOptionsrkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallkidlogo)));
-
                                     minor_loc.add(location);
-
                                     break;
                                 case Constants.POC:
                                     poc_loc.add(location);
@@ -242,6 +212,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             }
                         }
                     }
+                    populateMap("All");
                     Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
@@ -257,7 +228,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             ShameDialogs dialogs = new ShameDialogs();
             Log.i(Constants.TAG, new_marker.getPosition().latitude + " " + new_marker.getPosition().longitude);
             dialogs.setListener(this);
-            dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame, active_shames);
+            dialogs.initialDialog(view.getContext(), new_marker.getPosition().latitude, new_marker.getPosition().longitude, new_marker, addShame);
         } else {
             viewPager.setCurrentItem(Constants.LOG_IN_VIEW);
             Toast.makeText(view.getContext(), "Please log in to report a new shame", Toast.LENGTH_LONG).show();
@@ -340,10 +311,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void setMarker(double latitude, double longitude) {
-//        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.logosmall)));
-//        if (new_marker != null) {
-//            new_marker.remove();
-//        }
         map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)).draggable(true));
     }
 
@@ -445,7 +412,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void populateMap(String group) {
         Marker woman_marker, LGBTQ_marker, minor_marker, POC_marker;
 
-
         switch (group) {
             case Constants.WOMAN:
                 for (LatLng loc : woman_loc) {
@@ -533,8 +499,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         Calendar cal = Calendar.getInstance();
         Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
         float distance = currentLocation.distanceTo(lastFetchLocation);
-        if (geofenceEnabled && distance >= Constants.FIFTY_METERS &&
-                preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS)
+        Log.d("Geofence enabled", String.valueOf(geofenceEnabled));
+        Log.d("Geofence time", String.valueOf(distance >= Constants.FIFTY_METERS));
+        Log.d("Geofence location", String.valueOf(preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis() - Constants.MILLI_48HOURS) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS));
+
+        if (geofenceEnabled && preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis() - Constants.MILLI_48HOURS) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS) {
+            fetchGeofenceFromParse(cal);
+            Log.d("Geofence", "Fetching data");
+        } else if (distance >= Constants.FIFTY_METERS)
             fetchGeofenceFromParse(cal);
     }
 
@@ -594,9 +566,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     // get geofence landmarks from parse db & save to local
-    public void fetchGeofenceFromParse(Calendar cal) {
+    public void fetchGeofenceFromParse(final Calendar cal) {
         ParseQuery<ShameGeofence> db_geofences = ParseQuery.getQuery(Constants.GEOFENCE_NAME);
-        db_geofences.whereGreaterThanOrEqualTo(Constants.CREATED_AT, cal.getTimeInMillis() - Constants.MILLI_24HOURS);
+        Calendar before = Calendar.getInstance();
+        before.set(Calendar.YEAR, cal.get(Calendar.HOUR) - 24);
+        String yesterday = new SimpleDateFormat("yyyyMMdd_HHmmss").format(before.getTime());
+        db_geofences.whereGreaterThanOrEqualTo(Constants.TIMESTAMP, yesterday);
         db_geofences.whereWithinMiles(Constants.LOCATION, new ParseGeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude()), 50);
         db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
             public void done(List<ShameGeofence> results, ParseException e) {
@@ -610,13 +585,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                                     .setCircularRegion(
                                             geo.getDouble(Constants.SHAME_LATITUDE_COLUMN),
                                             geo.getDouble(Constants.SHAME_LONGITUDE_COLUMN),
-                                            Constants.GEOFENCE_RADIUS) // 1 mile
+                                            Constants.GEOFENCE_RADIUS_IN_METER) // 1 mile
                                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS) // 24 hours
                                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                                     .build());
                         }
 
-                        setUpGeofence(active_geofence);
+                        setUpGeofence(active_geofence, cal);
                     }
                     Log.d("Active Geofence loc", "Retrieved " + results.size() + " Shames");
                 } else {
@@ -624,10 +599,9 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
-        preferences.edit().putLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()).apply();
     }
 
-    public void setUpGeofence(ArrayList<Geofence> active_geofence) {
+    public void setUpGeofence(ArrayList<Geofence> active_geofence, Calendar cal) {
         if (!client.isConnected()) {
             Log.d("MapFragment - Geofence", "GoogleAPIClient Not connected");
             return;
@@ -639,6 +613,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                     getGeofencingRequest(active_geofence),
                     getGeofencePendingIntent()
             ).setResultCallback(this); // Result processed in onResult().
+            preferences.edit().putLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()).apply();
         } catch (SecurityException securityException) {
             Log.d("MapFragment - Geofence", "Error on ACCESS_FINE_LOCATION", securityException);
         }
@@ -713,7 +688,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 double longitude = Double.longBitsToDouble(longi);
                 ShameDialogs dialogs = new ShameDialogs();
                 dialogs.setListener(this);
-                dialogs.initialDialog(getActivity(), latitude, longitude, null, null, active_shames);
+                dialogs.initialDialog(getActivity(), latitude, longitude, null, null);
                 bundle.clear();
             }
         }

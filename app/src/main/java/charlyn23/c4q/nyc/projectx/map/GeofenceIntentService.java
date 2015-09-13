@@ -80,7 +80,7 @@ public class GeofenceIntentService extends IntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Send notification and log the fade_transition details.
-            sendNotification("Entering an area with high harassment activity.");
+            sendNotification("Entering an area with highly reported incidents.");
             Log.i(GEOFENCE_NAME, "Geofence Notification sent");
         } else {
             // Log the error.
