@@ -38,27 +38,26 @@ public class PieChartFragment extends Fragment {
     private int numOtherShame;
     private Typeface questrial;
     private TextView numInstances;
-    private LinearLayout parent;
     private TextView header;
     private TextView noHarassmentMessage;
-    private CardView card;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
-        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        card = (CardView) view.findViewById(R.id.card_view);
-        parent = (LinearLayout) view.findViewById(R.id.parent_layout);
-        pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         MaterialIconView next = (MaterialIconView) view.findViewById(R.id.next);
+        pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         header = (TextView) view.findViewById(R.id.chart_header);
         noHarassmentMessage = (TextView) view.findViewById(R.id.no_harassment_message);
         numInstances = (TextView) view.findViewById(R.id.instances);
 
+        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
         header.setTypeface(questrial);
         noHarassmentMessage.setTypeface(questrial);
         numInstances.setTypeface(questrial);
         configPieChart();
+
+        //displays the general info about instances of harassment
+        getCountShameTypes("");
 
         //switches to the next stats fragment
         next.setOnClickListener(new View.OnClickListener() {
@@ -68,8 +67,7 @@ public class PieChartFragment extends Fragment {
             }
         });
 
-        //displays the general info about instances of harassment
-        getCountShameTypes("");
+
         return view;
     }
 
@@ -98,18 +96,18 @@ public class PieChartFragment extends Fragment {
                     }
 
                     Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
-                    setDataPieChart(pieChart, data.getyValues(), data.getxValues());
+                    setDataPieChart(data.getyValues(), data.getxValues());
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
                         pieChart.invalidate();
                         header.setVisibility(View.GONE);
                         numInstances.setVisibility(View.GONE);
                         noHarassmentMessage.setVisibility(View.VISIBLE);
                     } else {
-                        int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
-                        numInstances.setVisibility(View.VISIBLE);
-                        numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
-                        header.setVisibility(View.VISIBLE);
                         noHarassmentMessage.setVisibility(View.GONE);
+                        numInstances.setVisibility(View.VISIBLE);
+                        header.setVisibility(View.VISIBLE);
+                        int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
+                        numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
                         animateChart();
                     }
                 }
@@ -130,7 +128,7 @@ public class PieChartFragment extends Fragment {
     }
 
     //sets the data on the configured chart
-    private PieChart setDataPieChart(PieChart chart, ArrayList<Entry> yVals, ArrayList<String> xVals) {
+    private void setDataPieChart(ArrayList<Entry> yVals, ArrayList<String> xVals) {
         ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
 
@@ -142,13 +140,11 @@ public class PieChartFragment extends Fragment {
         data.setValueTextSize(13);
         data.setValueTypeface(questrial);
         data.setValueTextColor(Color.WHITE);
-        chart.setData(data);
-        //chart.highlightValues(null);
+        pieChart.setData(data);
 
         //disables the legend
-        Legend l = chart.getLegend();
+        Legend l = pieChart.getLegend();
         l.setEnabled(false);
-        return chart;
     }
 
     public void animateChart() {

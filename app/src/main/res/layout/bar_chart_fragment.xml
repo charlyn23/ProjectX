@@ -10,6 +10,7 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         style="@style/card"
+        card_view:cardBackgroundColor="#FFFFFF"
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="6dp">
 
@@ -18,13 +19,23 @@
             android:layout_height="match_parent" >
 
             <TextView
+                android:id="@+id/no_harassment_message_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_harassment"
+                android:textColor="@color/primary_dark"
+                android:textSize="17sp"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:padding="40dp"/>
+
+            <TextView
                 android:id="@+id/chart_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/groups"
                 android:textSize="17sp"
                 android:textColor="#000000"
-                android:background="#FFFFFF"
                 android:paddingTop="5dp"
                 android:gravity="center"
                 android:layout_alignParentTop="true"/>
@@ -33,8 +44,8 @@
                 android:id="@+id/bar_chart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/chart_header"
-                android:background="#FFFFFF"/>
+                android:layout_marginTop="25dp"
+                android:background="#FFFFFF" />
 
         </RelativeLayout>
 
@@ -65,7 +76,6 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="30dp"/>
-
 
     </RelativeLayout>
 
