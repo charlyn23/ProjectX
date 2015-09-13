@@ -342,12 +342,8 @@ public class ShameDialogs {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
                             dialog.cancel();
-//                            Toast.makeText(context, context.getString(R.string.shame_submitted), Toast.LENGTH_LONG).show();
-                            if (markerListener != null)
-                                markerListener.setMarker(latitude, longitude);
 
-                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
+                            //Show custom toast after submitting incident
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             View layout = inflater.inflate(R.layout.custom_toast, null);
 
@@ -356,6 +352,13 @@ public class ShameDialogs {
                             toast.setDuration(Toast.LENGTH_LONG);
                             toast.setView(layout);
                             toast.show();
+
+                            if (markerListener != null)
+                                markerListener.setMarker(latitude, longitude);
+
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
+
 
                             if (addShame != null) {
                                 addShame.setVisibility(View.INVISIBLE);
