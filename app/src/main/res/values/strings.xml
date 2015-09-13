@@ -98,7 +98,6 @@
     <string name="geofence_transition_notification_text">Click notification to view details</string>
     <string name="total_instances">Total number of instances:</string>
     <string name="shame_submitted">Shame successfully submitted!</string>
-    <string name="no_cases">Cases of harassment have not been reported in your area!</string>
     <string name="no_harassment">NO instances of harassment have been reported in this area</string>
     <string name="signing_in">Signing in</string>
 </resources>

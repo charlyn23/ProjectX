@@ -514,29 +514,30 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        if (currentLocation == null)
+        if (currentLocation == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
                     setViewToLocation(new LatLng(location.getLatitude(), location.getLongitude()));
                 }
             });
-        else
+        } else {
             setViewToLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
 
-        // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
-        Calendar cal = Calendar.getInstance();
-        Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
-        float distance = currentLocation.distanceTo(lastFetchLocation);
-        Log.d("Geofence enabled", String.valueOf(geofenceEnabled));
-        Log.d("Geofence time", String.valueOf(distance >= Constants.FIFTY_METERS));
-        Log.d("Geofence location", String.valueOf(preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis() - Constants.MILLI_48HOURS) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS));
+            // geofence setup - fetch if geofence is enabled && location hasn't change && did not fetch in past 2 days
+            Calendar cal = Calendar.getInstance();
+            Location lastFetchLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+            float distance = currentLocation.distanceTo(lastFetchLocation);
+            Log.d("Geofence enabled", String.valueOf(geofenceEnabled));
+            Log.d("Geofence time", String.valueOf(distance >= Constants.FIFTY_METERS));
+            Log.d("Geofence location", String.valueOf(preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis() - Constants.MILLI_48HOURS) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS));
 
-        if (geofenceEnabled && preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis() - Constants.MILLI_48HOURS) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS) {
-            fetchGeofenceFromParse(cal);
-            Log.d("Geofence", "Fetching data");
-        } else if (distance >= Constants.FIFTY_METERS)
-            fetchGeofenceFromParse(cal);
+            if (geofenceEnabled && preferences.getLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis() - Constants.MILLI_48HOURS) <= cal.getTimeInMillis() - Constants.MILLI_48HOURS) {
+                fetchGeofenceFromParse(cal);
+                Log.d("Geofence", "Fetching data");
+            } else if (distance >= Constants.FIFTY_METERS)
+                fetchGeofenceFromParse(cal);
+        }
     }
 
     private LocationRequest createLocationRequest() {
@@ -653,7 +654,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
         builder.addGeofences(active_geofence);
-
         return builder.build();
     }
 
@@ -725,13 +725,4 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         }
     }
-
-//    public abstract class BaseFragment extends Fragment {
-//
-//        @Override public void onDestroy() {
-//            super.onDestroy();
-//            RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
-//            refWatcher.watch(this);
-//        }
-//    }
 }

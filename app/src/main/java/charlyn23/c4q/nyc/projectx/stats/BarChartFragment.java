@@ -1,16 +1,11 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
@@ -35,24 +30,31 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     private int numPOC;
     private int numLGBTQ;
     private int numMinor;
-    private BarChart barChart;
     private Typeface questrial;
+    private BarChart barChart;
     private TextView numInstances;
+    private TextView noHarassmentMessage;
     private TextView header;
-    private CardView card;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bar_chart_fragment, container, false);
-        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
-        card = (CardView) view.findViewById(R.id.card_view);
-        header = (TextView) view.findViewById(R.id.chart_header);
         ImageView next = (ImageView) view.findViewById(R.id.back);
-        numInstances = (TextView) view.findViewById(R.id.instances);
-        numInstances.setTypeface(questrial);
-        header.setTypeface(questrial);
-        numInstances.setTypeface(questrial);
         barChart = (BarChart) view.findViewById(R.id.bar_chart);
+        header = (TextView) view.findViewById(R.id.chart_header);
+        noHarassmentMessage = (TextView) view.findViewById(R.id.no_harassment_message_bar);
+        numInstances = (TextView) view.findViewById(R.id.instances);
+
+        questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        header.setTypeface(questrial);
+        noHarassmentMessage.setTypeface(questrial);
+        numInstances.setTypeface(questrial);
+        numInstances.setTypeface(questrial);
+
+        configBarChart();
+
+        //displays the general info about instances of harassment
+        getCountGroups("");
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +64,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        configBarChart(barChart);
-        getCountGroups("");
         return view;
     }
 
@@ -92,26 +92,33 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                             }
                         }
                     }
-                    int totalInstances = numWomen + numPOC + numLGBTQ + numMinor;
-                    numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
-
-                    if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
-                        setAlert();
-                    }
                     Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
                     setDataBarChart(data.getyVals(), data.getxValues());
+                    if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
+                        barChart.setVisibility(View.GONE);
+                        header.setVisibility(View.GONE);
+                        numInstances.setVisibility(View.GONE);
+                        noHarassmentMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        animateChart();
+                        noHarassmentMessage.setVisibility(View.GONE);
+                        barChart.setVisibility(View.VISIBLE);
+                        numInstances.setVisibility(View.VISIBLE);
+                        header.setVisibility(View.VISIBLE);
+                        int totalInstances = numWomen + numPOC + numLGBTQ + numMinor;
+                        numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
+                    }
                 }
             }
         });
     }
 
     //configures the characteristics of the chart
-    public BarChart configBarChart(BarChart barChart) {
-        barChart.setHighlightEnabled(true);
-        barChart.setDrawValueAboveBar(false);
+    public void configBarChart() {
         barChart.setDescription("");
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
+        barChart.setGridBackgroundColor(Color.WHITE);
 
         XAxis xl = barChart.getXAxis();
         xl.setTextSize(13);
@@ -124,35 +131,22 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
 
         YAxis yl = barChart.getAxisLeft();
         yl.setEnabled(false);
-        yl.setDrawAxisLine(false);
-        yl.setDrawGridLines(false);
-        yl.setTypeface(questrial);
-        yl.setTextColor(Color.WHITE);
 
         YAxis yr = barChart.getAxisRight();
-        yr.setAxisMaxValue(100);
-        yr.setTextSize(13);
-        yr.setDrawAxisLine(false);
-        yr.setDrawGridLines(false);
         yr.setEnabled(false);
-        yr.setTypeface(questrial);
-        yr.setTextColor(Color.WHITE);
 
         Legend l = barChart.getLegend();
         l.setEnabled(false);
-        return barChart;
     }
 
     //sets the data on the configured chart
     private void setDataBarChart(ArrayList<BarEntry> yVals, ArrayList<String> xVals) {
-        BarDataSet set = new BarDataSet(yVals, "");
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
-
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
+
+        BarDataSet set = new BarDataSet(yVals, "");
         set.setColors(colors);
-        dataSets.add(set);
-        BarData data = new BarData(xVals, dataSets);
+        BarData data = new BarData(xVals, set);
         data.setValueTextSize(13);
         data.setValueTypeface(questrial);
         data.setValueTextColor(Color.BLACK);
@@ -161,9 +155,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
 
     //animates the cart
     public void animateChart() {
-        if (barChart == null) {
-            return;
-        }
         barChart.animateY(2000);
     }
 
@@ -294,32 +285,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
             xVals.add(Constants.LGBTQ);
             xVals.add(Constants.MINOR);
         }
-        Data data = new Data(yVals, xVals);
-        return data;
-    }
-
-    //sets the default card style
-    public void configureCardStyle(String text)
-    {
-        numInstances.setText(text);
-        header.setText(getString(R.string.groups));
-        header.setGravity(Gravity.TOP);
-        header.setGravity(Gravity.CENTER);
-        header.setPadding(0, 9, 0, 0);
-        header.setTextColor(getResources().getColor(R.color.text_black));
-        barChart.setVisibility(View.VISIBLE);
-    }
-
-    //changes the card style when harassment is not reported in the area
-    private void setAlert() {
-        barChart.setVisibility(View.GONE);
-        card.setCardBackgroundColor(Color.parseColor("#ffffff"));
-        card.setRadius(10);
-        header.setText("NO instances of harassment have been reported in this area");
-        header.setTextColor(getResources().getColor(R.color.primary_dark));
-        header.setTextSize(17);
-        header.setGravity(Gravity.CENTER);
-        header.setPadding(55, 290, 55, 0);
-        numInstances.setText("");
+        return new Data(yVals, xVals);
     }
 }

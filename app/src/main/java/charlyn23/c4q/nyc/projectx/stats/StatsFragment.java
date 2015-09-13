@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -53,12 +54,8 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 zipCode.setText("");
                 ((PieChartFragment) fragments[0]).getCountShameTypes("");
-                ((PieChartFragment) fragments[0]).configureCardStyle(getResources().getString(R.string.total_instances));
-                ((PieChartFragment) fragments[0]).animateChart();
-
                 ((BarChartFragment) fragments[1]).getCountGroups("");
-                ((BarChartFragment) fragments[1]).configureCardStyle(getResources().getString(R.string.total_instances));
-                ((BarChartFragment) fragments[1]).animateChart();
+
             }
         });
 
@@ -101,16 +98,14 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             String userInput = zipCode.getText().toString();
             if (userInput.length() == 5) {
                 ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
-                ((PieChartFragment) fragments[0]).configureCardStyle(getResources().getString(R.string.total_instances));
-
                 ((BarChartFragment) fragments[1]).getCountGroups(userInput);
-                ((BarChartFragment) fragments[1]).configureCardStyle(getResources().getString(R.string.total_instances));
 
                 //hides the keyboard when the user finishes typing zipCode
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                View view = getActivity().getCurrentFocus();
+                Activity context = getActivity();
+                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                View view = context.getCurrentFocus();
                 if(view == null) {
-                    view = new View(getActivity());
+                    view = new View(context);
                 }
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
