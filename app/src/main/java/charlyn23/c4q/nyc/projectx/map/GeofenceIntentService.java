@@ -74,13 +74,13 @@ public class GeofenceIntentService extends IntentService {
 
         // Test that the reported fade_transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+                geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Send notification and log the fade_transition details.
-            sendNotification("Entering an area with high harassment activity.");
+            sendNotification("Entering an area with highly reported incidents.");
             Log.i(GEOFENCE_NAME, "Geofence Notification sent");
         } else {
             // Log the error.

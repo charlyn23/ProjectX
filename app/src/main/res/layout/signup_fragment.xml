@@ -77,7 +77,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/twitter_button"
-            android:src="@drawable/tw"
+            android:src="@drawable/twitter"
             android:background="@android:color/transparent" />
 
         <ImageButton
@@ -85,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/gp"
+            android:src="@drawable/google"
             android:background="@android:color/transparent" />
     </LinearLayout>
 </LinearLayout>

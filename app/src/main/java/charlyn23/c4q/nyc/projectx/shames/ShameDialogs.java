@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +18,12 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -45,15 +51,13 @@ public class ShameDialogs {
     private Marker new_marker;
     private FloatingActionButton addShame;
     private MarkerListener markerListener;
-    public List<Shame> active_shames;
     private Toast toast;
 
-    public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame, List<Shame> active_shames) {
+    public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.new_marker = new_marker;
         this.addShame = addShame;
-        this.active_shames = active_shames;
 
         new MaterialDialog.Builder(context)
                 .title(R.string.new_shame_type)
@@ -151,7 +155,7 @@ public class ShameDialogs {
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        initialDialog(context, latitude, longitude, new_marker, addShame, active_shames);
+                        initialDialog(context, latitude, longitude, new_marker, addShame);
                         dialog.cancel();
                     }
                 })
@@ -320,7 +324,10 @@ public class ShameDialogs {
                             newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
                             newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
                             newShame.put(Constants.GROUP_COLUMN, group);
+                            newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
                             newShame.saveInBackground();
+
+                            checkIfGeofenceIsNeeded();
                         }
                         return true;
                     }
@@ -335,12 +342,8 @@ public class ShameDialogs {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
                             dialog.cancel();
-//                            Toast.makeText(context, context.getString(R.string.shame_submitted), Toast.LENGTH_LONG).show();
-                            if (markerListener != null)
-                                markerListener.setMarker(latitude, longitude);
 
-                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
+                            //Show custom toast after submitting incident
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             View layout = inflater.inflate(R.layout.custom_toast, null);
 
@@ -350,15 +353,18 @@ public class ShameDialogs {
                             toast.setView(layout);
                             toast.show();
 
+                            if (markerListener != null)
+                                markerListener.setMarker(latitude, longitude);
+
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
+
+
                             if (addShame != null) {
                                 addShame.setVisibility(View.INVISIBLE);
                             } else {
                                 Log.e("error", "foo");
                             }
-
-                            // only check geofence checkbox has been checked
-//                            if (enableGeofence)
-//                                checkIfGeofenceIsNeeded();
                         }
                     }
 
@@ -371,24 +377,43 @@ public class ShameDialogs {
     }
 
     public void checkIfGeofenceIsNeeded() {
-        float[] distance = new float[1];
-        int count = 0;
+        ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, last_two_months);
+        query.whereEqualTo(Constants.GROUP_COLUMN, group);
+        query.whereWithinMiles(Constants.LOCATION, new ParseGeoPoint(latitude, longitude), 0.5);
+        query.findInBackground(new FindCallback<Shame>() {
+            public void done(List<Shame> results, ParseException e) {
+                if (e == null) {
+                    float[] distance = new float[1];
+                    int count = 0;
 
-        // todo query only zipcode +- 2?
-//        for (Shame shame : active_shames) {
-//            Location.distanceBetween(latitude, longitude, shame.getLatitude(), shame.getLongitude(), distance);
-//            if (distance[0] < Constants.GEOFENCE_RADIUS)
-//                count++;
-//        }
+                    for (Shame shame : results) {
+                        // todo query only zipcode +- 2?
+                        Location.distanceBetween(latitude, longitude, shame.getDouble(Constants.SHAME_LATITUDE_COLUMN), shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN), distance);
+                        if (distance[0] < Constants.GEOFENCE_RADIUS_IN_METER
+                                && shame.getString(Constants.GROUP_COLUMN).equals(group))
+                            count++;
+                    }
 
-        // TODO && no geofence yet
-        if (count > 10) {
-            ShameGeofence newGeofence = new ShameGeofence();
-            newGeofence.put(Constants.GROUP_COLUMN, group);
-            newGeofence.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
-            newGeofence.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
-            newGeofence.saveInBackground();
-        }
+                    // TODO && no geofence yet
+                    if (count > 5) {
+                        String time = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
+
+                        ShameGeofence newGeofence = new ShameGeofence();
+                        newGeofence.put(Constants.GROUP_COLUMN, group);
+                        newGeofence.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+                        newGeofence.put(Constants.TIMESTAMP, time);
+                        newGeofence.saveInBackground();
+                    }
+                    Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
+                } else {
+                    Log.d("List of Shames", "Error: " + e.getMessage());
+                }
+            }
+        });
     }
 
     private String getZipcode(Context context, double latitude, double longitude) throws IOException {
