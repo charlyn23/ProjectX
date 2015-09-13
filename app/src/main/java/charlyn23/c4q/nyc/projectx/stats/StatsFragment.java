@@ -53,12 +53,8 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 zipCode.setText("");
                 ((PieChartFragment) fragments[0]).getCountShameTypes("");
-                ((PieChartFragment) fragments[0]).configureCardStyle(getResources().getString(R.string.total_instances));
-                ((PieChartFragment) fragments[0]).animateChart();
-
                 ((BarChartFragment) fragments[1]).getCountGroups("");
-                ((BarChartFragment) fragments[1]).configureCardStyle(getResources().getString(R.string.total_instances));
-                ((BarChartFragment) fragments[1]).animateChart();
+
             }
         });
 
@@ -101,10 +97,7 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             String userInput = zipCode.getText().toString();
             if (userInput.length() == 5) {
                 ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
-                ((PieChartFragment) fragments[0]).configureCardStyle(getResources().getString(R.string.total_instances));
-
                 ((BarChartFragment) fragments[1]).getCountGroups(userInput);
-                ((BarChartFragment) fragments[1]).configureCardStyle(getResources().getString(R.string.total_instances));
 
                 //hides the keyboard when the user finishes typing zipCode
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);

@@ -93,13 +93,17 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                         }
                     }
                     int totalInstances = numWomen + numPOC + numLGBTQ + numMinor;
-                    numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
+                    numInstances.setText(getResources().getString(R.string.total_instances) + " " + totalInstances);
 
-                    if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
-                        setAlert();
-                    }
                     Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
                     setDataBarChart(data.getyVals(), data.getxValues());
+                    if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
+                        setNoHarassmentStyleCard();
+                    }
+                    else {
+                        configureDefaultCardStyle();
+                        animateChart();
+                    }
                 }
             }
         });
@@ -299,9 +303,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     }
 
     //sets the default card style
-    public void configureCardStyle(String text)
-    {
-        numInstances.setText(text);
+    public void configureDefaultCardStyle() {
         header.setText(getString(R.string.groups));
         header.setGravity(Gravity.TOP);
         header.setGravity(Gravity.CENTER);
@@ -311,7 +313,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
     }
 
     //changes the card style when harassment is not reported in the area
-    private void setAlert() {
+    private void setNoHarassmentStyleCard() {
         barChart.setVisibility(View.GONE);
         card.setCardBackgroundColor(Color.parseColor("#ffffff"));
         card.setRadius(10);

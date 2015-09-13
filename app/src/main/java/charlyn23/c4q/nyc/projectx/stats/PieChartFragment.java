@@ -1,19 +1,16 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
-import android.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -27,18 +24,14 @@ import com.parse.ParseQuery;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
 
-import static android.view.Gravity.*;
-
 public class PieChartFragment extends Fragment {
-    private PieChart pieChart;
+    public PieChart pieChart;
     private int numVerbalShame;
     private int numPhysicalShame;
     private int numOtherShame;
@@ -46,11 +39,13 @@ public class PieChartFragment extends Fragment {
     private TextView numInstances;
     private LinearLayout parent;
     private TextView header;
+    private CardView card;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.pie_chart_fragment, container, false);
         questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
+        card = (CardView) view.findViewById(R.id.card_view);
         parent = (LinearLayout) view.findViewById(R.id.parent_layout);
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         MaterialIconView next = (MaterialIconView) view.findViewById(R.id.next);
@@ -97,14 +92,16 @@ public class PieChartFragment extends Fragment {
                         }
                     }
                     int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
-                    numInstances.setText(numInstances.getText().toString() + " " + totalInstances);
-
-                    //displays a text when there are no cases reported in the area
-                    if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                        setAlert();
-                    }
+                    numInstances.setText(getResources().getString(R.string.total_instances) + " " + totalInstances);
                     Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
                     setDataPieChart(pieChart, data.getyValues(), data.getxValues());
+                    if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
+                        setNoHarassmentStyleCard();
+                    }
+                    else {
+                        configureDefaultCardStyle();
+                        animateChart();
+                    }
                 }
             }
         });
@@ -127,7 +124,6 @@ public class PieChartFragment extends Fragment {
     private PieChart setDataPieChart(PieChart chart, ArrayList<Entry> yVals, ArrayList<String> xVals) {
         ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(android.R.color.holo_red_dark));
-        //colors.add(getResources().getColor(android.R.color.holo_red_light));
 
         PieDataSet pieChartSet = new PieDataSet(yVals, "");
         pieChartSet.setSliceSpace(2);
@@ -192,7 +188,6 @@ public class PieChartFragment extends Fragment {
             xVals.add(Constants.VERBAL);
             xVals.add(Constants.PHYSICAL);
         }
-
         else {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
@@ -205,21 +200,23 @@ public class PieChartFragment extends Fragment {
         return data;
     }
 
-    //sets the default card style
-    public void configureCardStyle(String text)
-    {
+    public void setInstancesTotal(String text) {
         numInstances.setText(text);
+    }
+
+    //sets the default card style
+    public void configureDefaultCardStyle()
+    {
         header.setText(getString(R.string.types_of_harassment));
         header.setGravity(Gravity.TOP);
         header.setGravity(Gravity.CENTER);
         header.setPadding(0, 0, 0, 0);
         header.setTextColor(getResources().getColor(R.color.text_black));
         header.setPadding(0, 9, 0, 0);
-        pieChart.setVisibility(View.VISIBLE);
     }
 
     //changes the card style when harassment is not reported in the area
-    private void setAlert() {
+    private void setNoHarassmentStyleCard() {
         header.setText("NO instances of harassment have been reported in this area");
         header.setTypeface(questrial);
         header.setTextColor(getResources().getColor(R.color.primary_dark));
