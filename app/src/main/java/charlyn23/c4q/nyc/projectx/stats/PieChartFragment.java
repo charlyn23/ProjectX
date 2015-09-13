@@ -40,6 +40,7 @@ public class PieChartFragment extends Fragment {
     private TextView numInstances;
     private LinearLayout parent;
     private TextView header;
+    private TextView noHarassmentMessage;
     private CardView card;
 
     @Override
@@ -51,9 +52,13 @@ public class PieChartFragment extends Fragment {
         pieChart = (PieChart) view.findViewById(R.id.pie_chart);
         MaterialIconView next = (MaterialIconView) view.findViewById(R.id.next);
         header = (TextView) view.findViewById(R.id.chart_header);
-        header.setTypeface(questrial);
+        noHarassmentMessage = (TextView) view.findViewById(R.id.no_harassment_message);
         numInstances = (TextView) view.findViewById(R.id.instances);
+
+        header.setTypeface(questrial);
+        noHarassmentMessage.setTypeface(questrial);
         numInstances.setTypeface(questrial);
+        configPieChart();
 
         //switches to the next stats fragment
         next.setOnClickListener(new View.OnClickListener() {
@@ -92,16 +97,19 @@ public class PieChartFragment extends Fragment {
                         }
                     }
 
-                    int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
-                    numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
                     Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
                     setDataPieChart(pieChart, data.getyValues(), data.getxValues());
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                        updateNoHarassmentStyleCard();
                         pieChart.invalidate();
+                        header.setVisibility(View.GONE);
+                        numInstances.setVisibility(View.GONE);
+                        noHarassmentMessage.setVisibility(View.VISIBLE);
                     } else {
-                        configPieChart();
-                        updateHeaderStyle();
+                        int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
+                        numInstances.setVisibility(View.VISIBLE);
+                        numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
+                        header.setVisibility(View.VISIBLE);
+                        noHarassmentMessage.setVisibility(View.GONE);
                         animateChart();
                     }
                 }
@@ -185,26 +193,5 @@ public class PieChartFragment extends Fragment {
             xVals.add(Constants.OTHER);
         }
         return new Data(Constants.PIE_CHART_NAME, yVals, xVals);
-    }
-
-    //sets the default card style
-    public void updateHeaderStyle() {
-        header.setText(getString(R.string.types_of_harassment));
-        header.setGravity(Gravity.TOP);
-        header.setGravity(Gravity.CENTER);
-        header.setPadding(0, 0, 0, 0);
-        header.setTextColor(getResources().getColor(R.color.text_black));
-        header.setPadding(0, 9, 0, 0);
-    }
-
-    //changes the card style when harassment is not reported in the area
-    private void updateNoHarassmentStyleCard() {
-        header.setText(getResources().getString(R.string.no_harassment));
-        header.setTypeface(questrial);
-        header.setTextColor(getResources().getColor(R.color.primary_dark));
-        header.setTextSize(17);
-        header.setGravity(Gravity.CENTER);
-        header.setPadding(55, 290, 55, 0);
-        numInstances.setText("");
     }
 }

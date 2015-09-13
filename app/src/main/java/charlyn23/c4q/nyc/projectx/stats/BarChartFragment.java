@@ -111,8 +111,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
 
     //configures the characteristics of the chart
     public BarChart configBarChart(BarChart barChart) {
-        barChart.setHighlightEnabled(true);
-        barChart.setDrawValueAboveBar(false);
         barChart.setDescription("");
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
@@ -165,9 +163,6 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
 
     //animates the cart
     public void animateChart() {
-        if (barChart == null) {
-            return;
-        }
         barChart.animateY(2000);
     }
 
@@ -309,12 +304,10 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         header.setGravity(Gravity.CENTER);
         header.setPadding(0, 9, 0, 0);
         header.setTextColor(getResources().getColor(R.color.text_black));
-        barChart.setVisibility(View.VISIBLE);
     }
 
     //changes the card style when harassment is not reported in the area
     private void setNoHarassmentStyleCard() {
-        barChart.setVisibility(View.GONE);
         card.setCardBackgroundColor(Color.parseColor("#ffffff"));
         card.setRadius(10);
         header.setText(getResources().getString(R.string.no_harassment));
