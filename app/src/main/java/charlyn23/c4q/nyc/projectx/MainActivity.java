@@ -1,7 +1,6 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.annotation.TargetApi;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -16,7 +15,6 @@ import android.transition.Fade;
 import android.transition.Scene;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -25,7 +23,6 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
-import com.squareup.leakcanary.RefWatcher;
 
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         fadeTransition = new Fade();
 
         firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
-        secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.shame_layout, this);
+        secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.activity_details, this);
 
         getBundle();
     }

@@ -41,6 +41,7 @@ public class Constants {
     // Shame constants
     public static final String SHOW_DIALOG = "showDialog";
     public static final String SHAME = "Shame";
+    public static final String LAST_UPDATE = "lastUpdate";
     public static final String GROUP_COLUMN = "Group";
     public static final String SHAME_TYPE_COLUMN = "shameType";
     public static final String SHAME_FEEL_COLUMN = "shameFeel";

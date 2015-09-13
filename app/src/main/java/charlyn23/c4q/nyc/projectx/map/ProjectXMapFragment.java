@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx.map;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -69,7 +71,7 @@ import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status>  {
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status> {
     private static final LatLngBounds BOUNDS = new LatLngBounds(new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
@@ -111,7 +113,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         boolean lgbtq_check = (preferences.getBoolean(Constants.TRANS, false) || preferences.getBoolean(Constants.GAY, false) ||
                 preferences.getBoolean(Constants.BISEXUAL, false) || preferences.getBoolean(Constants.QUEER, false) ||
                 preferences.getBoolean(Constants.LESBIAN, false));
-            identity.put(Constants.LGBTQ, lgbtq_check);
+        identity.put(Constants.LGBTQ, lgbtq_check);
 
         filter.setOnClickListener(filterClick);
         addShame.setOnClickListener(new View.OnClickListener() {
@@ -180,44 +182,71 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         //populates map with shames that occurred within the last two months
         ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-        Log.i("last_two_months", last_two_months); //good
-        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, last_two_months);
-        query.addDescendingOrder(Constants.SHAME_TIME_COLUMN);
+        String lastUpdate = preferences.getString(Constants.LAST_UPDATE, "00000000_0000");
+        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, lastUpdate);
+//        query.addDescendingOrder(Constants.SHAME_TIME_COLUMN);
         query.findInBackground(new FindCallback<Shame>() {
-            public void done(List<Shame> shames, ParseException e) {
+            public void done(final List<Shame> results, ParseException e) {
                 if (e == null) {
-                    for (Shame shame : shames) {
-                        double latitude = shame.getDouble(Constants.SHAME_LATITUDE_COLUMN);
-                        double longitude = shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN);
-                        LatLng location = new LatLng(latitude, longitude);
-                        String shame_group = shame.getString(Constants.GROUP_COLUMN);
-                        if (shame_group != null) {
-                            switch (shame_group) {
-                                case Constants.WOMAN:
-                                    woman_loc.add(location);
-                                    break;
-                                case Constants.MINOR:
-                                    minor_loc.add(location);
-                                    break;
-                                case Constants.POC:
-                                    poc_loc.add(location);
-                                    break;
-                                case Constants.LGBTQ:
-                                    lgbtq_loc.add(location);
-                                    break;
+                    if (results.size() > 0)
+                        insertDatatoSQLite(results);
+                    
+                    new AsyncTask<Void, Void, String>() {
+                        @Override
+                        protected String doInBackground(Void[] params) {
+                            List<Shame> active_list = loadFromSQLite();
+                            Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
+                            for (Shame incident : active_list) {
+                                double latitude = incident.getLatitude();
+                                double longitude = incident.getLongitude();
+                                LatLng location = new LatLng(latitude, longitude);
+                                String shame_group = incident.getGroup();
+                                if (shame_group != null) {
+                                    switch (shame_group) {
+                                        case Constants.WOMAN:
+                                            woman_loc.add(location);
+                                            break;
+                                        case Constants.MINOR:
+                                            minor_loc.add(location);
+                                            break;
+                                        case Constants.POC:
+                                            poc_loc.add(location);
+                                            break;
+                                        case Constants.LGBTQ:
+                                            lgbtq_loc.add(location);
+                                            break;
+                                    }
+                                }
                             }
+                            return "All";
                         }
-                    }
-                    populateMap("All");
-                    Log.d("List of Shames", "Retrieved " + shames.size() + " Shames");
+
+                        @Override
+                        protected void onPostExecute(String all) {
+                            populateMap(all);
+                            Log.i("MapFragment", "Populating map");
+                        }
+                    }.execute();
+                    Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
                 }
             }
         });
+    }
+
+    // load incidents from past 2 months
+    public List<Shame> loadFromSQLite() {
+        ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
+        Calendar cal = Calendar.getInstance();
+        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+        return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
+    }
+
+    public void insertDatatoSQLite(List<Shame> results) {
+        ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
+        helper.insertData(results);
     }
 
     //directs the user to SignUp Fragment if not logged in or to Dialogs if logged in when FAB is clicked
@@ -631,9 +660,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private PendingIntent getGeofencePendingIntent() {
         if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
+        } else {
+            Intent intent = new Intent(getActivity(), GeofenceIntentService.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP | Notification.FLAG_AUTO_CANCEL);
+            return PendingIntent.getService(view.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
-        Intent intent = new Intent(getActivity(), GeofenceIntentService.class);
-        return PendingIntent.getService(view.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public void initializeViews() {
