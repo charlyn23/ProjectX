@@ -185,6 +185,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
         Log.i("last_two_months", last_two_months); //good
         query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, last_two_months);
+        query.addDescendingOrder(Constants.SHAME_TIME_COLUMN);
         query.findInBackground(new FindCallback<Shame>() {
             public void done(List<Shame> shames, ParseException e) {
                 if (e == null) {
@@ -572,6 +573,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         String yesterday = new SimpleDateFormat("yyyyMMdd_HHmmss").format(before.getTime());
         db_geofences.whereGreaterThanOrEqualTo(Constants.TIMESTAMP, yesterday);
         db_geofences.whereWithinMiles(Constants.LOCATION, new ParseGeoPoint(currentLocation.getLatitude(), currentLocation.getLongitude()), 50);
+        db_geofences.addDescendingOrder(Constants.TIMESTAMP);
         db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
             public void done(List<ShameGeofence> results, ParseException e) {
                 if (e == null) {
