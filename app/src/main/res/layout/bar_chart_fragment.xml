@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         style="@style/card"
         card_view:cardCornerRadius="10dp"
@@ -15,26 +14,26 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/chart_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/groups"
-                android:textSize="17sp"
-                android:textColor="#000000"
+                android:layout_alignParentTop="true"
                 android:background="#FFFFFF"
-                android:paddingTop="5dp"
                 android:gravity="center"
-                android:layout_alignParentTop="true"/>
+                android:paddingTop="5dp"
+                android:text="@string/groups"
+                android:textColor="#000000"
+                android:textSize="17sp" />
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/bar_chart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/chart_header"
-                android:background="#FFFFFF"/>
+                android:background="#FFFFFF" />
 
         </RelativeLayout>
 
@@ -45,27 +44,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <net.steamcrafted.materialiconlib.MaterialIconView
             android:id="@+id/back"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginStart="10dp"
             app:materialIcon="arrow_left_bold"
-            app:materialIconColor="#D32F2F"
-            android:layout_marginStart="10dp"/>
+            app:materialIconColor="#ffffff" />
 
         <TextView
             android:id="@+id/instances"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/total_instances"
-            android:textSize="17sp"
-            android:textColor="@color/text_black"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="30dp"/>
-
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="30dp"
+            android:text="@string/total_instances"
+            android:textColor="@color/text_white"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

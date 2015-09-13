@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:id="@+id/scene_container"
-    >
+    android:id="@+id/scene_container">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,8 +19,6 @@
             style="@style/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:layout_gravity="center"
             android:layout_weight="3"
             android:text="Filter"
@@ -32,13 +30,14 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="2"
-            android:padding="5dp"
+            android:padding="2dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/search" />
 
         <HorizontalScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_weight="9"
             android:requiresFadingEdge="horizontal"
             android:scrollbars="none">
@@ -47,9 +46,8 @@
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:nextFocusUp="@id/search"
-                android:nextFocusLeft="@id/search"
-                android:hint="Search Location                                         "
+                android:layout_gravity="center_vertical"
+                android:hint="Search by location                                     "
                 android:imeOptions="actionGo"
                 android:textSize="18dp" />
 

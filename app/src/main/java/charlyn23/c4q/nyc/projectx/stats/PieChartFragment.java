@@ -161,39 +161,28 @@ public class PieChartFragment extends Fragment {
         if (numOtherShame == 0 && numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             xVals.add(Constants.VERBAL);
-        }
-
-        else if (numOtherShame == 0 && numVerbalShame == 0) {
+        } else if (numOtherShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
             xVals.add(Constants.PHYSICAL);
-        }
-
-        else if (numPhysicalShame == 0 && numVerbalShame == 0) {
+        } else if (numPhysicalShame == 0 && numVerbalShame == 0) {
             yVals.add(new Entry(numOtherShame, 0));
             xVals.add(Constants.OTHER);
-        }
-
-        else if (numVerbalShame == 0) {
+        } else if (numVerbalShame == 0) {
             yVals.add(new Entry(numPhysicalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
             xVals.add(Constants.PHYSICAL);
             xVals.add(Constants.OTHER);
-        }
-
-        else if (numPhysicalShame == 0) {
+        } else if (numPhysicalShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numOtherShame, 1));
             xVals.add(Constants.VERBAL);
             xVals.add(Constants.OTHER);
-        }
-        else if (numOtherShame == 0) {
+        } else if (numOtherShame == 0) {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
             xVals.add(Constants.VERBAL);
             xVals.add(Constants.PHYSICAL);
-        }
-
-        else {
+        } else {
             yVals.add(new Entry(numVerbalShame, 0));
             yVals.add(new Entry(numPhysicalShame, 1));
             yVals.add(new Entry(numOtherShame, 2));
@@ -206,15 +195,13 @@ public class PieChartFragment extends Fragment {
     }
 
     //sets the default card style
-    public void configureCardStyle(String text)
-    {
+    public void configureCardStyle(String text) {
         numInstances.setText(text);
         header.setText(getString(R.string.types_of_harassment));
-        header.setGravity(Gravity.TOP);
+//        header.setGravity(Gravity.TOP);
         header.setGravity(Gravity.CENTER);
-        header.setPadding(0, 0, 0, 0);
         header.setTextColor(getResources().getColor(R.color.text_black));
-        header.setPadding(0, 9, 0, 0);
+        header.setPadding(0, 20, 0, 30);
         pieChart.setVisibility(View.VISIBLE);
     }
 

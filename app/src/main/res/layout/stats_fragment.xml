@@ -1,50 +1,44 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:orientation="vertical"
+    android:background="@drawable/gradient"
     android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/overview"
+            style="@style/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
-            android:text="General Data Overview"
-            android:textStyle="bold"
-            android:textColor="@color/text_black"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/overview_button" />
+            android:layout_weight="4"
+            android:text="General Overview" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/zipcode_layout"
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/search" />
+
+        <EditText
+            android:id="@+id/zipcode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@color/text_black"
-            android:layout_weight="1">
-
-            <EditText
-                android:id="@+id/zipcode"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/zipcode"
-                android:inputType="number"
-                android:maxLength="5"
-                android:textColor="@color/text_black"
-                android:textColorHint="#363636"
-                android:textSize="18sp"/>
-        </android.support.design.widget.TextInputLayout>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="8"
+            android:hint="@string/zipcode"
+            android:inputType="number"
+            android:maxLength="5"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -52,7 +46,7 @@
         android:id="@+id/inner_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"/>
+        android:layout_weight="8" />
 
 </LinearLayout>
 
