@@ -63,7 +63,6 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.profile_fragment, container, false);
@@ -283,10 +282,4 @@ public class ProfileFragment extends Fragment {
             Log.d("ProfileFragment", "Disconnected onStop");
         }
     }
-
-//    @Override public void onDestroy() {
-//        super.onDestroy();
-//        RefWatcher refWatcher = ProjectX.getRefWatcher(getActivity());
-//        refWatcher.watch(this);
-//    }
 }
