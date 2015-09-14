@@ -191,52 +191,52 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 if (e == null) {
                     if (results.size() > 0)
                         insertDatatoSQLite(results);
-
-                    new AsyncTask<Void, Void, String>() {
-                        @Override
-                        protected String doInBackground(Void[] params) {
-                            List<Shame> active_list = loadFromSQLite();
-                            Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
-                            for (Shame incident : active_list) {
-                                double latitude = incident.getLatitude();
-                                double longitude = incident.getLongitude();
-                                LatLng location = new LatLng(latitude, longitude);
-                                String shame_group = incident.getGroup();
-                                if (shame_group != null) {
-                                    switch (shame_group) {
-                                        case Constants.WOMAN:
-                                            woman_loc.add(location);
-                                            break;
-                                        case Constants.MINOR:
-                                            minor_loc.add(location);
-                                            break;
-                                        case Constants.POC:
-                                            poc_loc.add(location);
-                                            break;
-                                        case Constants.LGBTQ:
-                                            lgbtq_loc.add(location);
-                                            break;
-                                        case Constants.OTHER:
-                                            other_loc.add(location);
-                                            break;
-                                    }
-                                }
-                            }
-                            return "All";
-                        }
-
-                        @Override
-                        protected void onPostExecute(String all) {
-                            populateMap(all);
-                            Log.i("MapFragment", "Populating map");
-                        }
-                    }.execute();
-                    Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
+                    Log.d("List of Shames", "Inserted " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
                 }
             }
         });
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void[] params) {
+                List<Shame> active_list = loadFromSQLite();
+                Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
+                for (Shame incident : active_list) {
+                    double latitude = incident.getLatitude();
+                    double longitude = incident.getLongitude();
+                    LatLng location = new LatLng(latitude, longitude);
+                    String shame_group = incident.getGroup();
+                    if (shame_group != null) {
+                        switch (shame_group) {
+                            case Constants.WOMAN:
+                                woman_loc.add(location);
+                                break;
+                            case Constants.MINOR:
+                                minor_loc.add(location);
+                                break;
+                            case Constants.POC:
+                                poc_loc.add(location);
+                                break;
+                            case Constants.LGBTQ:
+                                lgbtq_loc.add(location);
+                                break;
+                            case Constants.OTHER:
+                                other_loc.add(location);
+                                break;
+                        }
+                    }
+                }
+                return "All";
+            }
+
+            @Override
+            protected void onPostExecute(String all) {
+                populateMap(all);
+                Log.i("MapFragment", "Populating map");
+            }
+        }.execute();
     }
 
     // load incidents from past 2 months
@@ -444,8 +444,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     };
 
     public void populateMap(String group) {
-        Marker woman_marker, LGBTQ_marker, minor_marker, POC_marker;
-
         switch (group) {
             case Constants.WOMAN:
                 for (LatLng loc : woman_loc) {

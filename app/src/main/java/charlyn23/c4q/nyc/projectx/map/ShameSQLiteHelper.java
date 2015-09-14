@@ -7,17 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 
-/**
- * Created by sufeizhao on 9/10/15.
- */
 public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DB = "ShameDB";
@@ -52,7 +47,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         public static final String COLUMN_LONGITUDE = "longitude";
         public static final String COLUMN_SHAME_TYPE = "shameType";
         public static final String COLUMB_VERBAL_SHAME = "verbalShame";
-        public static final String COLUMN_PHYSICAL_SHAME= "physicalShame";
+        public static final String COLUMN_PHYSICAL_SHAME = "physicalShame";
         public static final String COLUMN_OTHER_SHAME = "otherShame";
         public static final String COLUMN_GROUP = "groupEffected";
         public static final String COLUMN_SHAME_DOING = "shameDoing";
@@ -77,13 +72,6 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
             DataEntry.COLUMN_ZIPCODE + " TEXT" + ")";
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DataEntry.TABLE_NAME;
-
-    //update data every time there is network connection
-    public void deleteData() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(SQL_DELETE_ENTRIES);
-    }
-
 
     public void insertData(List<Shame> results) {
         for (Shame incident : results) {
@@ -155,7 +143,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
     public void removeSomeData() {
         SQLiteDatabase db = getWritableDatabase();
         String selectQuery = "DELETE FROM " + DataEntry.TABLE_NAME + " WHERE _id IN " +
-                "(SELECT _id FROM "+ DataEntry.TABLE_NAME + " ORDER BY _id ASC LIMIT 500)";
+                "(SELECT _id FROM " + DataEntry.TABLE_NAME + " ORDER BY _id ASC LIMIT 500)";
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         cursor.close();
