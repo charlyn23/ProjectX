@@ -467,8 +467,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 break;
             case Constants.OTHER:
                 for (LatLng loc : other_loc) {
-                    //TODO: change the color of the marker for the group "other"
-                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
                 }
                 break;
             default:
@@ -484,9 +483,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 for (LatLng loc : poc_loc) {
                     map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
                 }
-                //TODO: change the color of the marker for the group "other"
                 for (LatLng loc : other_loc) {
-                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallpoclogo)));
+                    map.addMarker(new MarkerOptions().position(loc).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallotherlogo)));
                 }
                 break;
         }
