@@ -76,7 +76,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             public void done(final ParseUser user, ParseException err) {
                 if (user == null) {
                     Log.i(Constants.TAG, "Log in failed");
-                    Toast.makeText(view.getContext(), "Try again, please!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_SHORT).show();
                     ParseUser.logOut();
                 } else if (user.isNew()) {
                     Log.i(Constants.TAG, "User signed up and logged in through Facebook!");
@@ -119,6 +119,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             @Override
             public void done(final ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
+                    Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_SHORT).show();
                     Log.i(Constants.TAG, "User cancelled the Twitter login.");
                     ParseUser.logOut();
 
@@ -182,8 +183,14 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void logInViaGooglePlus() {
-        googleLogInClient.connect();
-        Log.d("SignUpFragment", "Google+ login successful");
+        boolean isConnected =preferences.getBoolean(Constants.IS_CONNECTED, false);
+        if (isConnected) {
+            googleLogInClient.connect();
+            Log.d("SignUpFragment", "Google+ login successful");
+        }
+        else {
+            Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

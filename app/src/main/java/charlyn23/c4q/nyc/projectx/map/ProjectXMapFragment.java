@@ -190,8 +190,13 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 if (e == null) {
                     if (results.size() > 0)
                         insertDatatoSQLite(results);
+                }else {
+                    Log.d("List of Shames", "Error: " + e.getMessage());
+                }
+            }
+        });
 
-                    new AsyncTask<Void, Void, String>() {
+        new AsyncTask<Void, Void, String>() {
                         @Override
                         protected String doInBackground(Void[] params) {
                             List<Shame> active_list = loadFromSQLite();
@@ -227,12 +232,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                             Log.i("MapFragment", "Populating map");
                         }
                     }.execute();
-                    Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
-                } else {
-                    Log.d("List of Shames", "Error: " + e.getMessage());
-                }
-            }
-        });
     }
 
     // load incidents from past 2 months

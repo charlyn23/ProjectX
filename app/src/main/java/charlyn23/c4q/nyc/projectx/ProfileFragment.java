@@ -53,7 +53,7 @@ public class ProfileFragment extends Fragment {
     private ToggleButton man, woman, lesbian, poc, gay, trans, bisexual, minor, queer;
     private EditText age;
     private Button logout;
-    private boolean isLoggedIn_Google, geofenceEnabled;
+    private boolean isLoggedIn_Google, geofenceEnabled, isConnected;
 
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
@@ -74,6 +74,7 @@ public class ProfileFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
         setUpToggleButtons();
         allow_geofence.setChecked(geofenceEnabled);
         allow_geofence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

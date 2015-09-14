@@ -327,7 +327,33 @@ public class ShameDialogs {
                             newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
                             newShame.saveInBackground();
 
-                            checkIfGeofenceIsNeeded();
+                            //check network connection
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            boolean isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
+                            if (!isConnected) {
+                                Toast.makeText(context, R.string.check_network_connection, Toast.LENGTH_LONG).show();
+                            } else {
+                                //Show custom toast after submitting incident
+                                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                View layout = inflater.inflate(R.layout.custom_toast, null);
+                                toast = new Toast(context);
+                                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setView(layout);
+                                toast.show();
+                                checkIfGeofenceIsNeeded();
+
+                                if (markerListener != null)
+                                    markerListener.setMarker(latitude, longitude);
+
+                                preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
+
+                                if (addShame != null) {
+                                    addShame.setVisibility(View.INVISIBLE);
+                                } else {
+                                    Log.e("error", "foo");
+                                }
+                            }
                         }
                         return true;
                     }
@@ -342,29 +368,6 @@ public class ShameDialogs {
                             YoYo.with(Techniques.Shake).playOn(dialog.getActionButton(DialogAction.POSITIVE));
                         else {
                             dialog.cancel();
-
-                            //Show custom toast after submitting incident
-                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            View layout = inflater.inflate(R.layout.custom_toast, null);
-
-                            toast = new Toast(context);
-                            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            toast.setView(layout);
-                            toast.show();
-
-                            if (markerListener != null)
-                                markerListener.setMarker(latitude, longitude);
-
-                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
-
-
-                            if (addShame != null) {
-                                addShame.setVisibility(View.INVISIBLE);
-                            } else {
-                                Log.e("error", "foo");
-                            }
                         }
                     }
 

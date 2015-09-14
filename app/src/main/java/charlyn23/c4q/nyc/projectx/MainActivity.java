@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -46,12 +48,12 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Connects to Geolocation API to make current location request & load map
         buildGoogleApiClient(this);
         preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
         isLoggedIn_google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
+        checkNetworkConnection();
         setUpActionBar();
 
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.scene_root);
@@ -101,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             } catch (IntentSender.SendIntentException e) {
                 Log.e(Constants.TAG, "Could not resolve ConnectionResult.", e);
             }
-        } else {
-            Toast.makeText(this, getString(R.string.network_connection_problem), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -227,5 +227,16 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 projectXMapFragment.setArguments(fragmentBundle);
             }
         }
+    }
+
+    private void checkNetworkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
+        } else {
+            preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
+        }
+
     }
 }

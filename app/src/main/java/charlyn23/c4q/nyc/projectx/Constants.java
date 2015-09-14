@@ -8,6 +8,8 @@ public class Constants {
     public static final String TWITTER_KEY = "qRY7V1WbBMXogze0wC0m05cIgMpzl3bn8Kt9NpOpHkW7S5kKLk";
 
     public static final int LOG_IN_VIEW = 2;
+    public static final int RC_SIGN_IN = 0;
+    public static final int PICK_IMAGE_REQUEST = 1;
     public static final int PIE_CHART = 0;
     public static final int BAR_CHART = 1;
 
@@ -15,11 +17,10 @@ public class Constants {
     public static final String LOGGED_IN = "isLoggedIn";
     public static final String LOGGED_IN_GOOGLE = "logIn_Google";
     public static final String SHARED_PREFERENCE = "sharedPreference";
-    public static final int RC_SIGN_IN = 0;
-    public static final int PICK_IMAGE_REQUEST = 1;
     public static final String PROFILE_IMAGE = "profileImage";
     public static final String MARKER_DROPPED = "markerDropped";
     public static final String YEAR = "Year";
+    public static final String IS_CONNECTED = "isConnected";
 
     // Geofence constants
     public static final String GEOFENCE_NAME = "Geofence";
