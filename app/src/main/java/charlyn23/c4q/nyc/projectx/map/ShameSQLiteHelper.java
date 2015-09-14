@@ -78,6 +78,13 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DataEntry.TABLE_NAME;
 
+    //update data every time there is network connection
+    public void deleteData() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(SQL_DELETE_ENTRIES);
+    }
+
+
     public void insertData(List<Shame> results) {
         for (Shame incident : results) {
             insertRow(incident);

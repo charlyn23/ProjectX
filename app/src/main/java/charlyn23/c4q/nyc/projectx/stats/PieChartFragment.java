@@ -1,5 +1,7 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -54,9 +56,9 @@ public class PieChartFragment extends Fragment {
         header.setTypeface(questrial);
         noHarassmentMessage.setTypeface(questrial);
         numInstances.setTypeface(questrial);
-        configPieChart();
 
-        //displays the general info about instances of harassment
+        noNetworkConnection();
+        configPieChart();
         getCountShameTypes("");
 
         //switches to the next stats fragment
@@ -71,6 +73,7 @@ public class PieChartFragment extends Fragment {
         return view;
     }
 
+    //displays info about instances of harassment
     public void getCountShameTypes(String zipCode) {
         numVerbalShame = 0;
         numPhysicalShame = 0;
@@ -97,12 +100,15 @@ public class PieChartFragment extends Fragment {
 
                     Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
                     setDataPieChart(data.getyValues(), data.getxValues());
+                    //no harassment instances reported in the area
                     if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
                         pieChart.invalidate();
                         header.setVisibility(View.GONE);
                         numInstances.setVisibility(View.GONE);
                         noHarassmentMessage.setVisibility(View.VISIBLE);
-                    } else {
+                    }
+                    //data available
+                    else {
                         noHarassmentMessage.setVisibility(View.GONE);
                         numInstances.setVisibility(View.VISIBLE);
                         header.setVisibility(View.VISIBLE);
@@ -189,5 +195,16 @@ public class PieChartFragment extends Fragment {
             xVals.add(Constants.OTHER);
         }
         return new Data(Constants.PIE_CHART_NAME, yVals, xVals);
+    }
+
+    //no network connection
+    private void noNetworkConnection() {
+        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        boolean isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
+        if (!isConnected) {
+            header.setVisibility(View.GONE);
+            numInstances.setVisibility(View.GONE);
+            noHarassmentMessage.setVisibility(View.GONE);
+        }
     }
 }

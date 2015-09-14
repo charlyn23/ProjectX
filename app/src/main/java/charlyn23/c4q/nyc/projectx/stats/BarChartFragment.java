@@ -1,5 +1,7 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -51,9 +53,8 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         numInstances.setTypeface(questrial);
         numInstances.setTypeface(questrial);
 
+        noNetworkConnection();
         configBarChart();
-
-        //displays the general info about instances of harassment
         getCountGroups("");
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +68,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    //displays info about instances of harassment
     public void getCountGroups(String zipCode) {
         numWomen = 0;
         numPOC = 0;
@@ -92,14 +94,18 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                             }
                         }
                     }
+
                     Data data = setBars(numWomen, numPOC, numLGBTQ, numMinor);
                     setDataBarChart(data.getyVals(), data.getxValues());
+                    //no harassment instances reported in the area
                     if (numWomen == 0 && numMinor == 0 && numPOC == 0 && numLGBTQ == 0) {
                         barChart.setVisibility(View.GONE);
                         header.setVisibility(View.GONE);
                         numInstances.setVisibility(View.GONE);
                         noHarassmentMessage.setVisibility(View.VISIBLE);
-                    } else {
+                    }
+                    //data available
+                    else {
                         animateChart();
                         noHarassmentMessage.setVisibility(View.GONE);
                         barChart.setVisibility(View.VISIBLE);
@@ -178,39 +184,33 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                         yVals.add(new BarEntry(minorPerCent, 0));
                         xVals.add(Constants.MINOR);
                     }
-                }
-                else {
+                } else {
                     if (numMinor == 0) {
                         yVals.add(new BarEntry(LGBTQPerCent, 0));
                         xVals.add(Constants.LGBTQ);
-                    }
-                    else {
+                    } else {
                         yVals.add(new BarEntry(LGBTQPerCent, 0));
                         yVals.add(new BarEntry(minorPerCent, 1));
                         xVals.add(Constants.LGBTQ);
                         xVals.add(Constants.MINOR);
                     }
                 }
-            }
-            else if (numLGBTQ == 0) {
+            } else if (numLGBTQ == 0) {
                 if (numMinor == 0) {
                     yVals.add(new BarEntry(POCPerCent, 0));
                     xVals.add(Constants.POC);
-                }
-                else {
+                } else {
                     yVals.add(new BarEntry(POCPerCent, 0));
                     yVals.add(new BarEntry(minorPerCent, 1));
                     xVals.add(Constants.POC);
                     xVals.add(Constants.MINOR);
                 }
-            }
-            else if (numMinor == 0) {
+            } else if (numMinor == 0) {
                 yVals.add(new BarEntry(POCPerCent, 0));
                 yVals.add(new BarEntry(LGBTQPerCent, 1));
                 xVals.add(Constants.POC);
                 xVals.add(Constants.LGBTQ);
-            }
-            else {
+            } else {
                 yVals.add(new BarEntry(POCPerCent, 0));
                 yVals.add(new BarEntry(LGBTQPerCent, 1));
                 yVals.add(new BarEntry(minorPerCent, 2));
@@ -218,28 +218,23 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                 xVals.add(Constants.LGBTQ);
                 xVals.add(Constants.MINOR);
             }
-        }
-
-        else if (numPOC == 0) {
+        } else if (numPOC == 0) {
             if (numLGBTQ == 0) {
                 if (numMinor == 0) {
                     yVals.add(new BarEntry(womenPerCent, 0));
                     xVals.add(Constants.WOMEN);
-                }
-                else {
+                } else {
                     yVals.add(new BarEntry(womenPerCent, 0));
                     yVals.add(new BarEntry(minorPerCent, 1));
                     xVals.add(Constants.WOMEN);
                     xVals.add(Constants.MINOR);
                 }
-            }
-            else if (numMinor == 0) {
+            } else if (numMinor == 0) {
                 yVals.add(new BarEntry(womenPerCent, 0));
                 yVals.add(new BarEntry(LGBTQPerCent, 1));
                 xVals.add(Constants.WOMEN);
                 xVals.add(Constants.LGBTQ);
-            }
-            else {
+            } else {
                 yVals.add(new BarEntry(womenPerCent, 0));
                 yVals.add(new BarEntry(LGBTQPerCent, 1));
                 yVals.add(new BarEntry(minorPerCent, 2));
@@ -247,16 +242,13 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                 xVals.add(Constants.LGBTQ);
                 xVals.add(Constants.MINOR);
             }
-        }
-
-        else if (numLGBTQ == 0) {
+        } else if (numLGBTQ == 0) {
             if (numMinor == 0) {
                 yVals.add(new BarEntry(womenPerCent, 0));
                 yVals.add(new BarEntry(POCPerCent, 1));
                 xVals.add(Constants.WOMEN);
                 xVals.add(Constants.POC);
-            }
-            else {
+            } else {
                 yVals.add(new BarEntry(womenPerCent, 0));
                 yVals.add(new BarEntry(POCPerCent, 1));
                 yVals.add(new BarEntry(minorPerCent, 2));
@@ -264,18 +256,14 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                 xVals.add(Constants.POC);
                 xVals.add(Constants.MINOR);
             }
-        }
-
-        else if (numMinor == 0) {
+        } else if (numMinor == 0) {
             yVals.add(new BarEntry(womenPerCent, 0));
             yVals.add(new BarEntry(POCPerCent, 1));
             yVals.add(new BarEntry(LGBTQPerCent, 2));
             xVals.add(Constants.WOMEN);
             xVals.add(Constants.POC);
             xVals.add(Constants.LGBTQ);
-        }
-
-        else {
+        } else {
             yVals.add(new BarEntry(womenPerCent, 0));
             yVals.add(new BarEntry(POCPerCent, 1));
             yVals.add(new BarEntry(LGBTQPerCent, 2));
@@ -286,5 +274,16 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
             xVals.add(Constants.MINOR);
         }
         return new Data(yVals, xVals);
+    }
+
+    //no network connection
+    private void noNetworkConnection() {
+        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        boolean isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
+        if (!isConnected) {
+            header.setVisibility(View.GONE);
+            numInstances.setVisibility(View.GONE);
+            noHarassmentMessage.setVisibility(View.GONE);
+        }
     }
 }
