@@ -119,7 +119,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             @Override
             public void done(final ParseUser parseUser, ParseException e) {
                 if (parseUser == null) {
-                    Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_LONG).show();
                     Log.i(Constants.TAG, "User cancelled the Twitter login.");
                     ParseUser.logOut();
 
@@ -189,7 +189,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             Log.d("SignUpFragment", "Google+ login successful");
         }
         else {
-            Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_LONG).show();
         }
     }
 
