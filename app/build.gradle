@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def releasePassword = properties.getProperty('releasePassword')
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -11,12 +15,23 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            storeFile file("release.jks")
+            keyAlias "android"
+            storePassword "$releasePassword"
+            keyPassword "$releasePassword"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
+
+
 }
 
 repositories {
