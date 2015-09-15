@@ -169,6 +169,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i("MapFragment", "onmapready");
+
         map.getUiSettings().setMapToolbarEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         map.getUiSettings().setCompassEnabled(true);
@@ -189,8 +191,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         query.findInBackground(new FindCallback<Shame>() {
             public void done(final List<Shame> results, ParseException e) {
                 if (e == null) {
-                    if (results.size() > 0)
+                    if (results.size() > 0) {
                         insertDatatoSQLite(results);
+                        Calendar cal = Calendar.getInstance();
+                        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
+                    }
                     Log.d("List of Shames", "Inserted " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
@@ -243,7 +248,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public List<Shame> loadFromSQLite() {
         ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
         Calendar cal = Calendar.getInstance();
-        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
     }
