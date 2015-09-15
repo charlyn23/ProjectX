@@ -238,9 +238,9 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
+            preferences.edit().putBoolean(Constants.IS_CONNECTED, true).apply();
         } else {
-            preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
+            preferences.edit().putBoolean(Constants.IS_CONNECTED, false).apply();
         }
 
     }

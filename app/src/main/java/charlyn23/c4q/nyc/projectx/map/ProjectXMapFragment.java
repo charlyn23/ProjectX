@@ -105,6 +105,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        if (!preferences.getBoolean(Constants.IS_CONNECTED, false))
+            loadData();
 
         identity = new HashMap<>();
         identity.put(Constants.MAN, preferences.getBoolean(Constants.MAN, false));
@@ -197,51 +199,55 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
                     }
 
-                    new AsyncTask<Void, Void, String>() {
-                        @Override
-                        protected String doInBackground(Void[] params) {
-                            List<Shame> active_list = loadFromSQLite();
-                            Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
-                            for (Shame incident : active_list) {
-                                double latitude = incident.getLatitude();
-                                double longitude = incident.getLongitude();
-                                LatLng location = new LatLng(latitude, longitude);
-                                String shame_group = incident.getGroup();
-                                if (shame_group != null) {
-                                    switch (shame_group) {
-                                        case Constants.WOMAN:
-                                            woman_loc.add(location);
-                                            break;
-                                        case Constants.MINOR:
-                                            minor_loc.add(location);
-                                            break;
-                                        case Constants.POC:
-                                            poc_loc.add(location);
-                                            break;
-                                        case Constants.LGBTQ:
-                                            lgbtq_loc.add(location);
-                                            break;
-                                        case Constants.OTHER:
-                                            other_loc.add(location);
-                                            break;
-                                    }
-                                }
-                            }
-                            return "All";
-                        }
-
-                        @Override
-                        protected void onPostExecute(String all) {
-                            populateMap(all);
-                            Log.i("MapFragment", "Populating map");
-                        }
-                    }.execute();
+                    loadData();
                     Log.d("List of Shames", "Inserted " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
                 }
             }
         });
+    }
+
+    public void loadData() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void[] params) {
+                List<Shame> active_list = loadFromSQLite();
+                Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
+                for (Shame incident : active_list) {
+                    double latitude = incident.getLatitude();
+                    double longitude = incident.getLongitude();
+                    LatLng location = new LatLng(latitude, longitude);
+                    String shame_group = incident.getGroup();
+                    if (shame_group != null) {
+                        switch (shame_group) {
+                            case Constants.WOMAN:
+                                woman_loc.add(location);
+                                break;
+                            case Constants.MINOR:
+                                minor_loc.add(location);
+                                break;
+                            case Constants.POC:
+                                poc_loc.add(location);
+                                break;
+                            case Constants.LGBTQ:
+                                lgbtq_loc.add(location);
+                                break;
+                            case Constants.OTHER:
+                                other_loc.add(location);
+                                break;
+                        }
+                    }
+                }
+                return "All";
+            }
+
+            @Override
+            protected void onPostExecute(String all) {
+                populateMap(all);
+                Log.i("MapFragment", "Populating map");
+            }
+        }.execute();
     }
 
     // load incidents from past 2 months
@@ -577,7 +583,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setViewToLocation(LatLng latLng) {
-        if (map != null)
+        if (map != null && latLng != null)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
     }
 
