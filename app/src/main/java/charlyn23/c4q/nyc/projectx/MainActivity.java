@@ -58,10 +58,8 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.scene_root);
         fadeTransition = new Fade();
-
         firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
         secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.activity_details, this);
-
         getBundle();
     }
 
@@ -229,14 +227,15 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         }
     }
 
-    private void checkNetworkConnection() {
+    public boolean checkNetworkConnection() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
+            //preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
+            return true;
         } else {
-            preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
+            //preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
+            return false;
         }
-
     }
 }

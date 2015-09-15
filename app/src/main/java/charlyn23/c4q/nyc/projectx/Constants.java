@@ -37,7 +37,6 @@ public class Constants {
     public static final String LONGITUDE_PREFERENCE = "longitudePreference";
     public static final String IS_DROPPED = "isDropped";
     public static final String ALLOW_GEOFENCE = "allowGeofence";
-    public static final String PIE_CHART_NAME = "pieChart";
 
     // Shame constants
     public static final String SHOW_DIALOG = "showDialog";
@@ -71,5 +70,10 @@ public class Constants {
     public static final String QUEER = "Queer";
     public static  final String WHEN = "when";
     public static  final String WHO = "who";
+    public static final String PIE_CHART_NAME = "pieChart";
+
+    //local DB constants
+    public static final String DB = "ShameDB";
+    public static final int VERSION = 1;
 
 }
