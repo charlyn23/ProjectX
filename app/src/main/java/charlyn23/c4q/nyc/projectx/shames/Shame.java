@@ -17,11 +17,11 @@ public class Shame extends ParseObject {
     private String shameDoing;
     private String shameTime;
     private String group;
-    private int zipcode;
+    private String zipcode;
 
     public Shame(double latitude, double longitude, String shameType, String verbalShame,
                  String physicalShame, String otherShame, String shameFeel, String shameDoing,
-                 String shameTime, String group, int zipcode){
+                 String shameTime, String group, String zipcode){
         this.latitude = latitude;
         this.longitude = longitude;
         this.shameType = shameType;
@@ -43,11 +43,11 @@ public class Shame extends ParseObject {
         return group;
     }
 
-    public int getZipcode() {
+    public String getZipcode() {
         return zipcode;
     }
 
-    public void setZipcode(int zipcode) {
+    public void setZipcode(String zipcode) {
         this.zipcode = zipcode;
     }
 

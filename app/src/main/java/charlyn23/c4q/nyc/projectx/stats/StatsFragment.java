@@ -53,8 +53,8 @@ public class StatsFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 zipCode.setText("");
-                ((PieChartFragment) fragments[0]).getCountShameTypes("");
-                ((BarChartFragment) fragments[1]).getCountGroups("");
+                ((PieChartFragment) fragments[0]).countShameTypes("");
+                ((BarChartFragment) fragments[1]).countGroups("");
 
             }
         });
@@ -97,8 +97,8 @@ public class StatsFragment extends android.support.v4.app.Fragment {
         public void afterTextChanged(Editable s) {
             String userInput = zipCode.getText().toString();
             if (userInput.length() == 5) {
-                ((PieChartFragment) fragments[0]).getCountShameTypes(userInput);
-                ((BarChartFragment) fragments[1]).getCountGroups(userInput);
+                ((PieChartFragment) fragments[0]).countShameTypes(userInput);
+                ((BarChartFragment) fragments[1]).countGroups(userInput);
 
                 //hides the keyboard when the user finishes typing zipCode
                 Activity context = getActivity();

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -32,6 +35,8 @@ import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.map.ShameSQLiteHelper;
+import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 public class PieChartFragment extends Fragment {
     public PieChart pieChart;
@@ -57,9 +62,8 @@ public class PieChartFragment extends Fragment {
         noHarassmentMessage.setTypeface(questrial);
         numInstances.setTypeface(questrial);
 
-        noNetworkConnection();
         configPieChart();
-        getCountShameTypes("");
+        countShameTypes("");
 
         //switches to the next stats fragment
         next.setOnClickListener(new View.OnClickListener() {
@@ -73,52 +77,39 @@ public class PieChartFragment extends Fragment {
         return view;
     }
 
-    //displays info about instances of harassment
-    public void getCountShameTypes(String zipCode) {
-        numVerbalShame = 0;
-        numPhysicalShame = 0;
-        numOtherShame = 0;
-
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(Constants.SHAME);
-        if (zipCode.length() > 0) {
-            query.whereEqualTo(Constants.SHAME_ZIPCODE_COLUMN, zipCode);
-        }
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null && objects != null) {
-                    for (int i = 0; i < objects.size(); ++i) {
-                        if (objects.get(i).get(Constants.SHAME_TYPE_COLUMN) != null) {
-                            if (objects.get(i).get(Constants.SHAME_TYPE_COLUMN).equals(Constants.VERBAL)) {
-                                numVerbalShame++;
-                            } else if (objects.get(i).get(Constants.SHAME_TYPE_COLUMN).equals(Constants.PHYSICAL)) {
-                                numPhysicalShame++;
-                            } else {
-                                numOtherShame++;
-                            }
-                        }
-                    }
-
-                    Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
-                    setDataPieChart(data.getyValues(), data.getxValues());
-                    //no harassment instances reported in the area
-                    if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                        pieChart.invalidate();
-                        header.setVisibility(View.GONE);
-                        numInstances.setVisibility(View.GONE);
-                        noHarassmentMessage.setVisibility(View.VISIBLE);
-                    }
-                    //data available
-                    else {
-                        noHarassmentMessage.setVisibility(View.GONE);
-                        numInstances.setVisibility(View.VISIBLE);
-                        header.setVisibility(View.VISIBLE);
-                        int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
-                        numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
-                        animateChart();
-                    }
-                }
+    public void countShameTypes(final String zipCode) {
+        new AsyncTask<Void, Void, int[]>() {
+            @Override
+            protected int[] doInBackground(Void... params) {
+                ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(getActivity());
+                return helper.countTypes(zipCode);
             }
-        });
+            @Override
+            protected void onPostExecute(int[] countTypes) {
+                numVerbalShame = countTypes[0];
+                numPhysicalShame = countTypes[1];
+                numOtherShame = countTypes[2];
+                Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
+                setDataPieChart(data.getyValues(), data.getxValues());
+                //no harassment instances reported in the area
+                if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
+                    pieChart.invalidate();
+                    header.setVisibility(View.GONE);
+                    numInstances.setVisibility(View.GONE);
+                    noHarassmentMessage.setVisibility(View.VISIBLE);
+                }
+                //data available
+                else {
+                    noHarassmentMessage.setVisibility(View.GONE);
+                    numInstances.setVisibility(View.VISIBLE);
+                    header.setVisibility(View.VISIBLE);
+                    int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
+                    numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
+                    animateChart();
+                }
+
+            }
+        }.execute();
     }
 
     //configures the characteristics of the chart
@@ -143,7 +134,7 @@ public class PieChartFragment extends Fragment {
         pieChartSet.setColors(colors);
 
         PieData data = new PieData(xVals, pieChartSet);
-        data.setValueTextSize(13);
+        data.setValueTextSize(14);
         data.setValueTypeface(questrial);
         data.setValueTextColor(Color.WHITE);
         pieChart.setData(data);
@@ -195,16 +186,5 @@ public class PieChartFragment extends Fragment {
             xVals.add(Constants.OTHER);
         }
         return new Data(Constants.PIE_CHART_NAME, yVals, xVals);
-    }
-
-    //no network connection
-    private void noNetworkConnection() {
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        boolean isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
-        if (!isConnected) {
-            header.setVisibility(View.GONE);
-            numInstances.setVisibility(View.GONE);
-            noHarassmentMessage.setVisibility(View.GONE);
-        }
     }
 }
