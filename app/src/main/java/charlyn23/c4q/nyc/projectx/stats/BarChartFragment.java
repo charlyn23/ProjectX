@@ -100,7 +100,7 @@ public class BarChartFragment extends android.support.v4.app.Fragment {
                     barChart.setVisibility(View.VISIBLE);
                     numInstances.setVisibility(View.VISIBLE);
                     header.setVisibility(View.VISIBLE);
-                    int totalInstances = numWomen + numPOC + numLGBTQ + numMinor;
+                    int totalInstances = numWomen + numPOC + numLGBTQ + numMinor + numOther;
                     numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
                 }
 

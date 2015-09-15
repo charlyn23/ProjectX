@@ -1,7 +1,5 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;

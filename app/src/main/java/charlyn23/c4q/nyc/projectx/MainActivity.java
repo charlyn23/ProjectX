@@ -214,6 +214,11 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         Log.d("MainActivity", "Client Disconnected onStop");
     }
 
+    @Override
+    public void onBackPressed() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
     private void getBundle() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -227,15 +232,13 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         }
     }
 
-    public boolean checkNetworkConnection() {
+    public void checkNetworkConnection() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            //preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
-            return true;
+            preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
         } else {
-            //preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
-            return false;
+            preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
         }
     }
 }

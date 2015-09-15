@@ -172,6 +172,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i("MapFragment", "onmapready");
+
         map.getUiSettings().setMapToolbarEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         map.getUiSettings().setCompassEnabled(true);
@@ -193,47 +195,49 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 if (e == null) {
                     if (results.size() > 0) {
                         insertDatatoSQLite(results);
-                        new AsyncTask<Void, Void, String>() {
-                            @Override
-                            protected String doInBackground(Void[] params) {
-                                List<Shame> active_list = loadFromSQLite();
-                                Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
-                                for (Shame incident : active_list) {
-                                    double latitude = incident.getLatitude();
-                                    double longitude = incident.getLongitude();
-                                    LatLng location = new LatLng(latitude, longitude);
-                                    String shame_group = incident.getGroup();
-                                    if (shame_group != null) {
-                                        switch (shame_group) {
-                                            case Constants.WOMAN:
-                                                woman_loc.add(location);
-                                                break;
-                                            case Constants.MINOR:
-                                                minor_loc.add(location);
-                                                break;
-                                            case Constants.POC:
-                                                poc_loc.add(location);
-                                                break;
-                                            case Constants.LGBTQ:
-                                                lgbtq_loc.add(location);
-                                                break;
-                                            case Constants.OTHER:
-                                                other_loc.add(location);
-                                                break;
-                                        }
-                                    }
-                                }
-                                return "All";
-                            }
-
-                            @Override
-                            protected void onPostExecute(String all) {
-                                populateMap(all);
-                                Log.i("MapFragment", "Populating map");
-                            }
-                        }.execute();
+                        Calendar cal = Calendar.getInstance();
+                        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
                     }
 
+                    new AsyncTask<Void, Void, String>() {
+                        @Override
+                        protected String doInBackground(Void[] params) {
+                            List<Shame> active_list = loadFromSQLite();
+                            Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
+                            for (Shame incident : active_list) {
+                                double latitude = incident.getLatitude();
+                                double longitude = incident.getLongitude();
+                                LatLng location = new LatLng(latitude, longitude);
+                                String shame_group = incident.getGroup();
+                                if (shame_group != null) {
+                                    switch (shame_group) {
+                                        case Constants.WOMAN:
+                                            woman_loc.add(location);
+                                            break;
+                                        case Constants.MINOR:
+                                            minor_loc.add(location);
+                                            break;
+                                        case Constants.POC:
+                                            poc_loc.add(location);
+                                            break;
+                                        case Constants.LGBTQ:
+                                            lgbtq_loc.add(location);
+                                            break;
+                                        case Constants.OTHER:
+                                            other_loc.add(location);
+                                            break;
+                                    }
+                                }
+                            }
+                            return "All";
+                        }
+
+                        @Override
+                        protected void onPostExecute(String all) {
+                            populateMap(all);
+                            Log.i("MapFragment", "Populating map");
+                        }
+                    }.execute();
                     Log.d("List of Shames", "Inserted " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
@@ -246,7 +250,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public List<Shame> loadFromSQLite() {
         ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
         Calendar cal = Calendar.getInstance();
-        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
     }
@@ -737,18 +740,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 dialogs.initialDialog(getActivity(), latitude, longitude, null, null);
                 bundle.clear();
             }
-        }
-    }
-
-    public boolean checkNetworkConnection() {
-        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            //preferences.edit().putBoolean(Constants.IS_CONNECTED, true).commit();
-            return true;
-        } else {
-            //preferences.edit().putBoolean(Constants.IS_CONNECTED, false).commit();
-            return false;
         }
     }
 }
