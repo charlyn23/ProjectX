@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.github.mikephil.charting.animation.AnimationEasing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -93,19 +94,20 @@ public class PieChartFragment extends Fragment {
                 setDataPieChart(data.getyValues(), data.getxValues());
                 //no harassment instances reported in the area
                 if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
-                    pieChart.invalidate();
+                    pieChart.setVisibility(View.GONE);
                     header.setVisibility(View.GONE);
                     numInstances.setVisibility(View.GONE);
                     noHarassmentMessage.setVisibility(View.VISIBLE);
                 }
                 //data available
                 else {
+                    animateChart();
+                    pieChart.setVisibility(View.VISIBLE);
                     noHarassmentMessage.setVisibility(View.GONE);
                     numInstances.setVisibility(View.VISIBLE);
                     header.setVisibility(View.VISIBLE);
                     int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
                     numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
-                    animateChart();
                 }
 
             }
@@ -148,42 +150,23 @@ public class PieChartFragment extends Fragment {
         pieChart.animateY(2000);
     }
 
-    //sets up the number of y values to display in the chart depending on the type of data available in db
+    //sets up the number of bars in the chart
     private Data setBars(int numVerbalShame, int numPhysicalShame, int numOtherShame) {
+        int count = 0;
+        ArrayList<Bar> bars = new ArrayList<>();
         ArrayList<Entry> yVals = new ArrayList<Entry>();
         ArrayList<String> xVals = new ArrayList<String>();
 
-        if (numOtherShame == 0 && numPhysicalShame == 0) {
-            yVals.add(new Entry(numVerbalShame, 0));
-            xVals.add(Constants.VERBAL);
-        } else if (numOtherShame == 0 && numVerbalShame == 0) {
-            yVals.add(new Entry(numPhysicalShame, 0));
-            xVals.add(Constants.PHYSICAL);
-        } else if (numPhysicalShame == 0 && numVerbalShame == 0) {
-            yVals.add(new Entry(numOtherShame, 0));
-            xVals.add(Constants.OTHER);
-        } else if (numVerbalShame == 0) {
-            yVals.add(new Entry(numPhysicalShame, 0));
-            yVals.add(new Entry(numOtherShame, 1));
-            xVals.add(Constants.PHYSICAL);
-            xVals.add(Constants.OTHER);
-        } else if (numPhysicalShame == 0) {
-            yVals.add(new Entry(numVerbalShame, 0));
-            yVals.add(new Entry(numOtherShame, 1));
-            xVals.add(Constants.VERBAL);
-            xVals.add(Constants.OTHER);
-        } else if (numOtherShame == 0) {
-            yVals.add(new Entry(numVerbalShame, 0));
-            yVals.add(new Entry(numPhysicalShame, 1));
-            xVals.add(Constants.VERBAL);
-            xVals.add(Constants.PHYSICAL);
-        } else {
-            yVals.add(new Entry(numVerbalShame, 0));
-            yVals.add(new Entry(numPhysicalShame, 1));
-            yVals.add(new Entry(numOtherShame, 2));
-            xVals.add(Constants.VERBAL);
-            xVals.add(Constants.PHYSICAL);
-            xVals.add(Constants.OTHER);
+        bars.add(new Bar(Constants.VERBAL, numVerbalShame));
+        bars.add(new Bar(Constants.PHYSICAL, numPhysicalShame));
+        bars.add(new Bar(Constants.OTHER, numOtherShame));
+
+        for (int i = 0; i < bars.size(); i++) {
+            if (bars.get(i).getPerCent() != 0) {
+                yVals.add(new BarEntry(bars.get(i).getPerCent(), count));
+                xVals.add(bars.get(i).getName());
+                count ++;
+            }
         }
         return new Data(Constants.PIE_CHART_NAME, yVals, xVals);
     }
