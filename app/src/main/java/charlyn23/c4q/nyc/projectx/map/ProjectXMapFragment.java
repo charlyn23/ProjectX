@@ -318,7 +318,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 query.getFirstInBackground(new GetCallback<Shame>() {
                     @Override
                     public void done(Shame shame, ParseException e) {
-                        if (shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
+                        if (shame != null && shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
                             String readableTime = convertToReadableTime(shame.getString(Constants.SHAME_TIME_COLUMN));
                             String when = shame.getString(Constants.SHAME_TIME_COLUMN);
                             String who = shame.getString(Constants.GROUP_COLUMN);

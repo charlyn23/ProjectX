@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -298,37 +299,43 @@ public class ShameDialogs {
                             if (which == 4)
                                 group = Constants.OTHER;
 
-                            // Submit new shame
-                            newShame = new Shame();
-                            try {
-                                String zipcode = getZipcode(context, latitude, longitude);
-                                if (zipcode != null)
-                                    newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            new AsyncTask<Void, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    // Submit new shame
+                                    newShame = new Shame();
+                                    try {
+                                        String zipcode = getZipcode(context, latitude, longitude);
+                                        if (zipcode != null)
+                                            newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
 
-                            switch (shameType) {
-                                case Constants.VERBAL:
-                                    newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
-                                    break;
-                                case Constants.PHYSICAL:
-                                    newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
-                                    break;
-                                case Constants.OTHER:
-                                    newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
-                                    break;
-                            }
+                                    switch (shameType) {
+                                        case Constants.VERBAL:
+                                            newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
+                                            break;
+                                        case Constants.PHYSICAL:
+                                            newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
+                                            break;
+                                        case Constants.OTHER:
+                                            newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
+                                            break;
+                                    }
 
-                            newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
-                            newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
-                            newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
-                            newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
-                            newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
-                            newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
-                            newShame.put(Constants.GROUP_COLUMN, group);
-                            newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
-                            newShame.saveInBackground();
+                                    newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
+                                    newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
+                                    newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
+                                    newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
+                                    newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
+                                    newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
+                                    newShame.put(Constants.GROUP_COLUMN, group);
+                                    newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+                                    newShame.saveInBackground();
+                                    return null;
+                                }
+                            };
 
                             //check network connection
                             boolean isConnected = checkNetworkConnection();
@@ -403,13 +410,18 @@ public class ShameDialogs {
 
                     // TODO && no geofence yet
                     if (count > 5) {
-                        String time = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
-
-                        ShameGeofence newGeofence = new ShameGeofence();
-                        newGeofence.put(Constants.GROUP_COLUMN, group);
-                        newGeofence.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
-                        newGeofence.put(Constants.TIMESTAMP, time);
-                        newGeofence.saveInBackground();
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                String time = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
+                                ShameGeofence newGeofence = new ShameGeofence();
+                                newGeofence.put(Constants.GROUP_COLUMN, group);
+                                newGeofence.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+                                newGeofence.put(Constants.TIMESTAMP, time);
+                                newGeofence.saveInBackground();
+                                return null;
+                            }
+                        };
                     }
                     Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
                 } else {
