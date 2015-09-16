@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onStop();
         googleLogInClient.disconnect();
         Log.d("MainActivity", "Client Disconnected onStop");
-        preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
+            preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
     }
 
     private void getBundle() {

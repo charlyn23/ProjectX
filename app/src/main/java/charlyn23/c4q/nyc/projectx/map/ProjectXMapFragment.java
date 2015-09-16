@@ -661,15 +661,17 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             return;
         }
 
-        try {
-            LocationServices.GeofencingApi.addGeofences(
-                    client,
-                    getGeofencingRequest(active_geofence),
-                    getGeofencePendingIntent()
-            ).setResultCallback(this); // Result processed in onResult().
-            preferences.edit().putLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()).apply();
-        } catch (SecurityException securityException) {
-            Log.d("MapFragment - Geofence", "Error on ACCESS_FINE_LOCATION", securityException);
+        if (active_geofence.size() != 0) {
+            try {
+                LocationServices.GeofencingApi.addGeofences(
+                        client,
+                        getGeofencingRequest(active_geofence),
+                        getGeofencePendingIntent()
+                ).setResultCallback(this); // Result processed in onResult().
+                preferences.edit().putLong(Constants.LAST_GEOFENCE_FETCH, cal.getTimeInMillis()).apply();
+            } catch (SecurityException securityException) {
+                Log.d("MapFragment - Geofence", "Error on ACCESS_FINE_LOCATION", securityException);
+            }
         }
     }
 
