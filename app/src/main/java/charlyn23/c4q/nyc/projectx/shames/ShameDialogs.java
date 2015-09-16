@@ -299,13 +299,12 @@ public class ShameDialogs {
                             if (which == 4)
                                 group = Constants.OTHER;
 
-                            saveShame();
                             //check network connection
                             boolean isConnected = checkNetworkConnection();
                             if (!isConnected) {
                                 Toast.makeText(context, R.string.check_network_connection, Toast.LENGTH_LONG).show();
                             } else {
-                                //saveShame();
+                                saveShame();
                                 //Show custom toast after submitting incident
                                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                 View layout = inflater.inflate(R.layout.custom_toast, null);
@@ -395,7 +394,12 @@ public class ShameDialogs {
         geocoder = new Geocoder(context, Locale.getDefault());
         // 1 represents max location result to returned, by documents it recommended 1 to 5
         addresses = geocoder.getFromLocation(latitude, longitude, 1);
-        return addresses.get(0).getPostalCode();
+        if (addresses != null) {
+            return addresses.get(0).getPostalCode();
+        }
+        else {
+            return null;
+        }
     }
 
     public void setListener(MarkerListener listener) {
