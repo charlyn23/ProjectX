@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -44,9 +46,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
     private SharedPreferences preferences;
-    private Scene firstScene;
-    private Scene secondScene;
-    private Fade fadeTransition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +61,12 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         setUpActionBar();
 
         ViewGroup sceneRoot = (ViewGroup) findViewById(R.id.scene_root);
-        fadeTransition = new Fade();
-
-        firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
-        secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.activity_details, this);
+        Fade fadeTransition = new Fade();
+        Scene firstScene = Scene.getSceneForLayout(sceneRoot, R.layout.map_fragment, this);
+        Scene secondScene = Scene.getSceneForLayout(sceneRoot, R.layout.activity_details, this);
 
         getBundle();
     }
-
 
     protected synchronized void buildGoogleApiClient(Context context) {
         googleLogInClient = new GoogleApiClient.Builder(context)

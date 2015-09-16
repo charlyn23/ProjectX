@@ -33,6 +33,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_ENTRIES_INDEX);
     }
 
     @Override
@@ -54,7 +55,12 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SHAME_FEEL = "shameFeel";
         public static final String COLUMN_ZIPCODE = "zipCode";
         public static final String COLUMN_TIMESTAMP = "timestamp";
+        public static final String INDEX_TIMESTAMP = TABLE_NAME + "timestamp_idx";
     }
+
+    private static final String SQL_CREATE_ENTRIES_INDEX =
+            "CREATE INDEX " + DataEntry.INDEX_TIMESTAMP +
+                    " ON " + DataEntry.TABLE_NAME  + "(" + DataEntry.COLUMN_TIMESTAMP + ")" ;
 
     private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " +
             DataEntry.TABLE_NAME + " (" +
