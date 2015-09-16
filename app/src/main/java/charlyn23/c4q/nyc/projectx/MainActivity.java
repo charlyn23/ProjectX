@@ -1,6 +1,7 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,8 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
+
+import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         super.onStop();
         googleLogInClient.disconnect();
         Log.d("MainActivity", "Client Disconnected onStop");
+        preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
     }
 
     private void getBundle() {
