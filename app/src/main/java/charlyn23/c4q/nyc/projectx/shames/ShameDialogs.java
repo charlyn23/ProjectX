@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,8 +54,10 @@ public class ShameDialogs {
     private FloatingActionButton addShame;
     private MarkerListener markerListener;
     private Toast toast;
+    private Context context;
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
+        this.context = context;
         this.latitude = latitude;
         this.longitude = longitude;
         this.new_marker = new_marker;
@@ -294,44 +299,12 @@ public class ShameDialogs {
                             if (which == 4)
                                 group = Constants.OTHER;
 
-                            // Submit new shame
-                            newShame = new Shame();
-                            try {
-                                String zipcode = getZipcode(context, latitude, longitude);
-                                if (zipcode != null)
-                                    newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            switch (shameType) {
-                                case Constants.VERBAL:
-                                    newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
-                                    break;
-                                case Constants.PHYSICAL:
-                                    newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
-                                    break;
-                                case Constants.OTHER:
-                                    newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
-                                    break;
-                            }
-
-                            newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
-                            newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
-                            newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
-                            newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
-                            newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
-                            newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
-                            newShame.put(Constants.GROUP_COLUMN, group);
-                            newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
-                            newShame.saveInBackground();
-
                             //check network connection
-                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-                            boolean isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
+                            boolean isConnected = checkNetworkConnection();
                             if (!isConnected) {
                                 Toast.makeText(context, R.string.check_network_connection, Toast.LENGTH_LONG).show();
                             } else {
+                                saveShame();
                                 //Show custom toast after submitting incident
                                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                 View layout = inflater.inflate(R.layout.custom_toast, null);
@@ -345,15 +318,12 @@ public class ShameDialogs {
 
                                 if (markerListener != null)
                                     markerListener.setMarker(latitude, longitude);
-
-                                preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
-
                                 if (addShame != null) {
                                     addShame.setVisibility(View.INVISIBLE);
-                                } else {
-                                    Log.e("error", "foo");
                                 }
                             }
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
                         }
                         return true;
                     }
@@ -404,7 +374,6 @@ public class ShameDialogs {
                     // TODO && no geofence yet
                     if (count > 5) {
                         String time = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
-
                         ShameGeofence newGeofence = new ShameGeofence();
                         newGeofence.put(Constants.GROUP_COLUMN, group);
                         newGeofence.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
@@ -425,11 +394,57 @@ public class ShameDialogs {
         geocoder = new Geocoder(context, Locale.getDefault());
         // 1 represents max location result to returned, by documents it recommended 1 to 5
         addresses = geocoder.getFromLocation(latitude, longitude, 1);
-        return addresses.get(0).getPostalCode();
+        if (addresses != null) {
+            return addresses.get(0).getPostalCode();
+        }
+        else {
+            return null;
+        }
     }
 
     public void setListener(MarkerListener listener) {
         markerListener = listener;
+    }
+
+    public boolean checkNetworkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
+    }
+
+    // Submit new shame
+    public void saveShame() {
+        newShame = new Shame();
+        try {
+            String zipcode = getZipcode(context, latitude, longitude);
+            if (zipcode != null)
+                newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        switch (shameType) {
+            case Constants.VERBAL:
+                newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
+                break;
+            case Constants.PHYSICAL:
+                newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
+                break;
+            case Constants.OTHER:
+                newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
+                break;
+        }
+
+        newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
+        newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
+        newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
+        newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
+        newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
+        newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
+        newShame.put(Constants.GROUP_COLUMN, group);
+        newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+        newShame.saveInBackground();
+
     }
 
 }
