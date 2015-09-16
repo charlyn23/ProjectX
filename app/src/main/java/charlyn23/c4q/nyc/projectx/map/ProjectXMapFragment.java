@@ -10,6 +10,8 @@ import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -66,6 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
+import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -189,7 +192,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
         String lastUpdate = preferences.getString(Constants.LAST_UPDATE, "00000000_0000");
         query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, lastUpdate);
-//        query.addDescendingOrder(Constants.SHAME_TIME_COLUMN);
         query.findInBackground(new FindCallback<Shame>() {
             public void done(final List<Shame> results, ParseException e) {
                 if (e == null) {

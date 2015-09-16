@@ -15,11 +15,8 @@ import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
-    private static final String DB = "ShameDB";
-    private static final int VERSION = 1;
-
     public ShameSQLiteHelper(Context context) {
-        super(context, DB, null, VERSION);
+        super(context, Constants.DB, null, Constants.VERSION);
     }
 
     private static ShameSQLiteHelper INSTANCE;
@@ -184,7 +181,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         return types;
     }
 
-    //counts types of instances
+    //counts types of groups
     public int[] countGroups (String zipCode) {
         Cursor cursor = null;
         int numWomen = 0;

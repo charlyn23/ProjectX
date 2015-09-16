@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         }
     }
 
-    private void checkNetworkConnection() {
+    public void checkNetworkConnection() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -239,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         } else {
             preferences.edit().putBoolean(Constants.IS_CONNECTED, false).apply();
         }
-
     }
 
     public void checkLocationAccess() {

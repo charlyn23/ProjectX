@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -38,8 +40,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     public SignUpFragment() {
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -183,7 +183,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void logInViaGooglePlus() {
-        boolean isConnected =preferences.getBoolean(Constants.IS_CONNECTED, false);
+        boolean isConnected = checkNetworkConnection();
         if (isConnected) {
             googleLogInClient.connect();
             Log.d("SignUpFragment", "Google+ login successful");
@@ -197,5 +197,15 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     public void onPause() {
         super.onPause();
         googleLogInClient.disconnect();
+    }
+
+    public boolean checkNetworkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -24,7 +24,7 @@
     <string name="log_out_toast">Successful logging out from the account!</string>
     <string name="birth_year">Year of Birth</string>
     <string name="zipcode">Search by zipcode</string>
-    <string name="types_of_harassment">Types of harassment(%)</string>
+    <string name="types_of_harassment">Types of harassment (%)</string>
 
     <array name="shame_types">
         <item>Catcall</item>
