@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,8 +53,10 @@ public class ShameDialogs {
     private FloatingActionButton addShame;
     private MarkerListener markerListener;
     private Toast toast;
+    private Context context;
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
+        this.context = context;
         this.latitude = latitude;
         this.longitude = longitude;
         this.new_marker = new_marker;
@@ -327,8 +331,7 @@ public class ShameDialogs {
                             newShame.saveInBackground();
 
                             //check network connection
-                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-                            boolean isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
+                            boolean isConnected = checkNetworkConnection();
                             if (!isConnected) {
                                 Toast.makeText(context, R.string.check_network_connection, Toast.LENGTH_LONG).show();
                             } else {
@@ -345,15 +348,12 @@ public class ShameDialogs {
 
                                 if (markerListener != null)
                                     markerListener.setMarker(latitude, longitude);
-
-                                preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
-
                                 if (addShame != null) {
                                     addShame.setVisibility(View.INVISIBLE);
-                                } else {
-                                    Log.e("error", "foo");
                                 }
                             }
+                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false);
                         }
                         return true;
                     }
@@ -430,6 +430,12 @@ public class ShameDialogs {
 
     public void setListener(MarkerListener listener) {
         markerListener = listener;
+    }
+
+    public boolean checkNetworkConnection() {
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
     }
 
 }
