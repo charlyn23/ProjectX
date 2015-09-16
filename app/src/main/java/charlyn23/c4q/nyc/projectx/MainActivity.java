@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
         preferences = getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         isLoggedIn = preferences.getBoolean(Constants.LOGGED_IN, false);
         isLoggedIn_google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
-        checkNetworkConnection();
         checkLocationAccess();
         setUpActionBar();
 
@@ -230,16 +229,6 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
                 fragmentBundle.putBoolean(Constants.SHOW_DIALOG, true);
                 projectXMapFragment.setArguments(fragmentBundle);
             }
-        }
-    }
-
-    public void checkNetworkConnection() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            preferences.edit().putBoolean(Constants.IS_CONNECTED, true).apply();
-        } else {
-            preferences.edit().putBoolean(Constants.IS_CONNECTED, false).apply();
         }
     }
 
