@@ -299,44 +299,7 @@ public class ShameDialogs {
                             if (which == 4)
                                 group = Constants.OTHER;
 
-                            new AsyncTask<Void, Void, Void>() {
-                                @Override
-                                protected Void doInBackground(Void... params) {
-                                    // Submit new shame
-                                    newShame = new Shame();
-                                    try {
-                                        String zipcode = getZipcode(context, latitude, longitude);
-                                        if (zipcode != null)
-                                            newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    switch (shameType) {
-                                        case Constants.VERBAL:
-                                            newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
-                                            break;
-                                        case Constants.PHYSICAL:
-                                            newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
-                                            break;
-                                        case Constants.OTHER:
-                                            newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
-                                            break;
-                                    }
-
-                                    newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
-                                    newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
-                                    newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
-                                    newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
-                                    newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
-                                    newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
-                                    newShame.put(Constants.GROUP_COLUMN, group);
-                                    newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
-                                    newShame.saveInBackground();
-                                    return null;
-                                }
-                            };
-
+                            saveShame();
                             //check network connection
                             boolean isConnected = checkNetworkConnection();
                             if (!isConnected) {
@@ -448,6 +411,46 @@ public class ShameDialogs {
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             return networkInfo != null && networkInfo.isConnected();
+    }
+
+    public void saveShame() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                // Submit new shame
+                newShame = new Shame();
+                try {
+                    String zipcode = getZipcode(context, latitude, longitude);
+                    if (zipcode != null)
+                        newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                switch (shameType) {
+                    case Constants.VERBAL:
+                        newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
+                        break;
+                    case Constants.PHYSICAL:
+                        newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
+                        break;
+                    case Constants.OTHER:
+                        newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
+                        break;
+                }
+
+                newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
+                newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
+                newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
+                newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
+                newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
+                newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
+                newShame.put(Constants.GROUP_COLUMN, group);
+                newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+                newShame.saveInBackground();
+                return null;
+            }
+        };
     }
 
 }
