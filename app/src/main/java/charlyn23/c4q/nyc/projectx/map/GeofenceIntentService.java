@@ -101,7 +101,8 @@ public class GeofenceIntentService extends IntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Define the notification settings.
-        builder.setColor(Color.RED)
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setColor(Color.RED)
                 .setContentTitle(notificationDetails)
                 .setContentText(getString(R.string.geofence_transition_notification_text))
                 .setContentIntent(notificationPendingIntent);

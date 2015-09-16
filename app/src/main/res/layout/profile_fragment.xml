@@ -89,12 +89,12 @@
                 style="@style/profile_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enable Notification" />
+                android:text="@string/blazon_alert" />
 
             <CheckBox
                 android:id="@+id/enable_geofence"
                 android:layout_marginTop="16dp"
-                android:text="Alert me when entering areas with high harassment activity"
+                android:text="@string/alert_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

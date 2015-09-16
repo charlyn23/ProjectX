@@ -1,9 +1,9 @@
 package charlyn23.c4q.nyc.projectx.stats;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
+import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.map.ShameSQLiteHelper;
 import charlyn23.c4q.nyc.projectx.shames.Shame;

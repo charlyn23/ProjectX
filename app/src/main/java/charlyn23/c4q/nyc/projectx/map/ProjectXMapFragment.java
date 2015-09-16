@@ -10,6 +10,8 @@ import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -66,6 +68,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
+import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
@@ -105,6 +108,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
+        if (!preferences.getBoolean(Constants.IS_CONNECTED, false))
+            loadData();
 
         identity = new HashMap<>();
         identity.put(Constants.MAN, preferences.getBoolean(Constants.MAN, false));
@@ -187,7 +192,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
         String lastUpdate = preferences.getString(Constants.LAST_UPDATE, "00000000_0000");
         query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, lastUpdate);
-//        query.addDescendingOrder(Constants.SHAME_TIME_COLUMN);
         query.findInBackground(new FindCallback<Shame>() {
             public void done(final List<Shame> results, ParseException e) {
                 if (e == null) {
@@ -196,13 +200,17 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         Calendar cal = Calendar.getInstance();
                         preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
                     }
+
+                    loadData();
                     Log.d("List of Shames", "Inserted " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
                 }
             }
         });
+    }
 
+    public void loadData() {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void[] params) {
@@ -577,7 +585,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setViewToLocation(LatLng latLng) {
-        if (map != null)
+        if (map != null && latLng != null)
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f));
     }
 

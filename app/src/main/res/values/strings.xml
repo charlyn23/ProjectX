@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Blazon</string>
-    <string name="action_settings">Log out</string>
+    <string name="action_settings">Settings</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="shame_activity">ShameActivity</string>
 
@@ -24,7 +24,7 @@
     <string name="log_out_toast">Successful logging out from the account!</string>
     <string name="birth_year">Year of Birth</string>
     <string name="zipcode">Search by zipcode</string>
-    <string name="types_of_harassment">Types of harassment(%)</string>
+    <string name="types_of_harassment">Types of harassment (%)</string>
 
     <array name="shame_types">
         <item>Catcall</item>
@@ -101,4 +101,7 @@
     <string name="no_harassment">NO instances of harassment have been reported in this area</string>
     <string name="signing_in">Signing in</string>
     <string name="check_network_connection">Check network connection and try again later, please!</string>
+    <string name="gps_network_not_enabled">Blazon is way better with Location Services enabled!</string>
+    <string name="alert_detail">Send me a notification when entering areas with high harassment activity</string>
+    <string name="blazon_alert">Enable Blazon Alert</string>
 </resources>

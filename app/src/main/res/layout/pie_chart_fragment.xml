@@ -27,7 +27,7 @@
                 android:id="@+id/chart_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:text="@string/types_of_harassment"
                 style="@style/chart_header" />
 
             <com.github.mikephil.charting.charts.PieChart
