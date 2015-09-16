@@ -1,6 +1,8 @@
 package charlyn23.c4q.nyc.projectx;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -138,6 +141,20 @@ public class ProfileFragment extends Fragment {
 
     // brings up the photo gallery and other resources to choose a picture
     private void changeProfileImage() {
+        //TODO DELETE!!!
+        Intent notificationIntent = new Intent(getActivity(), MainActivity.class);
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(view.getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(view.getContext());
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setColor(Color.RED)
+                .setContentTitle("Entering an area with highly reported incidents.")
+                .setContentText(getString(R.string.geofence_transition_notification_text))
+                .setContentIntent(notificationPendingIntent);
+        builder.setAutoCancel(true);
+        NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, builder.build());
+        // end delete
+
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
