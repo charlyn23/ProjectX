@@ -113,6 +113,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         identity.put(Constants.WOMAN, preferences.getBoolean(Constants.WOMAN, false));
         identity.put(Constants.POC, preferences.getBoolean(Constants.POC, false));
         identity.put(Constants.MINOR, preferences.getBoolean(Constants.MINOR, false));
+        identity.put(Constants.OTHER, preferences.getBoolean(Constants.OTHER, false));
         boolean lgbtq_check = (preferences.getBoolean(Constants.TRANS, false) || preferences.getBoolean(Constants.GAY, false) ||
                 preferences.getBoolean(Constants.BISEXUAL, false) || preferences.getBoolean(Constants.QUEER, false) ||
                 preferences.getBoolean(Constants.LESBIAN, false));
@@ -627,8 +628,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         db_geofences.findInBackground(new FindCallback<ShameGeofence>() {
             public void done(List<ShameGeofence> results, ParseException e) {
                 if (e == null) {
+                    ArrayList<Geofence> active_geofence = new ArrayList<>();
                     for (ShameGeofence geo : results) {
-                        ArrayList<Geofence> active_geofence = new ArrayList<>();
                         String group = geo.getString(Constants.GROUP_COLUMN);
                         if (identity.get(group)) {
                             active_geofence.add(new Geofence.Builder()

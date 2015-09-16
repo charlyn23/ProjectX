@@ -32,7 +32,6 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.MainActivity;
@@ -71,6 +70,7 @@ public class GeofenceIntentService extends IntentService {
 
         // Get the fade_transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
+        sendNotification("Entering an area with highly reported incidents.");
 
         // Test that the reported fade_transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
@@ -80,7 +80,6 @@ public class GeofenceIntentService extends IntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Send notification and log the fade_transition details.
-            sendNotification("Entering an area with highly reported incidents.");
             Log.i(GEOFENCE_NAME, "Geofence Notification sent");
         } else {
             // Log the error.
@@ -94,7 +93,7 @@ public class GeofenceIntentService extends IntentService {
      */
     private void sendNotification(String notificationDetails) {
         // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
 
         // Get a PendingIntent containing the entire back stack.
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

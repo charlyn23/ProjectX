@@ -50,7 +50,7 @@ public class ProfileFragment extends Fragment {
     private GoogleApiClient googleLogInClient;
     private CheckBox allow_geofence;
     private TextView profile;
-    private ToggleButton man, woman, lesbian, poc, gay, trans, bisexual, minor, queer;
+    private ToggleButton man, woman, lesbian, poc, gay, trans, bisexual, minor, queer, other;
     private EditText age;
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled, isConnected;
@@ -209,6 +209,7 @@ public class ProfileFragment extends Fragment {
         bisexual = (ToggleButton) view.findViewById(R.id.bisexual);
         minor = (ToggleButton) view.findViewById(R.id.minor);
         queer = (ToggleButton) view.findViewById(R.id.queer);
+        other = (ToggleButton) view.findViewById(R.id.other);
         age = (EditText) view.findViewById(R.id.year);
         allow_geofence = (CheckBox) view.findViewById(R.id.enable_geofence);
         logout = (Button) view.findViewById(R.id.log_out);
@@ -228,6 +229,7 @@ public class ProfileFragment extends Fragment {
         bisexual.setTypeface(questrial);
         minor.setTypeface(questrial);
         queer.setTypeface(questrial);
+        other.setTypeface(questrial);
         logout.setTypeface(questrial);
         allow_geofence.setTypeface(questrial);
     }
@@ -242,6 +244,7 @@ public class ProfileFragment extends Fragment {
         bisexual.setChecked(preferences.getBoolean(Constants.BISEXUAL, false));
         minor.setChecked(preferences.getBoolean(Constants.MINOR, false));
         queer.setChecked(preferences.getBoolean(Constants.QUEER, false));
+        other.setChecked(preferences.getBoolean(Constants.OTHER, false));
         man.setOnCheckedChangeListener(new toggleListener(Constants.MAN));
         woman.setOnCheckedChangeListener(new toggleListener(Constants.WOMAN));
         lesbian.setOnCheckedChangeListener(new toggleListener(Constants.LESBIAN));
@@ -251,6 +254,7 @@ public class ProfileFragment extends Fragment {
         bisexual.setOnCheckedChangeListener(new toggleListener(Constants.BISEXUAL));
         minor.setOnCheckedChangeListener(new toggleListener(Constants.MINOR));
         queer.setOnCheckedChangeListener(new toggleListener(Constants.QUEER));
+        other.setOnCheckedChangeListener(new toggleListener(Constants.OTHER));
     }
 
     public class toggleListener implements CompoundButton.OnCheckedChangeListener {

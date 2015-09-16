@@ -233,6 +233,15 @@
                     android:textOff="Queer"
                     android:textOn="Queer" />
 
+                <ToggleButton
+                    android:id="@+id/other"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/toggle_button"
+                    android:layout_marginLeft="3dp"
+                    android:textOff="Other"
+                    android:textOn="Other" />
+
             </LinearLayout>
         </LinearLayout>
 
