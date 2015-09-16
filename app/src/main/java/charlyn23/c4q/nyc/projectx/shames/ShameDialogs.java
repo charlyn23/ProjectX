@@ -18,7 +18,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -338,6 +337,7 @@ public class ShameDialogs {
                                 View layout = inflater.inflate(R.layout.custom_toast, null);
                                 toast = new Toast(context);
                                 toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
@@ -431,4 +431,5 @@ public class ShameDialogs {
     public void setListener(MarkerListener listener) {
         markerListener = listener;
     }
+
 }
