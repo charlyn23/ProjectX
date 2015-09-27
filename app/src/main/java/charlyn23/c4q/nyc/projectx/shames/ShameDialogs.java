@@ -114,7 +114,6 @@ public class ShameDialogs {
                 content = R.string.physical_shame;
                 items = R.array.physical_types;
                 break;
-            //TODO: Add police encounter
             case Constants.POLICE:
                 content = R.string.police_shame;
                 items = R.array.police_types;
@@ -439,7 +438,6 @@ public class ShameDialogs {
             case Constants.PHYSICAL:
                 newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
                 break;
-            //todo: Police encounters
             case Constants.POLICE:
                 newShame.put(Constants.POLICE_SHAME_COLUMN, policeShame);
                 break;
