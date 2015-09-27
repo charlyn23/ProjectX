@@ -46,6 +46,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SHAME_TYPE = "shameType";
         public static final String COLUMN_VERBAL_SHAME = "verbalShame";
         public static final String COLUMN_PHYSICAL_SHAME = "physicalShame";
+        public static final String COLUMN_POLICE_SHAME = "policeShame";
         public static final String COLUMN_OTHER_SHAME = "otherShame";
         public static final String COLUMN_GROUP = "groupEffected";
         public static final String COLUMN_SHAME_DOING = "shameDoing";
@@ -69,6 +70,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
             DataEntry.COLUMN_SHAME_TYPE + " TEXT," +
             DataEntry.COLUMN_VERBAL_SHAME + " TEXT," +
             DataEntry.COLUMN_PHYSICAL_SHAME + " TEXT," +
+            DataEntry.COLUMN_POLICE_SHAME + " TEXT, " +
             DataEntry.COLUMN_OTHER_SHAME + " TEXT," +
             DataEntry.COLUMN_SHAME_DOING + " TEXT," +
             DataEntry.COLUMN_SHAME_FEEL + " TEXT," +
@@ -92,6 +94,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         values.put(DataEntry.COLUMN_SHAME_TYPE, incident.getString(Constants.SHAME_TYPE_COLUMN));
         values.put(DataEntry.COLUMN_VERBAL_SHAME, incident.getString(Constants.VERBAL_SHAME_COLUMN));
         values.put(DataEntry.COLUMN_PHYSICAL_SHAME, incident.getString(Constants.PHYSICAL_SHAME_COLUMN));
+        values.put(DataEntry.COLUMN_POLICE_SHAME, incident.getString(Constants.POLICE_SHAME_COLUMN));
         values.put(DataEntry.COLUMN_OTHER_SHAME, incident.getString(Constants.OTHER_SHAME_COLUMN));
         values.put(DataEntry.COLUMN_SHAME_DOING, incident.getString(Constants.SHAME_DOING_COLUMN));
         values.put(DataEntry.COLUMN_SHAME_FEEL, incident.getString(Constants.SHAME_FEEL_COLUMN));
@@ -110,6 +113,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
                 DataEntry.COLUMN_SHAME_TYPE,
                 DataEntry.COLUMN_VERBAL_SHAME,
                 DataEntry.COLUMN_PHYSICAL_SHAME,
+                DataEntry.COLUMN_POLICE_SHAME,
                 DataEntry.COLUMN_OTHER_SHAME,
                 DataEntry.COLUMN_SHAME_DOING,
                 DataEntry.COLUMN_SHAME_FEEL,
@@ -131,6 +135,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_SHAME_TYPE)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_VERBAL_SHAME)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_PHYSICAL_SHAME)),
+                    cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_POLICE_SHAME)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_OTHER_SHAME)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_SHAME_FEEL)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_SHAME_DOING)),
@@ -148,9 +153,10 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         int numCatcall = 0;
         int numPhysical = 0;
+        int numPolice = 0;
         int numOther = 0;
         SQLiteDatabase db = getWritableDatabase();
-        int[] types = new int[3];
+        int[] types = new int[4];
 
         String[] projection = {
                 DataEntry.COLUMN_SHAME_TYPE,
@@ -161,6 +167,8 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
             numCatcall = cursor.getCount();
             cursor = db.query(DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_SHAME_TYPE + " = ?", new String[]{Constants.PHYSICAL}, null, null, null);
             numPhysical = cursor.getCount();
+            cursor = db.query(DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_SHAME_TYPE + " = ?", new String[]{Constants.POLICE}, null, null, null);
+            numPolice = cursor.getCount();
             cursor = db.query(DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_SHAME_TYPE + " = ?", new String[]{Constants.OTHER}, null, null, null);
             numOther = cursor.getCount();
 
@@ -171,6 +179,8 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
             numCatcall = cursor.getCount();
             cursor = db.query(DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_ZIPCODE + " = ? and " + DataEntry.COLUMN_SHAME_TYPE + " = ?", new String[]{zipCode, Constants.PHYSICAL}, null, null, null);
             numPhysical = cursor.getCount();
+            cursor = db.query(DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_ZIPCODE + " = ? and " + DataEntry.COLUMN_SHAME_TYPE + " = ?", new String[]{zipCode, Constants.POLICE}, null, null, null);
+            numPolice = cursor.getCount();
             cursor = db.query(DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_ZIPCODE + " = ? and " + DataEntry.COLUMN_SHAME_TYPE + " = ?", new String[]{zipCode, Constants.OTHER}, null, null, null);
             numOther = cursor.getCount();
         }
@@ -178,6 +188,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         types[0] = numCatcall;
         types[1] = numPhysical;
         types[2] = numOther;
+        types[3] = numPolice;
         return types;
     }
 

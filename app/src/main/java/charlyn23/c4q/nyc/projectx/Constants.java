@@ -48,8 +48,8 @@ public class Constants {
     public static final String SHAME_DOING_COLUMN = "shameDoing";
     public static final String VERBAL_SHAME_COLUMN = "verbalShame";
     public static final String PHYSICAL_SHAME_COLUMN = "physicalShame";
-    public static final String OTHER_SHAME_COLUMN = "otherShame";
     public static final String POLICE_SHAME_COLUMN = "policeShame";
+    public static final String OTHER_SHAME_COLUMN = "otherShame";
     public static final String SHAME_TIME_COLUMN = "shameTime";
     public static final String SHAME_LATITUDE_COLUMN = "latitude";
     public static final String SHAME_LONGITUDE_COLUMN = "longitude";

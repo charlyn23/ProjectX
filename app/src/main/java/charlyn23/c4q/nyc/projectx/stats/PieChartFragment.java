@@ -77,11 +77,11 @@ public class PieChartFragment extends Fragment {
                 numVerbalShame = countTypes[0];
                 numPhysicalShame = countTypes[1];
                 numOtherShame = countTypes[2];
-//                numPoliceShame = countTypes[3];
-                Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
+                numPoliceShame = countTypes[3];
+                Data data = setBars(numVerbalShame, numPhysicalShame, numPoliceShame, numOtherShame);
                 setDataPieChart(data.getyValues(), data.getxValues());
                 //no harassment instances reported in the area
-                if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
+                if (numVerbalShame == 0 && numPhysicalShame == 0 && numPoliceShame == 0 && numOtherShame == 0) {
                     pieChart.setVisibility(View.GONE);
                     header.setVisibility(View.GONE);
                     numInstances.setVisibility(View.GONE);
@@ -94,7 +94,7 @@ public class PieChartFragment extends Fragment {
                     noHarassmentMessage.setVisibility(View.GONE);
                     numInstances.setVisibility(View.VISIBLE);
                     header.setVisibility(View.VISIBLE);
-                    int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
+                    int totalInstances = numVerbalShame + numPhysicalShame + numPoliceShame + numOtherShame;
                     numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
                 }
 
@@ -135,11 +135,11 @@ public class PieChartFragment extends Fragment {
     }
 
     public void animateChart() {
-        pieChart.animateY(2000);
+        pieChart.animateY(1500);
     }
 
     //sets up the number of bars in the chart
-    private Data setBars(int numVerbalShame, int numPhysicalShame, int numOtherShame) {
+    private Data setBars(int numVerbalShame, int numPhysicalShame,int numPoliceShame, int numOtherShame) {
         int count = 0;
         ArrayList<Bar> bars = new ArrayList<>();
         ArrayList<Entry> yVals = new ArrayList<Entry>();
@@ -147,7 +147,7 @@ public class PieChartFragment extends Fragment {
 
         bars.add(new Bar(Constants.VERBAL, numVerbalShame));
         bars.add(new Bar(Constants.PHYSICAL, numPhysicalShame));
-//        bars.add(new Bar(Constants.POLICE, numPoliceShame));
+        bars.add(new Bar("Police", numPoliceShame));
         bars.add(new Bar(Constants.OTHER, numOtherShame));
 
         for (int i = 0; i < bars.size(); i++) {

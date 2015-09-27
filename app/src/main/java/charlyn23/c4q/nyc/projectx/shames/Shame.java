@@ -12,6 +12,7 @@ public class Shame extends ParseObject {
     private String shameType;
     private String verbalShame;
     private String physicalShame;
+    private String policeShame;
     private String otherShame;
     private String shameFeel;
     private String shameDoing;
@@ -20,13 +21,14 @@ public class Shame extends ParseObject {
     private String zipcode;
 
     public Shame(double latitude, double longitude, String shameType, String verbalShame,
-                 String physicalShame, String otherShame, String shameFeel, String shameDoing,
+                 String physicalShame, String otherShame, String policeShame, String shameFeel, String shameDoing,
                  String shameTime, String group, String zipcode){
         this.latitude = latitude;
         this.longitude = longitude;
         this.shameType = shameType;
         this.verbalShame = verbalShame;
         this.physicalShame = physicalShame;
+        this.policeShame = policeShame;
         this.otherShame = otherShame;
         this.shameFeel = shameFeel;
         this.shameDoing = shameDoing;
@@ -77,6 +79,14 @@ public class Shame extends ParseObject {
 
     public void setOtherShame(String otherShame) {
         this.otherShame = otherShame;
+    }
+
+    public String getPoliceShame() {
+        return policeShame;
+    }
+
+    public void setPoliceShame(String policeShame) {
+        this.policeShame = policeShame;
     }
 
     public String getPhysicalShame() {
