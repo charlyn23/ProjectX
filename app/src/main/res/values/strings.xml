@@ -15,6 +15,7 @@
     <string name="back">Back</string>
     <string name="verbal_shame">What did they say?</string>
     <string name="physical_shame">What did they do?</string>
+    <string name="police_shame">What did they do?</string>
     <string name="other_shame">What did they do?</string>
     <string name="shame_feel">How did you feel?</string>
     <string name="submit">Submit Shame</string>
@@ -29,6 +30,7 @@
     <array name="shame_types">
         <item>Catcall</item>
         <item>Physical</item>
+        <item>Police Encounter</item>
         <item>Other</item>
     </array>
 
@@ -46,6 +48,14 @@
         <item>Spit at/on me</item>
         <item>Pulled at my clothing</item>
         <item>Sexually assaulted me</item>
+    </array>
+
+    <array name="police_types">
+        <item>Intimidation</item>
+        <item>False arrest</item>
+        <item>Racial profiling</item>
+        <item>Sexual abuse</item>
+        <!--<item>police corruption</item>-->
     </array>
 
     <array name="other_types">
