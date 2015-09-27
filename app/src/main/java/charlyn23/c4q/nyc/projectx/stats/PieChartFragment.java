@@ -2,48 +2,34 @@ package charlyn23.c4q.nyc.projectx.stats;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.AnimationEasing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.google.android.gms.maps.model.LatLng;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
-import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.map.ShameSQLiteHelper;
-import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 public class PieChartFragment extends Fragment {
     public PieChart pieChart;
     private int numVerbalShame;
     private int numPhysicalShame;
+    private int numPoliceShame;
     private int numOtherShame;
     private Typeface questrial;
     private TextView numInstances;
@@ -91,10 +77,11 @@ public class PieChartFragment extends Fragment {
                 numVerbalShame = countTypes[0];
                 numPhysicalShame = countTypes[1];
                 numOtherShame = countTypes[2];
-                Data data = setBars(numVerbalShame, numPhysicalShame, numOtherShame);
+                numPoliceShame = countTypes[3];
+                Data data = setBars(numVerbalShame, numPhysicalShame, numPoliceShame, numOtherShame);
                 setDataPieChart(data.getyValues(), data.getxValues());
                 //no harassment instances reported in the area
-                if (numVerbalShame == 0 && numPhysicalShame == 0 && numOtherShame == 0) {
+                if (numVerbalShame == 0 && numPhysicalShame == 0 && numPoliceShame == 0 && numOtherShame == 0) {
                     pieChart.setVisibility(View.GONE);
                     header.setVisibility(View.GONE);
                     numInstances.setVisibility(View.GONE);
@@ -107,7 +94,7 @@ public class PieChartFragment extends Fragment {
                     noHarassmentMessage.setVisibility(View.GONE);
                     numInstances.setVisibility(View.VISIBLE);
                     header.setVisibility(View.VISIBLE);
-                    int totalInstances = numVerbalShame + numPhysicalShame + numOtherShame;
+                    int totalInstances = numVerbalShame + numPhysicalShame + numPoliceShame + numOtherShame;
                     numInstances.setText(getString(R.string.total_instances) + " " + totalInstances);
                 }
 
@@ -148,11 +135,11 @@ public class PieChartFragment extends Fragment {
     }
 
     public void animateChart() {
-        pieChart.animateY(2000);
+        pieChart.animateY(1500);
     }
 
     //sets up the number of bars in the chart
-    private Data setBars(int numVerbalShame, int numPhysicalShame, int numOtherShame) {
+    private Data setBars(int numVerbalShame, int numPhysicalShame,int numPoliceShame, int numOtherShame) {
         int count = 0;
         ArrayList<Bar> bars = new ArrayList<>();
         ArrayList<Entry> yVals = new ArrayList<Entry>();
@@ -160,6 +147,7 @@ public class PieChartFragment extends Fragment {
 
         bars.add(new Bar(Constants.VERBAL, numVerbalShame));
         bars.add(new Bar(Constants.PHYSICAL, numPhysicalShame));
+        bars.add(new Bar("Police", numPoliceShame));
         bars.add(new Bar(Constants.OTHER, numOtherShame));
 
         for (int i = 0; i < bars.size(); i++) {

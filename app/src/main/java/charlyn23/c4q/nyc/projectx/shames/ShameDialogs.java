@@ -7,7 +7,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +41,7 @@ public class ShameDialogs {
     private String shameType;
     private String verbalShame;
     private String physicalShame;
+    private String policeShame;
     private String otherShame;
     private String shameFeel;
     private String shameDoing;
@@ -114,10 +114,15 @@ public class ShameDialogs {
                 content = R.string.physical_shame;
                 items = R.array.physical_types;
                 break;
+            case Constants.POLICE:
+                content = R.string.police_shame;
+                items = R.array.police_types;
+                break;
             case Constants.OTHER:
                 content = R.string.other_shame;
                 items = R.array.other_types;
                 break;
+
         }
 
         new MaterialDialog.Builder(context)
@@ -135,6 +140,9 @@ public class ShameDialogs {
                                     break;
                                 case Constants.PHYSICAL:
                                     physicalShame = type_choice.toString();
+                                    break;
+                                case Constants.POLICE:
+                                    policeShame = type_choice.toString();
                                     break;
                                 case Constants.OTHER:
                                     otherShame = type_choice.toString();
@@ -429,6 +437,9 @@ public class ShameDialogs {
                 break;
             case Constants.PHYSICAL:
                 newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
+                break;
+            case Constants.POLICE:
+                newShame.put(Constants.POLICE_SHAME_COLUMN, policeShame);
                 break;
             case Constants.OTHER:
                 newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
