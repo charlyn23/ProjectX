@@ -3,6 +3,8 @@ package charlyn23.c4q.nyc.projectx.shames;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
+import java.util.Date;
+
 import charlyn23.c4q.nyc.projectx.Constants;
 
 @ParseClassName(Constants.SHAME)

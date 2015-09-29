@@ -27,6 +27,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,6 +98,8 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3, 4};
     private PendingIntent mGeofencePendingIntent = null;
     private HashMap<String, Boolean> identity;
+    private Button lastMonthFilter,lastWeekFilter,showAllFilter,lastYearFilter;
+    private List<Shame> active_list = new ArrayList<>();
 
     @Nullable
     @Override
@@ -103,10 +108,57 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         initializeViews();
         setCustomFont();
 
+        showAllFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.clear();
+                active_list.clear();
+                for (Shame shame : loadFromLastYearSQLite()) {
+                    active_list.add(shame);
+                }
+                loadData(active_list);
+            }
+        });
+
+        lastYearFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.clear();
+                active_list.clear();
+                for (Shame shame : loadFromLastYearSQLite()) {
+                    active_list.add(shame);
+                }
+                loadData(active_list);
+            }
+        });
+
+        lastMonthFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.clear();
+                active_list.clear();
+                for (Shame shame : loadFromLastMonthSQLite()) {
+                    active_list.add(shame);
+                }
+                loadData(active_list);
+            }
+        });
+        lastWeekFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map.clear();
+                active_list.clear();
+                for (Shame shame : loadFromLastWeekSQLite()) {
+                    active_list.add(shame);
+                }
+                loadData(active_list);
+            }
+        });
+
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
         if (!preferences.getBoolean(Constants.IS_CONNECTED, false))
-            loadData();
+            loadData(active_list);
 
         identity = new HashMap<>();
         identity.put(Constants.MAN, preferences.getBoolean(Constants.MAN, false));
@@ -199,7 +251,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
                     }
 
-                    loadData();
                     Log.d("List of Shames", "Inserted " + results.size() + " Shames");
                 } else {
                     Log.d("List of Shames", "Error: " + e.getMessage());
@@ -207,14 +258,15 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         });
     }
-
-    public void loadData() {
+    //TODO FILTERS
+    public void loadData(final List<Shame> shames) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void[] params) {
-                List<Shame> active_list = loadFromSQLite();
-                Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
-                for (Shame incident : active_list) {
+//                active_list = loadFromLastWeekSQLite();
+
+                Log.i("SQLite Shames loaded", String.valueOf(shames.size()));
+                for (Shame incident : shames) {
                     double latitude = incident.getLatitude();
                     double longitude = incident.getLongitude();
                     LatLng location = new LatLng(latitude, longitude);
@@ -250,13 +302,34 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }.execute();
     }
 
-    // load incidents from past 2 months
-    public List<Shame> loadFromSQLite() {
+    public List<Shame> loadAllFromSQLite() {
         ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
     }
+
+    public List<Shame> loadFromLastWeekSQLite() {
+        ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR) - 1);
+        return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
+    }
+
+    public List<Shame> loadFromLastMonthSQLite() {
+        ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 1);
+        return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
+    }
+
+    public List<Shame> loadFromLastYearSQLite() {
+        ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 12);
+        return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
+    }
+
 
     public void insertDatatoSQLite(List<Shame> results) {
         ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
@@ -292,6 +365,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                 new_marker.remove();
                 new_marker = map.addMarker(new MarkerOptions()
                         .position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.smallredlogo)).draggable(true));
+
                 addShame.setVisibility(View.VISIBLE);
             }
 
@@ -302,6 +376,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             preferences.edit().putBoolean(Constants.IS_DROPPED, true).apply();
             preferences.edit().putLong(Constants.LATITUDE_PREFERENCE, lat).apply();
             preferences.edit().putLong(Constants.LONGITUDE_PREFERENCE, longit).apply();
+
         }
     };
 
@@ -695,6 +770,10 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         addShame = (FloatingActionButton) view.findViewById(R.id.add_shame);
         search = (AutoCompleteTextView) view.findViewById(R.id.search);
         filter = (Button) view.findViewById(R.id.filter);
+        showAllFilter = (Button) view.findViewById(R.id.show_all_box);
+        lastWeekFilter = (Button) view.findViewById(R.id.show_week_box);
+        lastMonthFilter = (Button) view.findViewById(R.id.show_month_box);
+        lastYearFilter = (Button) view.findViewById(R.id.show_year_box);
     }
 
     public void setCustomFont() {
@@ -748,4 +827,5 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             }
         }
     }
+
 }
