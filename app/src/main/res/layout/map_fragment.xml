@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:hint="Search by location                                     "
+                android:hint="Search by location "
                 android:imeOptions="actionGo"
                 android:textSize="18dp" />
 
@@ -64,7 +64,8 @@
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="400dp" />
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_shame"
@@ -77,5 +78,32 @@
             app:pressedTranslationZ="6dp"
             app:rippleColor="@color/primary_dark" />
 
+            <Button
+                android:id="@+id/show_all_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/map"
+                android:text="All"/>
+            <Button
+                android:id="@+id/show_week_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/map"
+                android:layout_toRightOf="@id/show_all_box"
+                android:text="Week"/>
+            <Button
+                android:id="@+id/show_month_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/map"
+                android:layout_toRightOf="@id/show_week_box"
+                android:text="Month"/>
+            <Button
+                android:id="@+id/show_year_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/map"
+                android:layout_toRightOf="@id/show_month_box"
+                android:text="Year"/>
     </RelativeLayout>
 </LinearLayout>
