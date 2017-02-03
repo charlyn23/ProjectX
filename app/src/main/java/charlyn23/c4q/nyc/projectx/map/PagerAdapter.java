@@ -24,7 +24,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         pagerFragments[0] = new ProjectXMapFragment();
         pagerFragments[1] = new StatsFragment();
         pagerFragments[2] = new ProfileFragment(client);
-        pagerFragments[3] = new SignUpFragment(client);
+        pagerFragments[3] = new SignUpFragment();
     }
 
     @Override

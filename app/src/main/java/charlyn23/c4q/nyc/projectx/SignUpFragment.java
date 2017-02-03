@@ -7,7 +7,9 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
@@ -24,8 +32,11 @@ import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
@@ -34,13 +45,102 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private View view;
     private SharedPreferences preferences = null;
 
-    public SignUpFragment(GoogleApiClient googleLogInClient) {
-        this.googleLogInClient = googleLogInClient;
-    }
+
 
     public SignUpFragment() {
-    }
+        this.googleLogInClient = new GoogleApiClient() {
+            @Override
+            public boolean hasConnectedApi(@NonNull Api<?> api) {
+                return false;
+            }
 
+            @NonNull
+            @Override
+            public ConnectionResult getConnectionResult(@NonNull Api<?> api) {
+                return null;
+            }
+
+            @Override
+            public void connect() {
+
+            }
+
+            @Override
+            public ConnectionResult blockingConnect() {
+                return null;
+            }
+
+            @Override
+            public ConnectionResult blockingConnect(long l, @NonNull TimeUnit timeUnit) {
+                return null;
+            }
+
+            @Override
+            public void disconnect() {
+
+            }
+
+            @Override
+            public void reconnect() {
+
+            }
+
+            @Override
+            public PendingResult<Status> clearDefaultAccountAndReconnect() {
+                return null;
+            }
+
+            @Override
+            public void stopAutoManage(@NonNull FragmentActivity fragmentActivity) {
+
+            }
+
+            @Override
+            public boolean isConnected() {
+                return false;
+            }
+
+            @Override
+            public boolean isConnecting() {
+                return false;
+            }
+
+            @Override
+            public void registerConnectionCallbacks(@NonNull ConnectionCallbacks connectionCallbacks) {
+
+            }
+
+            @Override
+            public boolean isConnectionCallbacksRegistered(@NonNull ConnectionCallbacks connectionCallbacks) {
+                return false;
+            }
+
+            @Override
+            public void unregisterConnectionCallbacks(@NonNull ConnectionCallbacks connectionCallbacks) {
+
+            }
+
+            @Override
+            public void registerConnectionFailedListener(@NonNull OnConnectionFailedListener onConnectionFailedListener) {
+
+            }
+
+            @Override
+            public boolean isConnectionFailedListenerRegistered(@NonNull OnConnectionFailedListener onConnectionFailedListener) {
+                return false;
+            }
+
+            @Override
+            public void unregisterConnectionFailedListener(@NonNull OnConnectionFailedListener onConnectionFailedListener) {
+
+            }
+
+            @Override
+            public void dump(String s, FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strings) {
+
+            }
+        };
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.signup_fragment, container, false);
@@ -51,8 +151,11 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
         ImageButton google = (ImageButton) view.findViewById(R.id.googleplus_button);
 
-        ParseFacebookUtils.initialize(view.getContext());
-
+//
+        FacebookSdk.sdkInitialize(view.getContext());
+        AppEventsLogger.activateApp(view.getContext());
+//
+//
         fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);

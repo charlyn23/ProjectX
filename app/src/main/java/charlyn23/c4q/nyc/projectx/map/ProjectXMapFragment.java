@@ -1,11 +1,13 @@
 package charlyn23.c4q.nyc.projectx.map;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -71,7 +74,7 @@ import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 
-public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status> {
+public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status>  {
     private static final LatLngBounds BOUNDS = new LatLngBounds(new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
     private SharedPreferences preferences;
     private PlaceAutocompleteAdapter mAdapter;
@@ -167,13 +170,12 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     public void addMapFragment() {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        map = mapFragment.getMap();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.i("MapFragment", "onmapready");
-
+        map = googleMap;
         map.getUiSettings().setMapToolbarEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         map.getUiSettings().setCompassEnabled(true);
@@ -181,6 +183,16 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.getUiSettings().setTiltGesturesEnabled(true);
         map.getUiSettings().setScrollGesturesEnabled(true);
         map.getUiSettings().setRotateGesturesEnabled(true);
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         map.setMyLocationEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setOnMapClickListener(mapClickListener);
@@ -378,6 +390,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+
     public class snackbarDetail implements View.OnClickListener {
         double lat, lon;
         String type, who, when;
@@ -534,6 +547,16 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         currentLocation = LocationServices.FusedLocationApi.getLastLocation(client);
         if (currentLocation == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, createLocationRequest(), new LocationListener() {
