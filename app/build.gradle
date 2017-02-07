@@ -46,12 +46,15 @@ repositories {
     }
 
 }
+apply plugin: 'realm-android'
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile fileTree(include: 'Parse-*.jar', dir: 'libs')
-    compile fileTree(include: 'ParseFacebookUtilsV4-*.jar', dir: 'libs')
+
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
@@ -71,5 +74,4 @@ dependencies {
     compile 'com.github.mrengineer13:snackbar:1.2.0@aar'
     compile 'net.steamcrafted:materialiconlib:1.0.4'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
-    compile project(path: ':backend', configuration: 'android-endpoints')
 }

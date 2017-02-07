@@ -73,6 +73,7 @@ import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
+import charlyn23.c4q.nyc.projectx.shames.ShameObject;
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status>  {
     private static final LatLngBounds BOUNDS = new LatLngBounds(new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
@@ -199,34 +200,35 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         map.setOnMarkerClickListener(markerClickListener);
 
         //populates map with shames that occurred within the last two months
-        ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
-        String lastUpdate = preferences.getString(Constants.LAST_UPDATE, "00000000_0000");
-        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, lastUpdate);
-        query.findInBackground(new FindCallback<Shame>() {
-            public void done(final List<Shame> results, ParseException e) {
-                if (e == null) {
-                    if (results.size() > 0) {
-                        insertDatatoSQLite(results);
-                        Calendar cal = Calendar.getInstance();
-                        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
-                    }
-
-                    loadData();
-                    Log.d("List of Shames", "Inserted " + results.size() + " Shames");
-                } else {
-                    Log.d("List of Shames", "Error: " + e.getMessage());
-                }
-            }
-        });
+        //TODO: change query to Realm
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
+//        String lastUpdate = preferences.getString(Constants.LAST_UPDATE, "00000000_0000");
+//        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, lastUpdate);
+//        query.findInBackground(new FindCallback<Shame>() {
+//            public void done(final List<Shame> results, ParseException e) {
+//                if (e == null) {
+//                    if (results.size() > 0) {
+//                        insertDatatoSQLite(results);
+//                        Calendar cal = Calendar.getInstance();
+//                        preferences.edit().putString(Constants.LAST_UPDATE, new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime())).apply();
+//                    }
+//
+//                    loadData();
+//                    Log.d("List of Shames", "Inserted " + results.size() + " Shames");
+//                } else {
+//                    Log.d("List of Shames", "Error: " + e.getMessage());
+//                }
+//            }
+//        });
     }
 
     public void loadData() {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void[] params) {
-                List<Shame> active_list = loadFromSQLite();
+                List<ShameObject> active_list = loadFromSQLite();
                 Log.i("SQLite Shames loaded", String.valueOf(active_list.size()));
-                for (Shame incident : active_list) {
+                for (ShameObject incident : active_list) {
                     double latitude = incident.getLatitude();
                     double longitude = incident.getLongitude();
                     LatLng location = new LatLng(latitude, longitude);
@@ -263,14 +265,14 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     // load incidents from past 2 months
-    public List<Shame> loadFromSQLite() {
+    public List<ShameObject> loadFromSQLite() {
         ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
         return helper.loadData(new String[]{new SimpleDateFormat("yyyyMMdd").format(cal.getTime())});
     }
 
-    public void insertDatatoSQLite(List<Shame> results) {
+    public void insertDatatoSQLite(List<ShameObject> results) {
         ShameSQLiteHelper helper = ShameSQLiteHelper.getInstance(view.getContext());
         helper.insertData(results);
     }

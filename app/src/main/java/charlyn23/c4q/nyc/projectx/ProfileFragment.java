@@ -46,13 +46,16 @@ public class ProfileFragment extends Fragment {
     private Button logout;
     private boolean isLoggedIn_Google, geofenceEnabled, isConnected;
 
+    public ProfileFragment() {
+    }
 
     public ProfileFragment(GoogleApiClient googleLogInClient) {
         this.googleLogInClient = googleLogInClient;
     }
 
-    public ProfileFragment() {
-    }
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

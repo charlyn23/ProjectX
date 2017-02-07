@@ -1,4 +1,4 @@
-package charlyn23.c4q.nyc.projectx;
+package charlyn23.c4q.nyc.projectx.authentication;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +18,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,7 +32,6 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -38,12 +42,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import charlyn23.c4q.nyc.projectx.Constants;
+import charlyn23.c4q.nyc.projectx.MainActivity;
+import charlyn23.c4q.nyc.projectx.R;
+
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences.Editor editor;
     public GoogleApiClient googleLogInClient;
     private View view;
     private SharedPreferences preferences = null;
+    public LoginButton fbLoginButton;
+    public CallbackManager callbackManager;
+
 
 
 
@@ -146,19 +157,47 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.signup_fragment, container, false);
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
-        //initializes views
-        ImageButton fb = (ImageButton) view.findViewById(R.id.facebook_button);
+        //initializes views and OnClickListeners
+        fbLoginButton = (LoginButton)view.findViewById(R.id.login_button);
+        fbLoginButton.setFragment(this);
+        fbLoginButton.setReadPermissions("email");
         ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
         ImageButton google = (ImageButton) view.findViewById(R.id.googleplus_button);
 
-//
-        FacebookSdk.sdkInitialize(view.getContext());
-        AppEventsLogger.activateApp(view.getContext());
-//
-//
-        fb.setOnClickListener(this);
         twitter.setOnClickListener(this);
         google.setOnClickListener(this);
+
+        FacebookSdk.sdkInitialize(view.getContext());
+        AppEventsLogger.activateApp(view.getContext());
+
+        //callback manager to handle Facebook login responses
+        callbackManager = CallbackManager.Factory.create();
+        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.i("Login: " , "SUCCESS!");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.i("Login: " , "CANCELLED");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.i("Login: ", error.toString());
+            }
+
+
+        });
+        fbLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
 
         //sets custom font
         Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
@@ -170,51 +209,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-    }
 
-    private void logInViaFB(final List<String> permissions) {
-        ParseFacebookUtils.logInWithReadPermissionsInBackground(SignUpFragment.this, permissions, new LogInCallback() {
-            @Override
-            public void done(final ParseUser user, ParseException err) {
-                if (user == null) {
-                    Log.i(Constants.TAG, "Log in failed");
-                    Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_SHORT).show();
-                    ParseUser.logOut();
-                } else if (user.isNew()) {
-                    Log.i(Constants.TAG, "User signed up and logged in through Facebook!");
-                    if (!ParseFacebookUtils.isLinked(user)) {
-                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpFragment.this, permissions, new SaveCallback() {
-                            @Override
-                            public void done(ParseException ex) {
-                                if (ParseFacebookUtils.isLinked(user)) {
-                                    Log.i(Constants.TAG, "New user logged in with Facebook and is linked!");
-                                }
-                            }
-                        });
-                    }
-                    editor = preferences.edit();
-                    editor.putBoolean(Constants.LOGGED_IN, true).apply();
-                    reportShame();
 
-                } else {
-                    Log.i(Constants.TAG, "User logged in through Facebook!");
-                    if (!ParseFacebookUtils.isLinked(user)) {
-                        ParseFacebookUtils.linkWithReadPermissionsInBackground(user, SignUpFragment.this, permissions, new SaveCallback() {
-                            @Override
-                            public void done(ParseException ex) {
-                                if (ParseFacebookUtils.isLinked(user)) {
-                                    Log.i(Constants.TAG, "User logged in with Facebook and is linked!");
-                                }
-                            }
-                        });
-                    }
-                    editor = preferences.edit();
-                    editor.putBoolean(Constants.LOGGED_IN, true).apply();
-                    reportShame();
-                }
-            }
-        });
     }
 
     private void logInViaTwitter() {
@@ -273,9 +269,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         List<String> permissions = Arrays.asList("public_profile", "email");
         switch (v.getId()) {
-            case R.id.facebook_button:
-                logInViaFB(permissions);
-                break;
             case R.id.googleplus_button:
                 logInViaGooglePlus();
                 break;

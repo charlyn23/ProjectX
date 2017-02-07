@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/gradient"
-    tools:context="charlyn23.c4q.nyc.projectx.SignUpFragment">
+    tools:context="charlyn23.c4q.nyc.projectx.authentication.SignUpFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,19 +39,19 @@
             android:gravity="center"
             android:text="Come Together.\n Voice the Movement"
             android:textSize="20sp"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scene_root"
+            >
+
+            <include layout="@layout/facebook_login_button"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/facebookButton" />
+        </FrameLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@id/blazon"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:text="Log in with"
-        android:gravity="center|bottom"
-        android:textColor="@color/text_white"
-        android:fontFamily="sans-serif-light"
-        android:textSize="22sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,14 +61,6 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:orientation="horizontal">
-
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:id="@+id/facebook_button"
-            android:src="@drawable/facebook"/>
 
         <ImageButton
             android:layout_width="0dp"

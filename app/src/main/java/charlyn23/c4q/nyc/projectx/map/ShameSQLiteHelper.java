@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
-import charlyn23.c4q.nyc.projectx.shames.Shame;
+import charlyn23.c4q.nyc.projectx.shames.ShameObject;
 
 public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
@@ -76,31 +76,42 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DataEntry.TABLE_NAME;
 
-    public void insertData(List<Shame> results) {
-        for (Shame incident : results) {
+    public void insertData(List<ShameObject> results) {
+        for (ShameObject incident : results) {
             insertRow(incident);
         }
     }
 
-    public void insertRow(Shame incident) {
+    public void insertRow(ShameObject incident) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DataEntry.COLUMN_TIMESTAMP, Integer.valueOf(incident.getString(Constants.SHAME_TIME_COLUMN).substring(0, 8)));
-        values.put(DataEntry.COLUMN_LATITUDE, incident.getDouble(Constants.SHAME_LATITUDE_COLUMN));
-        values.put(DataEntry.COLUMN_LONGITUDE, incident.getDouble(Constants.SHAME_LONGITUDE_COLUMN));
-        values.put(DataEntry.COLUMN_GROUP, incident.getString(Constants.GROUP_COLUMN));
-        values.put(DataEntry.COLUMN_SHAME_TYPE, incident.getString(Constants.SHAME_TYPE_COLUMN));
-        values.put(DataEntry.COLUMN_VERBAL_SHAME, incident.getString(Constants.VERBAL_SHAME_COLUMN));
-        values.put(DataEntry.COLUMN_PHYSICAL_SHAME, incident.getString(Constants.PHYSICAL_SHAME_COLUMN));
-        values.put(DataEntry.COLUMN_OTHER_SHAME, incident.getString(Constants.OTHER_SHAME_COLUMN));
-        values.put(DataEntry.COLUMN_SHAME_DOING, incident.getString(Constants.SHAME_DOING_COLUMN));
-        values.put(DataEntry.COLUMN_SHAME_FEEL, incident.getString(Constants.SHAME_FEEL_COLUMN));
-        values.put(DataEntry.COLUMN_ZIPCODE, incident.getString(Constants.SHAME_ZIPCODE_COLUMN));
+        values.put(DataEntry.COLUMN_TIMESTAMP, Integer.valueOf(incident.getShameTime().substring(0,8)));
+        values.put(DataEntry.COLUMN_LATITUDE, incident.getLatitude());
+        values.put(DataEntry.COLUMN_LONGITUDE, incident.getLongitude());
+        values.put(DataEntry.COLUMN_GROUP, incident.getGroup());
+        values.put(DataEntry.COLUMN_SHAME_TYPE, incident.getShameType());
+        values.put(DataEntry.COLUMN_VERBAL_SHAME, incident.getVerbalShame());
+        values.put(DataEntry.COLUMN_PHYSICAL_SHAME, incident.getPhysicalShame());
+        values.put(DataEntry.COLUMN_OTHER_SHAME, incident.getOtherShame());
+        values.put(DataEntry.COLUMN_SHAME_DOING, incident.getShameDoing());
+        values.put(DataEntry.COLUMN_SHAME_FEEL, incident.getShameFeel());
+        values.put(DataEntry.COLUMN_ZIPCODE, incident.getZipcode());
+
+//        values.put(DataEntry.COLUMN_LATITUDE, incident.getDouble(Constants.SHAME_LATITUDE_COLUMN));
+//        values.put(DataEntry.COLUMN_LONGITUDE, incident.getDouble(Constants.SHAME_LONGITUDE_COLUMN));
+//        values.put(DataEntry.COLUMN_GROUP, incident.getString(Constants.GROUP_COLUMN));
+//        values.put(DataEntry.COLUMN_SHAME_TYPE, incident.getString(Constants.SHAME_TYPE_COLUMN));
+//        values.put(DataEntry.COLUMN_VERBAL_SHAME, incident.getString(Constants.VERBAL_SHAME_COLUMN));
+//        values.put(DataEntry.COLUMN_PHYSICAL_SHAME, incident.getString(Constants.PHYSICAL_SHAME_COLUMN));
+//        values.put(DataEntry.COLUMN_OTHER_SHAME, incident.getString(Constants.OTHER_SHAME_COLUMN));
+//        values.put(DataEntry.COLUMN_SHAME_DOING, incident.getString(Constants.SHAME_DOING_COLUMN));
+//        values.put(DataEntry.COLUMN_SHAME_FEEL, incident.getString(Constants.SHAME_FEEL_COLUMN));
+//        values.put(DataEntry.COLUMN_ZIPCODE, incident.getString(Constants.SHAME_ZIPCODE_COLUMN));
 
         db.insertOrThrow(DataEntry.TABLE_NAME, null, values);
     }
 
-    public List<Shame> loadData(String[] time) {
+    public List<ShameObject> loadData(String[] time) {
         SQLiteDatabase db = getWritableDatabase();
         String[] projection = {
                 DataEntry.COLUMN_TIMESTAMP,
@@ -116,7 +127,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
                 DataEntry.COLUMN_ZIPCODE
         };
 
-        List<Shame> incidents = new ArrayList<>();
+        List<ShameObject> incidents = new ArrayList<>();
         Cursor cursor = db.query(
                 DataEntry.TABLE_NAME, projection, DataEntry.COLUMN_TIMESTAMP + " > ?", time, null, null, null);
 
@@ -125,7 +136,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         }
 
         while (cursor.moveToNext()) {
-            incidents.add(new Shame(
+            incidents.add(new ShameObject(
                     cursor.getDouble(cursor.getColumnIndex(DataEntry.COLUMN_LATITUDE)),
                     cursor.getDouble(cursor.getColumnIndex(DataEntry.COLUMN_LONGITUDE)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_SHAME_TYPE)),

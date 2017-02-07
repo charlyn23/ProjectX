@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import com.google.android.gms.common.api.GoogleApiClient;
 import charlyn23.c4q.nyc.projectx.ProfileFragment;
-import charlyn23.c4q.nyc.projectx.SignUpFragment;
+import charlyn23.c4q.nyc.projectx.authentication.SignUpFragment;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {

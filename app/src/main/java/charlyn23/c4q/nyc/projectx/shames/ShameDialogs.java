@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,10 +20,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.maps.model.Marker;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseQuery;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -36,7 +30,7 @@ import java.util.Locale;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
-import charlyn23.c4q.nyc.projectx.map.ShameGeofence;
+import io.realm.Realm;
 
 public class ShameDialogs {
     private String shameType;
@@ -49,7 +43,7 @@ public class ShameDialogs {
     private String timestamp;
     private double latitude;
     private double longitude;
-    private Shame newShame;
+    private ShameObject newShame;
     private Marker new_marker;
     private FloatingActionButton addShame;
     private MarkerListener markerListener;
@@ -304,7 +298,8 @@ public class ShameDialogs {
                             if (!isConnected) {
                                 Toast.makeText(context, R.string.check_network_connection, Toast.LENGTH_LONG).show();
                             } else {
-                                saveShame();
+//                                saveShame();
+                                createShame();
                                 //Show custom toast after submitting incident
                                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                 View layout = inflater.inflate(R.layout.custom_toast, null);
@@ -314,7 +309,7 @@ public class ShameDialogs {
                                 toast.setDuration(Toast.LENGTH_LONG);
                                 toast.setView(layout);
                                 toast.show();
-                                checkIfGeofenceIsNeeded();
+//                                checkIfGeofenceIsNeeded();
 
                                 if (markerListener != null)
                                     markerListener.setMarker(latitude, longitude);
@@ -348,45 +343,45 @@ public class ShameDialogs {
                     }
                 }).show();
     }
-
-    public void checkIfGeofenceIsNeeded() {
-        ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
-        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
-        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, last_two_months);
-        query.whereEqualTo(Constants.GROUP_COLUMN, group);
-        query.whereWithinMiles(Constants.LOCATION, new ParseGeoPoint(latitude, longitude), 0.5);
-        query.findInBackground(new FindCallback<Shame>() {
-            public void done(List<Shame> results, ParseException e) {
-                if (e == null) {
-                    float[] distance = new float[1];
-                    int count = 0;
-
-                    for (Shame shame : results) {
-                        // todo query only zipcode +- 2?
-                        Location.distanceBetween(latitude, longitude, shame.getDouble(Constants.SHAME_LATITUDE_COLUMN), shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN), distance);
-                        if (distance[0] < Constants.GEOFENCE_RADIUS_IN_METER
-                                && shame.getString(Constants.GROUP_COLUMN).equals(group))
-                            count++;
-                    }
-
-                    // TODO && no geofence yet
-                    if (count > 5) {
-                        String time = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
-                        ShameGeofence newGeofence = new ShameGeofence();
-                        newGeofence.put(Constants.GROUP_COLUMN, group);
-                        newGeofence.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
-                        newGeofence.put(Constants.TIMESTAMP, time);
-                        newGeofence.saveInBackground();
-                    }
-                    Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
-                } else {
-                    Log.d("List of Shames", "Error: " + e.getMessage());
-                }
-            }
-        });
-    }
+//TODO: Swap to RealmObject
+//    public void checkIfGeofenceIsNeeded() {
+//        ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
+//        Calendar cal = Calendar.getInstance();
+//        cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 2);
+//        String last_two_months = new SimpleDateFormat("yyyyMMdd_HHmmss").format(cal.getTime());
+//        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, last_two_months);
+//        query.whereEqualTo(Constants.GROUP_COLUMN, group);
+//        query.whereWithinMiles(Constants.LOCATION, new ParseGeoPoint(latitude, longitude), 0.5);
+//        query.findInBackground(new FindCallback<Shame>() {
+//            public void done(List<Shame> results, ParseException e) {
+//                if (e == null) {
+//                    float[] distance = new float[1];
+//                    int count = 0;
+//
+//                    for (Shame shame : results) {
+//                        // todo query only zipcode +- 2?
+//                        Location.distanceBetween(latitude, longitude, shame.getDouble(Constants.SHAME_LATITUDE_COLUMN), shame.getDouble(Constants.SHAME_LONGITUDE_COLUMN), distance);
+//                        if (distance[0] < Constants.GEOFENCE_RADIUS_IN_METER
+//                                && shame.getString(Constants.GROUP_COLUMN).equals(group))
+//                            count++;
+//                    }
+//
+//                    // TODO && no geofence yet
+//                    if (count > 5) {
+//                        String time = new SimpleDateFormat("yyyyMMdd_HHmm").format(Calendar.getInstance().getTime());
+//                        ShameGeofence newGeofence = new ShameGeofence();
+//                        newGeofence.put(Constants.GROUP_COLUMN, group);
+//                        newGeofence.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+//                        newGeofence.put(Constants.TIMESTAMP, time);
+//                        newGeofence.saveInBackground();
+//                    }
+//                    Log.d("List of Shames", "Retrieved " + results.size() + " Shames");
+//                } else {
+//                    Log.d("List of Shames", "Error: " + e.getMessage());
+//                }
+//            }
+//        });
+//    }
 
     private String getZipcode(Context context, double latitude, double longitude) throws IOException {
         Geocoder geocoder;
@@ -413,38 +408,65 @@ public class ShameDialogs {
     }
 
     // Submit new shame
-    public void saveShame() {
-        newShame = new Shame();
-        try {
+//    public void saveShame() {
+//        newShame = new ShameObject();
+//        try {
+//            String zipcode = getZipcode(context, latitude, longitude);
+//            if (zipcode != null)
+//
+//                newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        switch (shameType) {
+//            case Constants.VERBAL:
+//                newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
+//                break;
+//            case Constants.PHYSICAL:
+//                newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
+//                break;
+//            case Constants.OTHER:
+//                newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
+//                break;
+//        }
+//
+//        newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
+//        newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
+//        newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
+//        newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
+//        newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
+//        newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
+//        newShame.put(Constants.GROUP_COLUMN, group);
+//        newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
+//        newShame.saveInBackground();
+//
+//    }
+    //make realm shame object
+    public void createShame() {
+        Realm realm  = Realm.getDefaultInstance();
+        try{
             String zipcode = getZipcode(context, latitude, longitude);
-            if (zipcode != null)
-                newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
+            if (zipcode != null) {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        newShame = realm.createObject(ShameObject.class);
+                        newShame.setLatitude(latitude);
+                        newShame.setLongitude(longitude);
+                        newShame.setShameType(shameType);
+                        newShame.setShameFeel(shameFeel);
+                        newShame.setShameDoing(shameDoing);
+                        newShame.setGroup(group);
+
+                    }
+                });
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        switch (shameType) {
-            case Constants.VERBAL:
-                newShame.put(Constants.VERBAL_SHAME_COLUMN, verbalShame);
-                break;
-            case Constants.PHYSICAL:
-                newShame.put(Constants.PHYSICAL_SHAME_COLUMN, physicalShame);
-                break;
-            case Constants.OTHER:
-                newShame.put(Constants.OTHER_SHAME_COLUMN, otherShame);
-                break;
-        }
-
-        newShame.put(Constants.SHAME_TIME_COLUMN, timestamp);
-        newShame.put(Constants.SHAME_LATITUDE_COLUMN, latitude);
-        newShame.put(Constants.SHAME_LONGITUDE_COLUMN, longitude);
-        newShame.put(Constants.SHAME_TYPE_COLUMN, shameType);
-        newShame.put(Constants.SHAME_FEEL_COLUMN, shameFeel);
-        newShame.put(Constants.SHAME_DOING_COLUMN, shameDoing);
-        newShame.put(Constants.GROUP_COLUMN, group);
-        newShame.put(Constants.LOCATION, new ParseGeoPoint(latitude, longitude));
-        newShame.saveInBackground();
-
+        Log.i("created shame: ", newShame.getShameFeel());
+        realm.close();
     }
 
 }

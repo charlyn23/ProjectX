@@ -7,7 +7,8 @@
     <!--<string name="YOUR_APPLICATION_ID">wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O</string>-->
     <!--<string name="YOUR_CLIENT_KEY">kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq</string>-->
 
-    <string name="facebook_app_id">1615676585401326</string>
+    <string name="facebook_id">@string/facebook_app_id</string>
+    <string name="fb_login_protocol_scheme">fb262993290780904</string>
     <string name="snackbar_action">View</string>
     <string name="new_shame_type">What type of harassment?</string>
     <string name="next">Next</string>
