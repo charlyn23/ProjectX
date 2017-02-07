@@ -1,4 +1,4 @@
-# ProjectX
+# Blazon
 
 Group Members: Charlyn, Yuliya, Anthony, Sufei
 
