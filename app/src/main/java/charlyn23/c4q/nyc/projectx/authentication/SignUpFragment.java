@@ -33,11 +33,6 @@ import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseTwitterUtils;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -237,6 +232,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                                     }
 
                                 }).executeAsync();
+                        reportShame();
+
 
                     }
 
@@ -253,49 +250,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void logInViaTwitter(){
-        ParseTwitterUtils.logIn(view.getContext(), new LogInCallback() {
-            @Override
-            public void done(final ParseUser parseUser, ParseException e) {
-                if (parseUser == null) {
-                    Toast.makeText(view.getContext(), R.string.check_network_connection, Toast.LENGTH_LONG).show();
-                    Log.i(Constants.TAG, "User cancelled the Twitter login.");
-                    ParseUser.logOut();
 
-                } else if (parseUser.isNew()) {
-                    Log.i(Constants.TAG, "New user signed up and logged in through Twitter!");
-                    if (!ParseTwitterUtils.isLinked(parseUser)) {
-                        ParseTwitterUtils.link(parseUser, view.getContext(), new SaveCallback() {
-                            @Override
-                            public void done(ParseException ex) {
-                                if (ParseTwitterUtils.isLinked(parseUser)) {
-                                    Log.i(Constants.TAG, "New user logged in with Twitter and is linked!");
-                                }
-                            }
-                        });
-                    }
-
-                    editor = preferences.edit();
-                    editor.putBoolean(Constants.LOGGED_IN, true).apply();
-                    reportShame();
-
-                } else {
-                    Log.i(Constants.TAG, "User logged in through Twitter!");
-                    if (!ParseTwitterUtils.isLinked(parseUser)) {
-                        ParseTwitterUtils.link(parseUser, view.getContext(), new SaveCallback() {
-                            @Override
-                            public void done(ParseException ex) {
-                                if (ParseTwitterUtils.isLinked(parseUser)) {
-                                    Log.i(Constants.TAG, "User logged in with Twitter and is linked!");
-                                }
-                            }
-                        });
-                    }
-                    editor = preferences.edit();
-                    editor.putBoolean(Constants.LOGGED_IN, true).apply();
-                    reportShame();
-                }
-            }
-        });
     }
 
     private void reportShame() {

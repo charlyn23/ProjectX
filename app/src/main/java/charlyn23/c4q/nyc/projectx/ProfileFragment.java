@@ -68,7 +68,6 @@ public class ProfileFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
 
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
-        isLoggedIn_Facebook = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
         isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
         setUpToggleButtons();
