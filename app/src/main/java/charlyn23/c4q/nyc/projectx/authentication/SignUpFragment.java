@@ -22,7 +22,10 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +38,9 @@ import com.parse.ParseException;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -161,6 +167,12 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         fbLoginButton = (LoginButton)view.findViewById(R.id.login_button);
         fbLoginButton.setFragment(this);
         fbLoginButton.setReadPermissions("email");
+        fbLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logInViaFacebook();
+            }
+        });
         ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
         ImageButton google = (ImageButton) view.findViewById(R.id.googleplus_button);
 
@@ -169,35 +181,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
         FacebookSdk.sdkInitialize(view.getContext());
         AppEventsLogger.activateApp(view.getContext());
-
-        //callback manager to handle Facebook login responses
-        callbackManager = CallbackManager.Factory.create();
-        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.i("Login: " , "SUCCESS!");
-            }
-
-            @Override
-            public void onCancel() {
-                Log.i("Login: " , "CANCELLED");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.i("Login: ", error.toString());
-            }
-
-
-        });
-        fbLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-
 
         //sets custom font
         Typeface questrial = Typeface.createFromAsset(getActivity().getAssets(), "questrial.ttf");
@@ -210,7 +193,63 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
+
+    }
+    private void logInViaFacebook() {
+        callbackManager = CallbackManager.Factory.create();
+
+        // Set permissions
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email"));
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+
+                        System.out.println("Success");
+                        editor = preferences.edit();
+                        editor.putBoolean(Constants.LOGGED_IN, true).apply();
+                        GraphRequest.newMeRequest(
+                                loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(JSONObject json, GraphResponse response) {
+                                        if (response.getError() != null) {
+                                            // handle error
+                                            System.out.println("ERROR");
+                                        } else {
+                                            System.out.println("Success");
+                                            try {
+
+                                                String jsonresult = String.valueOf(json);
+                                                System.out.println("JSON Result"+jsonresult);
+
+                                                String fbEmail = json.getString("email");
+                                                String fbId = json.getString("id");
+                                                String fbFirstName = json.getString("first_name");
+                                                Log.i("FBLogin" , fbFirstName + ", " + fbEmail + ", fbID: " + fbId );
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+
+                                }).executeAsync();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d("Cancel", "On cancel");
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.d("Error", error.toString());
+                    }
+                });
     }
 
     private void logInViaTwitter() {
