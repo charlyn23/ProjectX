@@ -25,9 +25,9 @@ import android.widget.ToggleButton;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
-import com.parse.ParseUser;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
@@ -44,7 +44,7 @@ public class ProfileFragment extends Fragment {
     private ToggleButton man, woman, lesbian, poc, gay, trans, bisexual, minor, queer, other;
     private EditText age;
     private Button logout;
-    private boolean isLoggedIn_Google, geofenceEnabled, isConnected;
+    private boolean isLoggedIn_Google, isLoggedIn_Facebook, geofenceEnabled, isConnected;
 
     public ProfileFragment() {
     }
@@ -66,7 +66,9 @@ public class ProfileFragment extends Fragment {
 
         // get preference
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+
         isLoggedIn_Google = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
+        isLoggedIn_Facebook = preferences.getBoolean(Constants.LOGGED_IN_GOOGLE, false);
         geofenceEnabled = preferences.getBoolean(Constants.ALLOW_GEOFENCE, false);
         isConnected = preferences.getBoolean(Constants.IS_CONNECTED, false);
         setUpToggleButtons();
@@ -171,8 +173,10 @@ public class ProfileFragment extends Fragment {
     View.OnClickListener logoutClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ParseUser user = ParseUser.getCurrentUser();
-            user.logOut();
+
+            if (preferences.getBoolean(Constants.LOGGED_IN, true)) {
+                LoginManager.getInstance().logOut();
+            }
 
             if (googleLogInClient.isConnected()) {
                 Log.d("ProfileFragment", "Google Client log out");

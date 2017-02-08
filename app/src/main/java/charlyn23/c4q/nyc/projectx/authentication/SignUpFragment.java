@@ -223,7 +223,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                                             try {
 
                                                 String jsonresult = String.valueOf(json);
-                                                System.out.println("JSON Result"+jsonresult);
+                                                Log.i("JSON Result", jsonresult);
 
                                                 String fbEmail = json.getString("email");
                                                 String fbId = json.getString("id");
@@ -252,7 +252,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
-    private void logInViaTwitter() {
+    private void logInViaTwitter(){
         ParseTwitterUtils.logIn(view.getContext(), new LogInCallback() {
             @Override
             public void done(final ParseUser parseUser, ParseException e) {

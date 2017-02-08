@@ -444,6 +444,7 @@ public class ShameDialogs {
 //    }
     //make realm shame object
     public void createShame() {
+        Realm.init(context);
         Realm realm  = Realm.getDefaultInstance();
         try{
             String zipcode = getZipcode(context, latitude, longitude);
