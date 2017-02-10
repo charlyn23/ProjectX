@@ -2,10 +2,12 @@ package charlyn23.c4q.nyc.projectx;
 
 
 public class Constants {
-    public static final String YOUR_APPLICATION_ID = "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O";
-    public static final String YOUR_CLIENT_KEY = "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq";
-    public static final String TWITTER_ID = "ouo6bc7Pw4aScPNRnsKJlvm2K";
-    public static final String TWITTER_KEY = "qRY7V1WbBMXogze0wC0m05cIgMpzl3bn8Kt9NpOpHkW7S5kKLk";
+//    public static final String YOUR_APPLICATION_ID = "wXm5LSYRqb26gArXbWoZDkLCqzO4dD1pa3y5J34O";
+//    public static final String YOUR_CLIENT_KEY = "kvV4Abba1l7DKhUBQxK3PWLvIsFjQwuPyrcuMhXq";
+//    public static final String TWITTER_ID = "ouo6bc7Pw4aScPNRnsKJlvm2K";
+//    public static final String TWITTER_KEY = "qRY7V1WbBMXogze0wC0m05cIgMpzl3bn8Kt9NpOpHkW7S5kKLk";
+
+
 
     public static final int LOG_IN_VIEW = 2;
     public static final int RC_SIGN_IN = 0;

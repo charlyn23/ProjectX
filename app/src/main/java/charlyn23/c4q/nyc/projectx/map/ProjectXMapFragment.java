@@ -57,7 +57,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
@@ -71,9 +70,10 @@ import java.util.List;
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
-import charlyn23.c4q.nyc.projectx.shames.Shame;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameObject;
+import io.realm.Realm;
+import io.realm.RealmQuery;
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status>  {
     private static final LatLngBounds BOUNDS = new LatLngBounds(new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
@@ -327,30 +327,43 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
                         .setAction(R.string.snackbar_delete, snackBarDelete)
                         .show();
             } else {
-                ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
-                query.whereEqualTo(Constants.SHAME_LATITUDE_COLUMN, marker.getPosition().latitude);
-                query.whereEqualTo(Constants.SHAME_LONGITUDE_COLUMN, marker.getPosition().longitude);
-                query.getFirstInBackground(new GetCallback<Shame>() {
-                    @Override
-                    public void done(Shame shame, ParseException e) {
-                        if (shame != null && shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
-                            String readableTime = convertToReadableTime(shame.getString(Constants.SHAME_TIME_COLUMN));
-                            String when = shame.getString(Constants.SHAME_TIME_COLUMN);
-                            String who = shame.getString(Constants.GROUP_COLUMN);
-                            String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
-                            String group = shame.getString(Constants.GROUP_COLUMN);
-                            if (group.equals(Constants.OTHER))
-                                group = Constants.PERSON;
-                            Snackbar.make(view, "A " + group + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
-                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude, type, who, when))
-                                    .show();
+                //Builds a query looking for all ShameObjects
+                Realm realm = Realm.getDefaultInstance();
+                RealmQuery<ShameObject> query = realm.where(ShameObject.class);
 
-                            Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
-                            Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
-                            Log.i("current shame date : ", String.valueOf(readableTime));
-                        }
-                    }
-                });
+                //Adds query conditions - we specifically want incidents from the last month to populate map
+
+
+
+
+
+
+
+
+//                ParseQuery<ShameObject> query = ParseQuery.getQuery(Constants.SHAME);
+//                query.whereEqualTo(Constants.SHAME_LATITUDE_COLUMN, marker.getPosition().latitude);
+//                query.whereEqualTo(Constants.SHAME_LONGITUDE_COLUMN, marker.getPosition().longitude);
+//                query.getFirstInBackground(new GetCallback<Shame>() {
+//                    @Override
+//                    public void done(Shame shame, ParseException e) {
+//                        if (shame != null && shame.getString(Constants.GROUP_COLUMN) != null && shame.getString(Constants.SHAME_TIME_COLUMN) != null) {
+//                            String readableTime = convertToReadableTime(shame.getString(Constants.SHAME_TIME_COLUMN));
+//                            String when = shame.getString(Constants.SHAME_TIME_COLUMN);
+//                            String who = shame.getString(Constants.GROUP_COLUMN);
+//                            String type = shame.getString(Constants.SHAME_TYPE_COLUMN);
+//                            String group = shame.getString(Constants.GROUP_COLUMN);
+//                            if (group.equals(Constants.OTHER))
+//                                group = Constants.PERSON;
+//                            Snackbar.make(view, "A " + group + " got harassed on " + readableTime, Snackbar.LENGTH_LONG)
+//                                    .setAction(R.string.snackbar_action, new snackbarDetail(marker.getPosition().latitude, marker.getPosition().longitude, type, who, when))
+//                                    .show();
+//
+//                            Log.i("current shame lat : ", String.valueOf(marker.getPosition().latitude));
+//                            Log.i("current shame long : ", String.valueOf(marker.getPosition().longitude));
+//                            Log.i("current shame date : ", String.valueOf(readableTime));
+//                        }
+//                    }
+//                });
             }
             return true;
         }

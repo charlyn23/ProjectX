@@ -7,6 +7,7 @@ import io.realm.RealmObject;
  */
 
 public class ShameObject extends RealmObject {
+
     private double latitude;
     private double longitude;
     private String shameType;
@@ -20,8 +21,8 @@ public class ShameObject extends RealmObject {
     private String zipcode;
 
     public ShameObject(double latitude, double longitude, String shameType, String verbalShame,
-                 String physicalShame, String otherShame, String shameFeel, String shameDoing,
-                 String shameTime, String group, String zipcode){
+                       String physicalShame, String otherShame, String shameFeel, String shameDoing,
+                       String shameTime, String group, String zipcode){
         this.latitude = latitude;
         this.longitude = longitude;
         this.shameType = shameType;

@@ -46,6 +46,9 @@ import java.util.concurrent.TimeUnit;
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
+import twitter4j.Twitter;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
@@ -56,7 +59,10 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     public LoginButton fbLoginButton;
     public CallbackManager callbackManager;
 
-
+    private static SharedPreferences mSharedPreferences;
+    private static Twitter twitter;
+    private static RequestToken requestToken;
+    private AccessToken accessToken;
 
 
     public SignUpFragment() {
@@ -168,10 +174,10 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                 logInViaFacebook();
             }
         });
-        ImageButton twitter = (ImageButton) view.findViewById(R.id.twitter_button);
+        ImageButton twitterButton = (ImageButton) view.findViewById(R.id.twitter_button);
         ImageButton google = (ImageButton) view.findViewById(R.id.googleplus_button);
 
-        twitter.setOnClickListener(this);
+        twitterButton.setOnClickListener(this);
         google.setOnClickListener(this);
 
         FacebookSdk.sdkInitialize(view.getContext());
@@ -250,8 +256,69 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void logInViaTwitter(){
-
+//        if (!isTwitterLoggedInAlready()) {
+//            Uri.Builder builder = new Uri.Builder();
+//            Uri uri = builder.build();
+//
+//            if (uri != null && uri.toString().startsWith(TwitterConstants.CALLBACKURL)) {
+//                // oAuth verifier
+//                final String verifier = uri
+//                        .getQueryParameter(TwitterConstants.URL_TWITTER_OAUTH_VERIFIER);
+//
+//                try {
+//
+//                    Thread thread = new Thread(new Runnable(){
+//                        @Override
+//                        public void run() {
+//                            try {
+//
+//                                // Get the access token
+//                                accessToken = twitter.getOAuthAccessToken(
+//                                        requestToken, verifier);
+//                                Log.v("accessToken", accessToken.getToken());
+//                                // Shared Preferences
+//                                mSharedPreferences = getApplicationContext().getSharedPreferences(
+//                                        "twitter4j-sample", 0);
+//                                SharedPreferences.Editor e = mSharedPreferences.edit();
+//
+//
+//                                // After getting access token, access token secret
+//                                // store them in application preferences
+//                                e.putString(TwitterConstants.PREF_KEY_OAUTH_TOKEN, accessToken.getToken());
+//                                e.putString(TwitterConstants.PREF_KEY_OAUTH_SECRET, accessToken.getTokenSecret());
+//                                // Store login status - true
+//                                e.putBoolean(TwitterConstants.PREF_KEY_TWITTER_LOGIN, true);
+//                                e.commit(); // save changes
+//
+//                                Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
+//                                Intent myIntent = new Intent(getContext(), MainActivity.class);
+//                                startActivity(myIntent);
+//
+//                                // Hide login button
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//                    thread.start();
+//
+//
+//
+//                } catch (Exception e) {
+//                    // Check log for login errors
+//                    Log.e("Twitter Login Error", "> " + e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            }
+//        } else {
+//            Intent myIntent = new Intent(getContext(), MainActivity.class);
+//            startActivity(myIntent);
+//
+//        }
     }
+
+
+
 
     private void reportShame() {
         Intent intent = new Intent(view.getContext(), MainActivity.class);

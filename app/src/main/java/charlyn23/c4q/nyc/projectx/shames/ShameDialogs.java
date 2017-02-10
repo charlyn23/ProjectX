@@ -22,7 +22,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +39,7 @@ public class ShameDialogs {
     private String shameFeel;
     private String shameDoing;
     private String group;
-    private String timestamp;
+    private String shameTime;
     private double latitude;
     private double longitude;
     private ShameObject newShame;
@@ -244,10 +243,10 @@ public class ShameDialogs {
                     public void onPositive(MaterialDialog dialog) {
                         DatePicker date_picker = (DatePicker) dialog.findViewById(R.id.date);
                         TimePicker time_picker = (TimePicker) dialog.findViewById(R.id.time);
-                        timestamp = getDateFromDatePicker(date_picker, time_picker);
-                        Log.d("DATE__", timestamp);
+                        shameTime = getDateFromDatePicker(date_picker, time_picker).toString();
+                        Log.d("DATE__", shameTime.toString());
 
-                        whyDialog(context, timestamp);
+                        whyDialog(context, shameTime);
                         dialog.cancel();
                     }
 
@@ -259,7 +258,7 @@ public class ShameDialogs {
                 }).show();
     }
 
-    public static String getDateFromDatePicker(DatePicker datePicker, TimePicker timePicker) {
+    public static Date getDateFromDatePicker(DatePicker datePicker, TimePicker timePicker) {
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
         int year = datePicker.getYear();
@@ -268,11 +267,11 @@ public class ShameDialogs {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, hour, min);
         Date date = calendar.getTime();
+        return date;
 
-        return new SimpleDateFormat("yyyyMMdd_HHmm").format(date);
     }
 
-    public void whyDialog(final Context context, final String timestamp) {
+    public void whyDialog(final Context context, final String shameTime) {
         new MaterialDialog.Builder(context)
                 .title(R.string.shame_why)
                 .items(R.array.why_types)
@@ -318,7 +317,7 @@ public class ShameDialogs {
                                 }
                             }
                             SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
+                            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
                         }
                         return true;
                     }
@@ -413,7 +412,7 @@ public class ShameDialogs {
 //        try {
 //            String zipcode = getZipcode(context, latitude, longitude);
 //            if (zipcode != null)
-//
+//                newShame.se
 //                newShame.put(Constants.SHAME_ZIPCODE_COLUMN, zipcode);
 //        } catch (IOException e) {
 //            e.printStackTrace();
@@ -444,8 +443,11 @@ public class ShameDialogs {
 //    }
     //make realm shame object
     public void createShame() {
-        Realm.init(context);
+
         Realm realm  = Realm.getDefaultInstance();
+//        realm.beginTransaction();
+        Log.d("", "realm path: " + realm.getPath());
+
         try{
             String zipcode = getZipcode(context, latitude, longitude);
             if (zipcode != null) {
@@ -453,11 +455,12 @@ public class ShameDialogs {
                     @Override
                     public void execute(Realm realm) {
                         newShame = realm.createObject(ShameObject.class);
-                        newShame.setLatitude(latitude);
+                        newShame.setLatitude( latitude);
                         newShame.setLongitude(longitude);
                         newShame.setShameType(shameType);
                         newShame.setShameFeel(shameFeel);
                         newShame.setShameDoing(shameDoing);
+                        newShame.setShameTime(shameTime);
                         newShame.setGroup(group);
 
                     }
@@ -467,6 +470,7 @@ public class ShameDialogs {
             e.printStackTrace();
         }
         Log.i("created shame: ", newShame.getShameFeel());
+//        realm.commitTransaction();
         realm.close();
     }
 

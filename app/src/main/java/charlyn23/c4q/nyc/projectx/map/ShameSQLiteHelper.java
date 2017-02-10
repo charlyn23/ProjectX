@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,9 +86,9 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
     public void insertRow(ShameObject incident) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DataEntry.COLUMN_TIMESTAMP, Integer.valueOf(incident.getShameTime().substring(0,8)));
-        values.put(DataEntry.COLUMN_LATITUDE, incident.getLatitude());
-        values.put(DataEntry.COLUMN_LONGITUDE, incident.getLongitude());
+        values.put(DataEntry.COLUMN_TIMESTAMP, String.valueOf(incident.getShameTime()));
+        values.put(DataEntry.COLUMN_LATITUDE, String.valueOf(incident.getLatitude()));
+        values.put(DataEntry.COLUMN_LONGITUDE, String.valueOf(incident.getLongitude()))  ;
         values.put(DataEntry.COLUMN_GROUP, incident.getGroup());
         values.put(DataEntry.COLUMN_SHAME_TYPE, incident.getShameType());
         values.put(DataEntry.COLUMN_VERBAL_SHAME, incident.getVerbalShame());
@@ -137,8 +138,8 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             incidents.add(new ShameObject(
-                    cursor.getDouble(cursor.getColumnIndex(DataEntry.COLUMN_LATITUDE)),
-                    cursor.getDouble(cursor.getColumnIndex(DataEntry.COLUMN_LONGITUDE)),
+                    cursor.getInt(cursor.getColumnIndex(DataEntry.COLUMN_LATITUDE)),
+                    cursor.getInt(cursor.getColumnIndex(DataEntry.COLUMN_LONGITUDE)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_SHAME_TYPE)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_VERBAL_SHAME)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_PHYSICAL_SHAME)),
@@ -153,6 +154,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         cursor.close();
         return incidents;
     }
+
 
     //counts types of instances
     public int[] countTypes (String zipCode) {

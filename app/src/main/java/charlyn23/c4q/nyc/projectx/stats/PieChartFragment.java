@@ -2,43 +2,28 @@ package charlyn23.c4q.nyc.projectx.stats;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.AnimationEasing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.google.android.gms.maps.model.LatLng;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
-import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
 import charlyn23.c4q.nyc.projectx.map.ShameSQLiteHelper;
-import charlyn23.c4q.nyc.projectx.shames.Shame;
 
 public class PieChartFragment extends Fragment {
     public PieChart pieChart;
