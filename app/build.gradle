@@ -48,6 +48,10 @@ repositories {
 }
 apply plugin: 'realm-android'
 
+realm {
+    syncEnabled = true;
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -70,4 +74,6 @@ dependencies {
     compile 'com.github.mrengineer13:snackbar:1.2.0@aar'
     compile 'net.steamcrafted:materialiconlib:1.0.4'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
+    compile 'io.realm:android-adapters:1.4.0'
+
 }

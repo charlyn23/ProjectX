@@ -29,7 +29,10 @@ import java.util.Locale;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.User;
+import charlyn23.c4q.nyc.projectx.authentication.SignUpFragment;
 import io.realm.Realm;
+import io.realm.SyncUser;
 
 public class ShameDialogs {
     private String shameType;
@@ -48,8 +51,12 @@ public class ShameDialogs {
     private MarkerListener markerListener;
     private Toast toast;
     private Context context;
+    private SharedPreferences preferences;
+    private User currentUser;
+
 
     public void initialDialog(final Context context, double latitude, double longitude, final Marker new_marker, final FloatingActionButton addShame) {
+        preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         this.context = context;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -92,6 +99,7 @@ public class ShameDialogs {
                         }
                     }
                 }).show();
+
     }
 
 
@@ -297,7 +305,6 @@ public class ShameDialogs {
                             if (!isConnected) {
                                 Toast.makeText(context, R.string.check_network_connection, Toast.LENGTH_LONG).show();
                             } else {
-//                                saveShame();
                                 createShame();
                                 //Show custom toast after submitting incident
                                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -316,7 +323,6 @@ public class ShameDialogs {
                                     addShame.setVisibility(View.INVISIBLE);
                                 }
                             }
-                            SharedPreferences preferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
                             preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
                         }
                         return true;
@@ -441,37 +447,106 @@ public class ShameDialogs {
 //        newShame.saveInBackground();
 //
 //    }
-    //make realm shame object
-    public void createShame() {
 
-        Realm realm  = Realm.getDefaultInstance();
-//        realm.beginTransaction();
-        Log.d("", "realm path: " + realm.getPath());
+    public User getUser(){
+        String userId = preferences.getString(Constants.USER_ID, null);
+        String userName = preferences.getString(Constants.USER_NAME, null);
+        SignUpFragment signUpFragment = new SignUpFragment();
+        return signUpFragment.newUser;
 
-        try{
-            String zipcode = getZipcode(context, latitude, longitude);
-            if (zipcode != null) {
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        newShame = realm.createObject(ShameObject.class);
-                        newShame.setLatitude( latitude);
-                        newShame.setLongitude(longitude);
-                        newShame.setShameType(shameType);
-                        newShame.setShameFeel(shameFeel);
-                        newShame.setShameDoing(shameDoing);
-                        newShame.setShameTime(shameTime);
-                        newShame.setGroup(group);
-
-                    }
-                });
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.i("created shame: ", newShame.getShameFeel());
-//        realm.commitTransaction();
-        realm.close();
     }
 
+    //make realm shame object
+//    public void createShame() {
+//        //Realm was initialzed in Blazon.java
+//        final Realm realm  = Realm.getDefaultInstance();
+//
+//        try{
+//            String zipcode = getZipcode(context, latitude, longitude);
+//            if (zipcode != null) {
+//                realm.executeTransactionAsync(new Realm.Transaction() {
+//                    @Override
+//                    public void execute(Realm realm) {
+//                        newShame = realm.createObject(ShameObject.class);
+//                        newShame.setUser(getUser());
+//                        newShame.setLatitude( latitude);
+//                        newShame.setLongitude(longitude);
+//                        newShame.setShameType(shameType);
+//                        newShame.setShameFeel(shameFeel);
+//                        newShame.setShameDoing(shameDoing);
+//                        newShame.setShameTime(shameTime);
+//                        newShame.setGroup(group);
+//
+//                    }
+//                }, new Realm.Transaction.OnSuccess() {
+//                    @Override
+//                    public void onSuccess() {
+//                        // Transaction was a success.
+//                        realm.commitTransaction();
+//                    }
+//                }, new Realm.Transaction.OnError() {
+//                    @Override
+//                    public void onError(Throwable error) {
+//                        // Transaction failed and was automatically canceled.
+//                    }
+//                });
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Log.i("created shame: ", newShame.toString());
+//        realm.close();
+//    }
+
+
+
+    public void createShame() {
+        try {
+            final String zipcode = getZipcode(context, latitude, longitude);
+
+
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction(){
+
+            @Override
+            public void execute(Realm realm) {
+                SyncUser user = SyncUser.currentUser();
+
+                String userName = preferences.getString(Constants.USER_NAME, null);
+                String userId = preferences.getString(Constants.USER_ID, null);
+                currentUser = getUser();
+
+
+
+                newShame = realm.createObject(ShameObject.class, userId );
+                newShame.setLatitude( latitude);
+                newShame.setLongitude(longitude);
+                newShame.setShameType(shameType);
+                newShame.setShameFeel(shameFeel);
+                newShame.setShameDoing(shameDoing);
+                newShame.setShameTime(shameTime);
+                newShame.setGroup(group);
+                newShame.setZipcode(zipcode);
+
+
+                currentUser.addShame(newShame);
+
+
+
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Original queries and Realm objects are automatically updated.
+
+            }
+        });
+
+    } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
+
+

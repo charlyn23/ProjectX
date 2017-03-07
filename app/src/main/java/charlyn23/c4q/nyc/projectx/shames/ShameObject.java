@@ -1,6 +1,8 @@
 package charlyn23.c4q.nyc.projectx.shames;
 
+import charlyn23.c4q.nyc.projectx.User;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by charlynbuchanan on 2/5/17.
@@ -19,10 +21,14 @@ public class ShameObject extends RealmObject {
     private String shameTime;
     private String group;
     private String zipcode;
+    private User user;
+    @PrimaryKey
+    private String userID;
 
-    public ShameObject(double latitude, double longitude, String shameType, String verbalShame,
+    public ShameObject(User user, double latitude, double longitude, String shameType, String verbalShame,
                        String physicalShame, String otherShame, String shameFeel, String shameDoing,
                        String shameTime, String group, String zipcode){
+        this.user = user;
         this.latitude = latitude;
         this.longitude = longitude;
         this.shameType = shameType;
@@ -36,6 +42,23 @@ public class ShameObject extends RealmObject {
         this.zipcode = zipcode;
     }
 
+    public ShameObject(String userID, double latitude, double longitude, String shameType, String verbalShame,
+                       String physicalShame, String otherShame, String shameFeel, String shameDoing,
+                       String shameTime, String group, String zipcode){
+        this.userID = userID;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.shameType = shameType;
+        this.verbalShame = verbalShame;
+        this.physicalShame = physicalShame;
+        this.otherShame = otherShame;
+        this.shameFeel = shameFeel;
+        this.shameDoing = shameDoing;
+        this.shameTime = shameTime;
+        this.group = group;
+        this.zipcode = zipcode;
+
+    }
     public ShameObject(){
     }
     public String getGroup() {
@@ -125,5 +148,22 @@ public class ShameObject extends RealmObject {
     public void setVerbalShame(String verbalShame) {
         this.verbalShame = verbalShame;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public String getUserID() { return this.userID; }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+
+
 
 }

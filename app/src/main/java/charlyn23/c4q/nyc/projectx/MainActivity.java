@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 
+import charlyn23.c4q.nyc.projectx.authentication.SignUpFragment;
 import charlyn23.c4q.nyc.projectx.map.NoSwipeViewPager;
 import charlyn23.c4q.nyc.projectx.map.PagerAdapter;
 import charlyn23.c4q.nyc.projectx.map.ProjectXMapFragment;
@@ -37,13 +38,15 @@ import charlyn23.c4q.nyc.projectx.shames.ShameDetailActivity;
 import charlyn23.c4q.nyc.projectx.stats.StatsFragment;
 
 
-public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements ProjectXMapFragment.OnDataPass, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, SignUpFragment.UserOnDataPass {
 
     private NoSwipeViewPager viewPager;
     private PagerAdapter viewPagerAdapter;
     public GoogleApiClient googleLogInClient;
     private boolean isLoggedIn, isLoggedIn_google;
-    private SharedPreferences preferences;
+    public SharedPreferences preferences;
+    public SignUpFragment.UserOnDataPass userDataPaser;
+    public User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
 
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra(Constants.SHOW_DIALOG, true);
+
                 startActivity(intent);
             }
         }
@@ -214,19 +218,28 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
     protected void onStop() {
         super.onStop();
         googleLogInClient.disconnect();
+        //Listens for if realm transaction is null, cancel transaction
         Log.d("MainActivity", "Client Disconnected onStop");
-            preferences.edit().putBoolean(Constants.IS_DROPPED, false).commit();
+            preferences.edit().putBoolean(Constants.IS_DROPPED, false).apply();
     }
 
-    private void getBundle() {
+    //Login status, userID and userName are in bundle sent from SignupFragment.
+    public void getBundle() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             boolean isLoggedIn = extras.getBoolean(Constants.SHOW_DIALOG);
+            String userID = extras.getString(Constants.USER_ID);
+            String userName = extras.getString(Constants.USER_NAME);
+
+            //Create new Bundle to send to map/dialog fragments
             if (isLoggedIn) {
                 ProjectXMapFragment projectXMapFragment = (ProjectXMapFragment) viewPagerAdapter.getItem(0);
                 Bundle fragmentBundle = new Bundle();
                 fragmentBundle.putBoolean(Constants.SHOW_DIALOG, true);
+                fragmentBundle.putString(Constants.USER_ID, userID);
+                fragmentBundle.putString(Constants.USER_NAME, userName);
                 projectXMapFragment.setArguments(fragmentBundle);
+
             }
         }
     }
@@ -262,4 +275,18 @@ public class MainActivity extends AppCompatActivity implements ProjectXMapFragme
             dialog.show();
         }
     }
+
+
+    @Override
+    public void passUserData() {
+
+    }
+
+    @Override
+    public User getUserData() {
+        SignUpFragment.
+        return user;
+    }
+
+
 }

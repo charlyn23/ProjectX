@@ -42,6 +42,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
     public static abstract class DataEntry implements BaseColumns {
         public static final String TABLE_NAME = "listOfIncidences";
+        public static final String COLUMN_USER = "fbID";
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
         public static final String COLUMN_SHAME_TYPE = "shameType";
@@ -63,6 +64,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " +
             DataEntry.TABLE_NAME + " (" +
             DataEntry._ID + " INTEGER PRIMARY KEY," +
+            DataEntry.COLUMN_USER + " TEXT," +
             DataEntry.COLUMN_TIMESTAMP + " INTEGER," +
             DataEntry.COLUMN_LATITUDE + " INTEGER," +
             DataEntry.COLUMN_LONGITUDE + " INTEGER," +
@@ -87,6 +89,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DataEntry.COLUMN_TIMESTAMP, String.valueOf(incident.getShameTime()));
+        values.put(DataEntry.COLUMN_USER, String.valueOf(incident.getUser().getId()));
         values.put(DataEntry.COLUMN_LATITUDE, String.valueOf(incident.getLatitude()));
         values.put(DataEntry.COLUMN_LONGITUDE, String.valueOf(incident.getLongitude()))  ;
         values.put(DataEntry.COLUMN_GROUP, incident.getGroup());
@@ -116,6 +119,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String[] projection = {
                 DataEntry.COLUMN_TIMESTAMP,
+                DataEntry.COLUMN_USER,
                 DataEntry.COLUMN_LATITUDE,
                 DataEntry.COLUMN_LONGITUDE,
                 DataEntry.COLUMN_GROUP,
@@ -138,6 +142,7 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             incidents.add(new ShameObject(
+                    cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_USER)),
                     cursor.getInt(cursor.getColumnIndex(DataEntry.COLUMN_LATITUDE)),
                     cursor.getInt(cursor.getColumnIndex(DataEntry.COLUMN_LONGITUDE)),
                     cursor.getString(cursor.getColumnIndex(DataEntry.COLUMN_SHAME_TYPE)),
@@ -253,4 +258,5 @@ public class ShameSQLiteHelper extends SQLiteOpenHelper {
         cursor.close();
         Log.i("SQLite Delete", "Removed 500 incidences from Database");
     }
+
 }

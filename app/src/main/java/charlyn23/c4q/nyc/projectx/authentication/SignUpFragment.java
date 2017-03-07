@@ -46,6 +46,10 @@ import java.util.concurrent.TimeUnit;
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.MainActivity;
 import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.User;
+import io.realm.Realm;
+import io.realm.SyncCredentials;
+import io.realm.SyncUser;
 import twitter4j.Twitter;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -55,7 +59,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences.Editor editor;
     public GoogleApiClient googleLogInClient;
     private View view;
-    private SharedPreferences preferences = null;
+    public SharedPreferences preferences;
     public LoginButton fbLoginButton;
     public CallbackManager callbackManager;
 
@@ -63,8 +67,23 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private static Twitter twitter;
     private static RequestToken requestToken;
     private AccessToken accessToken;
+    public SignUpFragment.UserOnDataPass userDataPasser;
 
 
+    public User newUser;
+    public static String fbId;
+    public static String fbFirstName;
+
+    /*
+     * Each shameObject must have a userID associated with it. This interface will allow user data to be
+    * passed from the SignupFragment to the MainActivity. This data will be used in the dialog box sequence
+    * to ultimately create the shameObject.
+    */
+    public interface UserOnDataPass {
+        void passUserData();
+        User getUserData();
+
+    }
     public SignUpFragment() {
         this.googleLogInClient = new GoogleApiClient() {
             @Override
@@ -198,11 +217,25 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
 
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            userDataPasser = (SignUpFragment.UserOnDataPass) context;
+
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()  + " must implement UserOnDataPass");
+        }
+
+    }
+
     private void logInViaFacebook() {
         callbackManager = CallbackManager.Factory.create();
 
         // Set permissions
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -210,8 +243,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                     public void onSuccess(LoginResult loginResult) {
 
                         System.out.println("Success");
-                        editor = preferences.edit();
-                        editor.putBoolean(Constants.LOGGED_IN, true).apply();
+
                         GraphRequest.newMeRequest(
                                 loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                                     @Override
@@ -226,10 +258,25 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                                                 String jsonresult = String.valueOf(json);
                                                 Log.i("JSON Result", jsonresult);
 
-                                                String fbEmail = json.getString("email");
-                                                String fbId = json.getString("id");
-                                                String fbFirstName = json.getString("first_name");
-                                                Log.i("FBLogin" , fbFirstName + ", " + fbEmail + ", fbID: " + fbId );
+                                                fbId = json.getString("id");
+                                                fbFirstName = json.getString("first_name");
+                                                Log.i("FBLogin" , fbFirstName + " fbID: " + fbId );
+
+                                                //Create new User via FB authentication, and sync it
+                                                String token = fbId;
+                                                SyncCredentials myCredentials = SyncCredentials.facebook(token);
+                                                Realm realm = Realm.getDefaultInstance();
+                                                realm.beginTransaction();
+                                                newUser = realm.createObject(User.class);
+                                                newUser.setId(fbId);
+                                                newUser.setName(fbFirstName);
+
+                                                SyncUser user = SyncUser.login(myCredentials, Constants.AUTH_URL);
+                                                user.isValid();
+
+                                                realm.commitTransaction();
+                                                Log.i("User", fbFirstName + " " + fbId);
+
 
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -238,9 +285,19 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                                     }
 
                                 }).executeAsync();
-                        reportShame();
+                        //Save POJO user data in in SharedPreferences
+                        editor = preferences.edit();
+                        editor.putString(Constants.USER_ID, fbId);
+                        editor.putString(Constants.USER_NAME, fbFirstName);
+                        editor.putBoolean(Constants.LOGGED_IN, true);
+                        editor.commit();
 
-
+                        //Add user data to intent, then send data back to MainActivity to begin dialog box sequence.
+                        Intent intent = new Intent(view.getContext(), MainActivity.class);
+                        intent.putExtra(Constants.SHOW_DIALOG, true);
+                        intent.putExtra(Constants.USER_ID, fbId);
+                        intent.putExtra(Constants.USER_NAME, fbFirstName);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -318,14 +375,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
-
-    private void reportShame() {
-        Intent intent = new Intent(view.getContext(), MainActivity.class);
-        intent.putExtra(Constants.SHOW_DIALOG, true);
-        startActivity(intent);
-    }
-
     @Override
     public void onClick(View v) {
         List<String> permissions = Arrays.asList("public_profile", "email");
@@ -365,4 +414,5 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             return false;
         }
     }
+
 }

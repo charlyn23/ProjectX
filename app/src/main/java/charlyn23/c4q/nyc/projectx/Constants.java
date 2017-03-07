@@ -78,4 +78,11 @@ public class Constants {
     public static final String DB = "ShameDB";
     public static final int VERSION = 1;
 
+    //User constants
+    public static final String USER_ID = "fbID";
+    public static final String USER_NAME = "fbName";
+
+    //Authentication constants
+    public static final String  AUTH_URL = "http://my.realm-auth-server.com:9080/auth";
+
 }

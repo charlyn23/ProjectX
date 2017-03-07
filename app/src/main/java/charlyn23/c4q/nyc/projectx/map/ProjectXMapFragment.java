@@ -69,11 +69,11 @@ import java.util.List;
 
 import charlyn23.c4q.nyc.projectx.Constants;
 import charlyn23.c4q.nyc.projectx.R;
+import charlyn23.c4q.nyc.projectx.authentication.SignUpFragment;
 import charlyn23.c4q.nyc.projectx.shames.MarkerListener;
 import charlyn23.c4q.nyc.projectx.shames.ShameDialogs;
 import charlyn23.c4q.nyc.projectx.shames.ShameObject;
 import io.realm.Realm;
-import io.realm.RealmQuery;
 
 public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MarkerListener, ResultCallback<Status>  {
     private static final LatLngBounds BOUNDS = new LatLngBounds(new LatLng(40.498425, -74.250219), new LatLng(40.792266, -73.776434));
@@ -99,6 +99,7 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
     private Integer[] filter_chosen = new Integer[]{0, 1, 2, 3, 4};
     private PendingIntent mGeofencePendingIntent = null;
     private HashMap<String, Boolean> identity;
+    SignUpFragment.UserOnDataPass userOnDataPass;
 
     @Nullable
     @Override
@@ -201,6 +202,11 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
 
         //populates map with shames that occurred within the last two months
         //TODO: change query to Realm
+//        Realm realm = Realm.getDefaultInstance();
+//        RealmResults<ShameObject> incidents = realm.where(ShameObject.class)
+//                .findAll();
+
+
 //        ParseQuery<Shame> query = ParseQuery.getQuery(Constants.SHAME);
 //        String lastUpdate = preferences.getString(Constants.LAST_UPDATE, "00000000_0000");
 //        query.whereGreaterThanOrEqualTo(Constants.SHAME_TIME_COLUMN, lastUpdate);
@@ -329,7 +335,6 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
             } else {
                 //Builds a query looking for all ShameObjects
                 Realm realm = Realm.getDefaultInstance();
-                RealmQuery<ShameObject> query = realm.where(ShameObject.class);
 
                 //Adds query conditions - we specifically want incidents from the last month to populate map
 
@@ -763,10 +768,16 @@ public class ProjectXMapFragment extends Fragment implements OnMapReadyCallback,
         try {
             dataPasser = (ProjectXMapFragment.OnDataPass) activity;
             Log.i("datapasser", "works!");
+            userOnDataPass = (SignUpFragment.UserOnDataPass) activity;
+            Log.i("userDataPasser", userOnDataPass.toString());
+
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnDataPass");
         }
     }
+
+
+
 
     //brings up a survey dialog group and saves a permanent marker on the map
     public void addSubmittedMarker() {
